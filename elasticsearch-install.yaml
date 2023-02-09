@@ -6,6 +6,14 @@ metadata:
   labels:
     name: elastic
 ---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: elastic
+  namespace: elastic
+spec:
+  selfSigned: {}
+---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -19,28 +27,33 @@ spec:
     config:
       node.store.allow_mmap: false
       server.basePath: /es
-      server.rewriteBasePath: true
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: elasticsearch
-  namespace: elastic
-spec:
-  rules:
-  - host: rancher.dutnet.local  # hostname to access rancher server
-    http:
-      paths:
-      - path: /es
-        pathType: Prefix
-        backend:
-          service:
-            name: elasticsearch-es-http
-            port: http
-  tls:
-  - hosts:
-    - rancher.dutnet.local
-    secretName: tls-rancher-ingress
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: elasticsearch
+#   namespace: elastic
+#   annotations:
+#     cert-manager.io/issuer: elastic
+#     cert-manager.io/issuer-kind: Issuer
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2
+#     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+# spec:
+#   rules:
+#   - host: rancher.dutnet.local  # hostname to access rancher server
+#     http:
+#       paths:
+#       - path: /es(/|$)(.*)
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: elasticsearch-es-http
+#             port:
+#               name: https
+#   tls:
+#   - hosts:
+#     - rancher.dutnet.local
+#     secretName: tls-elasticsearch-ingress
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
@@ -52,29 +65,34 @@ spec:
   count: 1
   elasticsearchRef:
     name: es
-  nodeSets:
-  - config:
-      server.basePath: /kb
-      server.rewriteBasePath: true
+  config:
+    server.basePath: /kb
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: elasticsearch
+  name: kibana
   namespace: elastic
+  annotations:
+  annotations:
+    cert-manager.io/issuer: elastic
+    cert-manager.io/issuer-kind: Issuer
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   rules:
   - host: rancher.dutnet.local  # hostname to access rancher server
     http:
       paths:
-      - path: /kb
+      - path: /kb(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: kibana-kb-http
-            port: http
+            port:
+              name: https
   tls:
   - hosts:
     - rancher.dutnet.local
-    secretName: tls-rancher-ingress
+    secretName: tls-kibana-ingress
 ---
