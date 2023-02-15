@@ -13,4 +13,4 @@ spec:
   repo: https://helm.elastic.co
   targetNamespace: elastic-system
   set:
-    installCRDs: true
+    installCRDs: "true"
