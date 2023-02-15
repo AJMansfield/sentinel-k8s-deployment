@@ -4,13 +4,13 @@ set -e -x
 script_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 # install RKE2 if not already installed
-[ -f /usr/local/bin/rke2 ] || { curl -sfL https://get.rke2.io | sudo sh - }
+[ -f /usr/local/bin/rke2 ] || { curl -sfL https://get.rke2.io | sudo sh - ; }
 
 # install our custom configurations
-sudo cp --interactive --verbose --backup --recursive "$script_path/system/." "/."
+sudo cp --verbose --recursive "$script_path/system/." "/."
 
 # enable and start the system units
-systemctl is-enabled --quiet rke2-server.service sudo systemctl enable rke2-server.service
+systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
 systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
 
 # copy authentication for installed server to user's config
