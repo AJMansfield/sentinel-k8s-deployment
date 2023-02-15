@@ -1,10 +1,3 @@
-apiVersion: catalog.cattle.io/v1
-kind: ClusterRepo
-metadata:
-  name: rancher-latest
-spec:
-  url: https://releases.rancher.com/server-charts/latest
----
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -16,10 +9,11 @@ metadata:
   name: rancher
   namespace: kube-system
 spec:
-  chart: rancher-latest/rancher
+  chart: rancher
+  repo: https://releases.rancher.com/server-charts/stable
   targetNamespace: cattle-system
   set:
     installCRDs: true
     hostname: rancher.dutnet.local
     replicas: 1
-    bootstrapPassword: password
+    bootstrapPassword: yzT9KVCKtlBsjlYA

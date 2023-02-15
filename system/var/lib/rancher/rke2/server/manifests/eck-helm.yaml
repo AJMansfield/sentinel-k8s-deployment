@@ -1,10 +1,3 @@
-apiVersion: catalog.cattle.io/v1
-kind: ClusterRepo
-metadata:
-  name: elastic
-spec:
-  url: https://helm.elastic.co
----
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -16,7 +9,8 @@ metadata:
   name: elastic-operator
   namespace: kube-system
 spec:
-  chart: elastic/eck-operator
+  chart: eck-operator
+  repo: https://helm.elastic.co
   targetNamespace: elastic-system
   set:
     installCRDs: true
