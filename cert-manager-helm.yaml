@@ -1,0 +1,22 @@
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: jetstack
+spec:
+  url: https://charts.jetstack.io
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager
+  namespace: kube-system
+spec:
+  chart: jetstack/cert-manager
+  targetNamespace: cert-manager
+  set:
+    installCRDs: true
