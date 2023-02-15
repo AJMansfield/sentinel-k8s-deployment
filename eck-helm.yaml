@@ -1,0 +1,22 @@
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: elastic
+spec:
+  url: https://helm.elastic.co
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elastic-system
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: elastic-operator
+  namespace: kube-system
+spec:
+  chart: elastic/eck-operator
+  targetNamespace: elastic-system
+  set:
+    installCRDs: true
