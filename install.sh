@@ -9,9 +9,11 @@ script_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 # install our custom configurations
 sudo cp --verbose --recursive "$script_path/system/." "/."
 
-# enable and start the system units
+# enable and start the systemd units
 systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
 systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
+systemctl is-enabled --quiet cni-dhcp.socket || sudo systemctl enable cni-dhcp.socket
+systemctl is-active --quiet cni-dhcp.socket || sudo systemctl start cni-dhcp.socket
 
 # copy authentication for installed server to user's config
 cp --backup --force ~/.kube/config ~/.kube/config
