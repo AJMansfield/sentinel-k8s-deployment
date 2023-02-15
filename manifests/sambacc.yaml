@@ -48,44 +48,51 @@ data:
     {
       "samba-container-config": "v0",
       "configs": {
-        "sambadm1": {
+        "demo": {
           "shares": [
             "share"
           ],
           "globals": [
-            "noprinting",
-            "sambadm1"
+            "default"
           ],
-          "instance_name": "SMBDM1"
+          "instance_name": "SAMBA"
         }
       },
       "shares": {
         "share": {
           "options": {
             "path": "/share",
+            "public": "yes",
+            "browseable": "yes",
             "read only": "no",
             "guest ok": "yes",
-            "create mask": "0755",
-            "directory mask": "0755"
+            "writeable": "yes",
+            "create mask": "666",
+            "directory mask": "777",
+            "force user": "sambauser",
+            "force group": "sambauser"
           }
         }
       },
-      "_NOTE": "Change the security and workgroup keys to match your domain.",
       "globals": {
-        "noprinting": {
+        "default": {
           "options": {
-            "load printers": "no",
-            "printing": "bsd",
-            "printcap name": "/dev/null",
-            "disable spoolss": "yes"
-          }
-        },
-        "sambadm1": {
-          "options": {
-            "workgroup": "WORKGROUP"
+            "workgroup": "WORKGROUP",
+            "security": "user",
+            "map to guest": "Bad User",
+            "guest account": "sambauser"
           }
         }
-      }
+      },
+      "users": {
+        "all_entries": [
+          {
+            "name": "sambauser",
+            "password": "samba"
+          }
+        ]
+      },
+      "_footer": 1
     }
 ---
 # The pod itself.
@@ -108,15 +115,6 @@ spec:
       - "--debug-delay=1"
       - "run"
       - "smbd"
-      env:
-      - name: SAMBACC_CONFIG
-        value: /etc/samba-container/config.json
-      - name: SAMBA_CONTAINER_ID
-        value: sambadm1
-      - name: SAMBACC_VERSION
-        value: "0.1"
-      - name: HOSTNAME
-        value: sambadm1
       ports:
       - containerPort: 445
         hostPort: 455
@@ -139,15 +137,6 @@ spec:
       - "samba-container"
       - "run"
       - "winbindd"
-      env:
-      - name: SAMBACC_VERSION
-        value: "0.1"
-      - name: SAMBACC_CONFIG
-        value: /etc/samba-container/config.json
-      - name: SAMBA_CONTAINER_ID
-        value: sambadm1
-      - name: HOSTNAME
-        value: sambadm1
       securityContext:
         allowPrivilegeEscalation: true
       volumeMounts:
@@ -162,15 +151,6 @@ spec:
       name: init
       args:
       - "init"
-      env:
-      - name: SAMBACC_VERSION
-        value: "0.1"
-      - name: SAMBACC_CONFIG
-        value: /etc/samba-container/config.json
-      - name: SAMBA_CONTAINER_ID
-        value: sambadm1
-      - name: HOSTNAME
-        value: sambadm1
       securityContext:
         allowPrivilegeEscalation: true
       volumeMounts:
