@@ -1,0 +1,22 @@
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: ebrianne
+spec:
+  url: https://ebrianne.github.io/helm-charts/
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: local-path-storage
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: local-path-storage
+  namespace: kube-system
+spec:
+  chart: ebrianne/local-path-provisioner
+  targetNamespace: local-path-storage
+  set:
+    storageClass.defaultClass: true
