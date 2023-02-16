@@ -106,7 +106,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: samba-srv
+  name: samba
   namespace: samba-honeypot
   labels:
     app: samba-honeypot
