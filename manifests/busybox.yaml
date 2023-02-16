@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  annotations:
+    k8s.v1.cni.cncf.io/networks: honeynet/macvlan
+spec:
+  containers:
+    - image: busybox # TODO find a busybox image that includes the scripts?
+      name: dhcp-client
+      command: [
+        "udhcpc",
+        "-i", "net1", # Interface to use
+        "-R", # Release IP on exit
+        "-f", # Run in foreground
+        "-x", "hostname:busybox", # provide option 22
+        "-F", "busybox", # Ask server to update DNS mapping
+      ]
+      
+      volumeMounts:
+      - mountPath: "/usr/share/udhcpc/"
+        name: udhcpc-scripts
+
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+
+    - image: busybox
+      name: sleeper
+      command: ["sleep", "infinity"]
+      
+  volumes:
+  - name: udhcpc-scripts
+    configMap:
+      name: udhcpc-scripts
+      defaultMode: 0744
