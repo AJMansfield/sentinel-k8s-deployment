@@ -130,11 +130,6 @@ spec:
           - "samba-container"
           - "run"
           - "smbd"
-          ports:
-          - containerPort: 445
-            hostPort: 455
-            protocol: TCP
-            name: "smb"
           securityContext:
             allowPrivilegeEscalation: true
           volumeMounts:
