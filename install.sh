@@ -13,8 +13,6 @@ sudo cp --verbose --recursive "$script_path/system/." "/."
 sudo systemctl daemon-reload
 systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
 systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
-systemctl is-enabled --quiet cni-dhcp.socket || sudo systemctl enable cni-dhcp.socket
-systemctl is-active --quiet cni-dhcp.socket || sudo systemctl start cni-dhcp.socket
 
 # copy authentication for installed server to user's config
 cp --backup --force ~/.kube/config ~/.kube/config
