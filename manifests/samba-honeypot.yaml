@@ -60,7 +60,7 @@ data:
       "shares": {
         "public": {
           "options": {
-            "comment": "All the files.",
+            "comment": "all the files",
             "path": "/share",
             "public": "yes",
             "browseable": "yes",
@@ -137,8 +137,13 @@ spec:
         - image: quay.io/samba.org/samba-server:latest
           name: smb
           command: ["samba-container", "run", "smbd"]
-          securityContext:
-            allowPrivilegeEscalation: true
+          env:
+          - name: SAMBACC_CONFIG
+            value: /etc/samba-container/config.json
+          - name: SAMBA_CONTAINER_ID
+            value: sambasrv
+          - name: HOSTNAME
+            value: sambasrv
           volumeMounts:
           - mountPath: "/share"
             name: samba-sharedir
@@ -148,22 +153,33 @@ spec:
             name: samba-state-dir
           - mountPath: "/run/samba/winbindd"
             name: samba-sockets-dir
+          securityContext:
+            allowPrivilegeEscalation: true
 
         - image: quay.io/samba.org/samba-server:latest
           name: winbind
           command: ["samba-container", "run", "winbindd"]
-          securityContext:
-            allowPrivilegeEscalation: true
+          env:
+          - name: SAMBACC_CONFIG
+            value: /etc/samba-container/config.json
+          - name: SAMBA_CONTAINER_ID
+            value: sambasrv
+          - name: HOSTNAME
+            value: sambasrv
           volumeMounts:
+          - mountPath: "/share"
+            name: samba-sharedir
           - mountPath: "/etc/samba-container"
             name: samba-container-config
           - mountPath: "/var/lib/samba"
             name: samba-state-dir
           - mountPath: "/run/samba/winbindd"
             name: samba-sockets-dir
+          securityContext:
+            allowPrivilegeEscalation: true
 
         - image: busybox
-          name: dhcp-client
+          name: dhcp
           command: [
             "udhcpc",
             "-i", "net1", # Interface to use
@@ -180,10 +196,10 @@ spec:
             "-x", "hostname:sambasrv", # provide option 22
             # "-x", "lease:60", # request short 60-second lease
             "-F", "sambasrv", # Ask server to update DNS mapping for "fileserver"
-            "-V", "Microsloth", # Vendor identifier (instead of udhcp)
+            "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
           ]
           volumeMounts:
-          - mountPath: "/usr/share/udhcpc/"
+          - mountPath: "/usr/share/udhcpc"
             name: udhcpc-scripts
           securityContext:
             allowPrivilegeEscalation: true
@@ -191,7 +207,7 @@ spec:
               add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
         
         - image: jonasped/wsdd
-          name: wsdd
+          name: wsd
           env:
           - name: WSDD_ARGS
             value: "--interface net1 --hostname SAMBASRV --workgroup WORKGROUP"
@@ -204,6 +220,13 @@ spec:
         - image: quay.io/samba.org/samba-server:latest
           name: init
           args: ["init"]
+          env:
+          - name: SAMBACC_CONFIG
+            value: /etc/samba-container/config.json
+          - name: SAMBA_CONTAINER_ID
+            value: sambasrv
+          - name: HOSTNAME
+            value: sambasrv
           securityContext:
             allowPrivilegeEscalation: true
           volumeMounts:
