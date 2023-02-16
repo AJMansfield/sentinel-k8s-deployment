@@ -34,7 +34,7 @@ data:
       "configs": {
         "sambasrv": {
           "shares": [
-            "share"
+            "public"
           ],
           "globals": [
             "default"
@@ -58,7 +58,7 @@ data:
         }
       },
       "shares": {
-        "share": {
+        "public": {
           "options": {
             "comment": "All the files.",
             "path": "/share",
