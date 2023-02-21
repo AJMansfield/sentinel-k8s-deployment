@@ -1,0 +1,331 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: samba-basic
+  labels:
+    app: samba-basic
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: samba-home
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: samba-logs
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: samba-config
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+data:
+  smb_custom.conf: |
+    [global]
+      workgroup = WORKGROUP
+      netbios name = SAMBA
+      server string = Samba Server Version %v
+
+      log file = /var/log/samba/log.%m
+      max log size = 50
+
+      security = user
+      passdb backend = tdbsam
+      guest account = guest
+      map to guest = Bad User
+
+      bind interfaces only = yes
+      interfaces = lo net1
+
+      load printers = yes
+      cups options = raw
+
+    # Audit all activity
+      full_audit:prefix = %u|%U|%I|%m|%S|%T|%D
+      full_audit:success = mkdir rename unlink rmdir pwrite
+      full_audit:failure = connect
+      full_audit:facility = local5
+      full_audit:priority = NOTICE INFO
+
+    [homes]
+      comment = Home Directories
+      browseable = no
+      writable = yes
+      vfs objects = full_audit
+
+    [printers]
+      comment = All Printers
+      path = /var/tmp
+      browseable = no
+      guest ok = no
+      writable = no
+      printable = yes
+      vfs objects = full_audit
+      
+    [public]
+      comment = Public Files
+      path = /home/samba
+      public = yes
+      writable = no
+      printable = no
+      write list = +staff
+      vfs objects = full_audit
+      
+    [guest]
+      comment = Guest Files
+      path = /home/guest
+      public = yes
+      browseable = yes
+      writable = yes
+      printable = no
+      guest ok = yes
+      vfs objects = full_audit
+
+  smbusers: |
+    root = admin administrator
+    nobody = guest pcguest smbguest
+    veronica = veronica
+    kimura = kimura
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: samba-env
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+data:
+  USER: "groucho;swordfish;;staff;"
+  INCLUDE: "/etc/samba/smb_custom.conf"
+  PERMISSIONS: "1"
+  NMBD: "1"
+  SMB: "1"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: syslog-ng
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+data:
+  syslog-ng.conf: |
+    filter f_local5 {facility(local5);};
+    destination m_samba_audit { file("/var/log/samba/audit.log"); };
+    log { source(src); filter(f_local5);destination(m_samba_audit); flags(final); };
+---
+# DHCP interface configuration script
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: udhcpc-scripts
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+data:
+  default.script: |
+    #!/bin/sh
+    [ -n "$1" ] || { echo "Error: should be called from udhcpc"; exit 1; }
+
+    NETMASK=""
+    [ -n "$subnet" ] && NETMASK="netmask $subnet"
+    BROADCAST="broadcast +"
+    [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+
+    case "$1" in
+      deconfig)
+        echo "Setting IP address 0.0.0.0 on $interface"
+        ifconfig $interface 0.0.0.0
+        ;;
+
+      renew|bound)
+        echo "Setting IP address $ip on $interface"
+        ifconfig $interface $ip $NETMASK $BROADCAST
+    esac
+
+    exit 0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+  namespace: samba-basic
+  labels:
+    app: samba-basic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba-basic
+  template:
+    metadata:
+      labels:
+        app: samba-basic
+      annotations:
+        k8s.v1.cni.cncf.io/networks: honeynet/macvlan
+    spec:
+      shareProcessNamespace: true
+
+      volumes:
+      - name: samba-home
+        persistentVolumeClaim:
+          claimName: samba-home
+      - name: samba-logs
+        persistentVolumeClaim:
+          claimName: samba-logs
+      - name: samba-config
+        configMap:
+          name: samba-config
+        # readOnly: true
+      - name: udhcpc-scripts
+        configMap:
+          name: udhcpc-scripts
+        # readOnly: true
+
+      containers:
+
+      - name: smb
+        image: dperson/samba
+        envFrom:
+        - configMapRef:
+            name: samba-env
+        volumeMounts:
+        - name: samba-home
+          mountPath: /home
+        - name: samba-logs
+          mountPath: /var/log/samba
+        - name: samba-config
+          mountPath: /etc/samba
+        - name: syslog-ng
+          mountPath: /etc/syslog-ng
+
+      - name: dhcp
+        image: busybox
+        command: [
+          "udhcpc",
+          "-i", "net1", # Interface to use
+          "-B", # Request broadcast replies (so everyone sees us)
+          "-T", "5", # Pause between packets
+          "-R", # Release IP on exit
+          "-f", # Run in foreground
+          "-a", # Validate offerred address with ARP ping (so everyone sees us)
+          "-O", "12", # request Host Name
+          "-O", "15", # request Domain Name
+          "-O", "42", # request NTP Servers
+          "-O", "119", # request Doman Search
+          "-O", "120", # request SIP Servers
+          "-x", "hostname:SAMBA", # provide option 22
+          # "-x", "lease:60", # request short 60-second lease
+          "-F", "SAMBA", # Ask server to update DNS mapping 
+          "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
+        ]
+        volumeMounts:
+        - mountPath: "/usr/share/udhcpc"
+          name: udhcpc-scripts
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+
+      - name: wsd
+        image: jonasped/wsdd
+        env:
+        - name: WSDD_ARGS
+          value: "--interface net1 --hostname SAMBA --workgroup WORKGROUP"
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST"]
+---
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: filebeat
+  namespace: samba-basic
+spec:
+  type: filebeat
+  version: 8.6.2
+  elasticsearchRef:
+    name: elasticsearch
+    namespace: elastic
+  kibanaRef:
+    name: kibana
+    namespace: elastic
+  config:
+    filebeat.inputs:
+    - type: log
+      paths:
+      - /var/log/samba/*.log
+  daemonSet:
+    podTemplate:
+      spec:
+        containers:
+        - name: filebeat
+          volumeMounts:
+          - name: samba-logs
+            mountPath: /var/log/samba
+        volumes:
+        - name: samba-logs
+          persistentVolumeClaim:
+            claimName: samba-logs
+---
+# Adapted from https://raw.githubusercontent.com/elastic/cloud-on-k8s/2.6/config/recipes/beats/auditbeat_hosts.yaml
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: auditbeat
+  namespace: samba-basic
+spec:
+  type: auditbeat
+  version: 8.5.2
+  elasticsearchRef:
+    name: elasticsearch
+    namespace: elastic
+  kibanaRef:
+    name: kibana
+    namespace: elastic
+  config:
+    auditbeat.modules:
+    - module: auditd
+      audit_rules: |
+        -a always,exit -F dir=/mnt/home/ -F perm=rwxa -F key=samba
+  daemonSet:
+    podTemplate:
+      spec:
+        hostPID: true  # Required by auditd module
+        securityContext:
+          runAsUser: 0
+        volumes:
+        - name: samba-home
+          persistentVolumeClaim:
+            claimName: samba-home
+        containers:
+        - name: auditbeat
+          securityContext:
+            capabilities:
+              add: ['AUDIT_READ', 'AUDIT_WRITE', 'AUDIT_CONTROL']
+          volumeMounts:
+          - name: samba-home
+            mountPath: "/mnt/home"
+            readOnly: true
