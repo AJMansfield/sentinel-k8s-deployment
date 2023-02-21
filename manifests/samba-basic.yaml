@@ -101,12 +101,6 @@ data:
       printable = no
       guest ok = yes
       vfs objects = full_audit
-
-  smbusers: |
-    root = admin administrator
-    nobody = guest pcguest smbguest
-    veronica = veronica
-    kimura = kimura
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -116,11 +110,9 @@ metadata:
   labels:
     app: samba-basic
 data:
-  USER: "groucho;swordfish;;staff;"
-  INCLUDE: "/etc/samba/smb_custom.conf"
-  PERMISSIONS: "1"
-  NMBD: "1"
-  SMB: "1"
+  GROUP_staff: "1500"
+  ACCOUNT_groucho: swordfish
+  GROUPS_groucho: staff
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -185,6 +177,7 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: honeynet/macvlan
     spec:
+      hostname: samba
       shareProcessNamespace: true
 
       volumes:
@@ -197,16 +190,17 @@ spec:
       - name: samba-config
         configMap:
           name: samba-config
-        # readOnly: true
       - name: udhcpc-scripts
         configMap:
           name: udhcpc-scripts
-        # readOnly: true
+      - name: syslog-ng
+        configMap:
+          name: syslog-ng
 
       containers:
 
       - name: smb
-        image: dperson/samba
+        image: servercontainers/samba
         envFrom:
         - configMapRef:
             name: samba-env
@@ -216,7 +210,7 @@ spec:
         - name: samba-logs
           mountPath: /var/log/samba
         - name: samba-config
-          mountPath: /etc/samba
+          mountPath: /container/config/samba
         - name: syslog-ng
           mountPath: /etc/syslog-ng
 
@@ -235,7 +229,7 @@ spec:
           "-O", "42", # request NTP Servers
           "-O", "119", # request Doman Search
           "-O", "120", # request SIP Servers
-          "-x", "hostname:SAMBA", # provide option 22
+          "-x", "hostname:samba", # provide option 22
           # "-x", "lease:60", # request short 60-second lease
           "-F", "SAMBA", # Ask server to update DNS mapping 
           "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
@@ -248,15 +242,16 @@ spec:
           capabilities:
             add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 
-      - name: wsd
-        image: jonasped/wsdd
-        env:
-        - name: WSDD_ARGS
-          value: "--interface net1 --hostname SAMBA --workgroup WORKGROUP"
-        securityContext:
-          allowPrivilegeEscalation: true
-          capabilities:
-            add: ["NET_BIND_SERVICE", "NET_BROADCAST"]
+      ## Obsoleted because servercontainers/samba has wsdd2 already
+      # - name: wsd
+      #   image: jonasped/wsdd
+      #   env:
+      #   - name: WSDD_ARGS
+      #     value: "--interface net1 --hostname SAMBA --workgroup WORKGROUP"
+      #   securityContext:
+      #     allowPrivilegeEscalation: true
+      #     capabilities:
+      #       add: ["NET_BIND_SERVICE", "NET_BROADCAST"]
 ---
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
@@ -280,6 +275,8 @@ spec:
   daemonSet:
     podTemplate:
       spec:
+        securityContext:
+          runAsUser: 0
         containers:
         - name: filebeat
           volumeMounts:
