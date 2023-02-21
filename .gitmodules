@@ -1,0 +1,3 @@
+[submodule "samba-operator"]
+	path = samba-operator
+	url = https://github.com/samba-in-kubernetes/samba-operator.git
