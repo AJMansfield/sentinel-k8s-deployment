@@ -274,12 +274,6 @@ spec:
     - module: auditd
       audit_rules: |
         -a always,exit -F dir=/share/ -F perm=rwxa -k share
-
-    processors:
-    - add_cloud_metadata: {}
-    - add_host_metadata: {}
-    - add_process_metadata:
-        match_pids: ['process.pid']
   daemonSet:
     podTemplate:
       spec:
@@ -287,10 +281,6 @@ spec:
         securityContext:
           runAsUser: 0
         volumes:
-        - name: run-containerd
-          hostPath:
-            path: /run/containerd
-            type: DirectoryOrCreate
         - name: samba-sharedir
           persistentVolumeClaim:
             claimName: samba-pvc
@@ -306,6 +296,3 @@ spec:
           volumeMounts:
           - name: samba-sharedir
             mountPath: "/share"
-          - name: run-containerd
-            mountPath: /run/containerd
-            readOnly: true
