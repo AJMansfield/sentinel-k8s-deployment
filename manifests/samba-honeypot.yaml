@@ -296,3 +296,4 @@ spec:
           volumeMounts:
           - name: samba-sharedir
             mountPath: "/share"
+            readOnly: true
