@@ -41,38 +41,12 @@ metadata:
   labels:
     app: samba-basic
 data:
-  smb_custom.conf: |
-    [global]
-      workgroup = WORKGROUP
-      netbios name = SAMBA
-      server string = Samba Server Version %v
-
-      log file = /var/log/samba/log.%m
-      max log size = 50
-
-      security = user
-      passdb backend = tdbsam
-      guest account = guest
-      map to guest = Bad User
-
-      bind interfaces only = yes
-      interfaces = lo net1
-
-      load printers = yes
-      cups options = raw
-
-    # Audit all activity
-      full_audit:prefix = %u|%U|%I|%m|%S|%T|%D
-      full_audit:success = mkdir rename unlink rmdir pwrite
-      full_audit:failure = connect
-      full_audit:facility = local5
-      full_audit:priority = NOTICE INFO
-
+  smb.conf: |
     [homes]
       comment = Home Directories
       browseable = no
       writable = yes
-      vfs objects = full_audit
+      # vfs objects = full_audit
 
     [printers]
       comment = All Printers
@@ -81,16 +55,16 @@ data:
       guest ok = no
       writable = no
       printable = yes
-      vfs objects = full_audit
+      # vfs objects = full_audit
       
     [public]
       comment = Public Files
-      path = /home/samba
+      path = /home/public
       public = yes
       writable = no
       printable = no
       write list = +staff
-      vfs objects = full_audit
+      # vfs objects = full_audit
       
     [guest]
       comment = Guest Files
@@ -100,7 +74,27 @@ data:
       writable = yes
       printable = no
       guest ok = yes
-      vfs objects = full_audit
+      # vfs objects = full_audit
+
+    [global]
+      max log size = 10
+      netbios name = SAMBA
+
+      security = user
+      passdb backend = tdbsam
+      guest account = guest
+      
+      bind interfaces only = yes
+      interfaces = lo net1
+
+      load printers = yes
+      cups options = raw
+
+      full_audit:prefix = %u|%U|%I|%m|%S|%T|%D
+      full_audit:success = mkdir rename unlink rmdir pwrite
+      full_audit:failure = connect
+      full_audit:syslog = false
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -110,22 +104,15 @@ metadata:
   labels:
     app: samba-basic
 data:
+  SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth full_audit:1@/var/log/samba/log.audit"
+  # SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth"
+  SAMBA_CONF_WORKGROUP: "WORKGROUP"
+  SAMBA_CONF_SERVER_STRING: "Samba Server Version %v"
   GROUP_staff: "1500"
   ACCOUNT_groucho: swordfish
+  UID_groucho: "500"
   GROUPS_groucho: staff
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: syslog-ng
-  namespace: samba-basic
-  labels:
-    app: samba-basic
-data:
-  syslog-ng.conf: |
-    filter f_local5 {facility(local5);};
-    destination m_samba_audit { file("/var/log/samba/audit.log"); };
-    log { source(src); filter(f_local5);destination(m_samba_audit); flags(final); };
+  # WSDD2_DISABLE: "1"
 ---
 # DHCP interface configuration script
 apiVersion: v1
@@ -193,14 +180,23 @@ spec:
       - name: udhcpc-scripts
         configMap:
           name: udhcpc-scripts
-      - name: syslog-ng
-        configMap:
-          name: syslog-ng
+          defaultMode: 0744
+
+      initContainers:
+      - name: mkdir
+        image: busybox
+        command: ["/bin/sh","-c"]
+        args:
+        - >-
+          mkdir -m 0755 /home/public /home/guest /home/groucho ;
+          chown 500 /home/groucho ;
+        volumeMounts:
+        - name: samba-home
+          mountPath: /home
 
       containers:
-
       - name: smb
-        image: servercontainers/samba
+        image: servercontainers/samba:latest
         envFrom:
         - configMapRef:
             name: samba-env
@@ -211,8 +207,10 @@ spec:
           mountPath: /var/log/samba
         - name: samba-config
           mountPath: /container/config/samba
-        - name: syslog-ng
-          mountPath: /etc/syslog-ng
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 
       - name: dhcp
         image: busybox
@@ -231,7 +229,7 @@ spec:
           "-O", "120", # request SIP Servers
           "-x", "hostname:samba", # provide option 22
           # "-x", "lease:60", # request short 60-second lease
-          "-F", "SAMBA", # Ask server to update DNS mapping 
+          "-F", "samba", # Ask server to update DNS mapping 
           "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
         ]
         volumeMounts:
@@ -241,10 +239,9 @@ spec:
           allowPrivilegeEscalation: true
           capabilities:
             add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
-
-      ## Obsoleted because servercontainers/samba has wsdd2 already
-      # - name: wsd
-      #   image: jonasped/wsdd
+      
+      # - image: jonasped/wsdd
+      #   name: wsd
       #   env:
       #   - name: WSDD_ARGS
       #     value: "--interface net1 --hostname SAMBA --workgroup WORKGROUP"
@@ -269,9 +266,30 @@ spec:
     namespace: elastic
   config:
     filebeat.inputs:
-    - type: log
+    - type: filestream
+      id: samba-logs
       paths:
-      - /var/log/samba/*.log
+      - /var/log/samba/log.*
+      multiline.pattern: '^[[:space:]][[:space:]]'
+      multiline.negate: false
+      multiline.match: after
+      # processors:
+      # - dissect:
+      #   tokenizer: "[%{datetime}, ${stream}] %{file}:%{line}(%{function})"
+      # - timestamp:
+      #   field: datetime
+      #   layouts:
+      #   - '2006/01/02 15:04:05.000000'
+      #   - '2006/01/02 15:04:05'
+      
+    - type: filestream
+      id: samba-json
+      paths:
+      - /var/log/samba/json.*
+      parsers:
+      - ndjson:
+        keys_under_root: true
+        fields: ["message"]
   daemonSet:
     podTemplate:
       spec:
