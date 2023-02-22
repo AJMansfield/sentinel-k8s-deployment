@@ -6,3 +6,7 @@ eck:
   kibanaRef:
     name: kibana
     namespace: elastic
+
+hostname: "SAMBA"
+workgroup: "WORKGROUP"
+networks: honeynet/macvlan

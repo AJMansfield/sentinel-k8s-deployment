@@ -43,23 +43,26 @@ spec:
         - >-
           mkdir -m 0755 /home/public /home/guest /home/groucho ;
           chown 500 /home/groucho ;
+          mkdir /var/log/samba ;
         volumeMounts:
         - name: home
           mountPath: /home
+        - name: logs
+          mountPath: /var/log
 
       containers:
       - name: smb
         image: servercontainers/samba:latest
         envFrom:
         - configMapRef:
-            name: samba-env
+            name: {{ .Release.Name }}-samba-env
         volumeMounts:
         - name: home
           mountPath: /home
         - name: logs
           mountPath: /var/log
         - name: config
-          mountPath: /container/config/samba
+          mountPath: /etc/samba
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
