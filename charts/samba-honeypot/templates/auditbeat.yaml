@@ -14,7 +14,7 @@ spec:
     auditbeat.modules:
     - module: auditd
       audit_rules: |
-        -a always,exit -F dir=/mnt/home/ -F perm=rwxa -F key=samba
+        -a always,exit -F dir=/shares/ -F perm=rwxa -F key={{ .Release.Name }}
   daemonSet:
     podTemplate:
       spec:
@@ -22,15 +22,15 @@ spec:
         securityContext:
           runAsUser: 0
         volumes:
-        - name: home
+        - name: shares
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-home
+            claimName: {{ .Release.Name }}-shares
         containers:
         - name: auditbeat
           securityContext:
             capabilities:
               add: ['AUDIT_READ', 'AUDIT_WRITE', 'AUDIT_CONTROL']
           volumeMounts:
-          - name: home
-            mountPath: "/mnt/home"
+          - name: shares
+            mountPath: "/shares"
             readOnly: true
