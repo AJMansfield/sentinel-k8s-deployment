@@ -36,13 +36,16 @@ spec:
           defaultMode: 0700
 
       initContainers:
-      - name: mkdir
+      - name: mkall
         image: busybox
         command: ["/bin/sh","-c"]
         args:
         - >-
-          mkdir -m 0755 /home/public /home/guest /home/groucho ;
-          chown 500 /home/groucho ;
+          set +x ;
+          mkdir -m 0755 /home/public ;
+          chown nobody:nobody /home/public ;
+          mkdir -m 0755 /home/guest ;
+          chown nobody:nobody /home/guest ;
           mkdir /var/log/samba ;
         volumeMounts:
         - name: home
@@ -53,9 +56,7 @@ spec:
       containers:
       - name: smb
         image: servercontainers/samba:latest
-        envFrom:
-        - configMapRef:
-            name: {{ .Release.Name }}-samba-env
+        command: ["smbd", "--foreground"]
         volumeMounts:
         - name: home
           mountPath: /home
