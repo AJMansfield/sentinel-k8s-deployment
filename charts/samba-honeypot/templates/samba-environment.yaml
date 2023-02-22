@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-samba-environment
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+data:
+  SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth full_audit:1@/var/log/samba/log.audit"
+  # SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth"
+  SAMBA_CONF_WORKGROUP: "WORKGROUP"
+  SAMBA_CONF_SERVER_STRING: "Samba Server Version %v"
+  GROUP_staff: "1500"
+  ACCOUNT_groucho: swordfish
+  UID_groucho: "500"
+  GROUPS_groucho: staff
+  WSDD2_DISABLE: "1"

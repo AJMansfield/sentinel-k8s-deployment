@@ -1,0 +1,8 @@
+
+eck:
+  elasticsearchRef:
+    name: elasticsearch
+    namespace: elastic
+  kibanaRef:
+    name: kibana
+    namespace: elastic

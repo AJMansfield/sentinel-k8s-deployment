@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-samba
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+      annotations:
+        k8s.v1.cni.cncf.io/networks: honeynet/macvlan
+    spec:
+      hostname: {{ .Release.Name }}
+      shareProcessNamespace: true
+
+      volumes:
+      - name: home
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-home
+      - name: logs
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-logs
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-samba-config
+      - name: udhcpc-scripts
+        configMap:
+          name: {{ .Release.Name }}-udhcpc-scripts
+          defaultMode: 0700
+
+      initContainers:
+      - name: mkdir
+        image: busybox
+        command: ["/bin/sh","-c"]
+        args:
+        - >-
+          mkdir -m 0755 /home/public /home/guest /home/groucho ;
+          chown 500 /home/groucho ;
+        volumeMounts:
+        - name: home
+          mountPath: /home
+
+      containers:
+      - name: smb
+        image: servercontainers/samba:latest
+        envFrom:
+        - configMapRef:
+            name: samba-env
+        volumeMounts:
+        - name: home
+          mountPath: /home
+        - name: logs
+          mountPath: /var/log
+        - name: config
+          mountPath: /container/config/samba
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+
+      - name: dhcp
+        image: busybox
+        command: [
+          "udhcpc",
+          "-i", "net1", # Interface to use
+          "-B", # Request broadcast replies (so everyone sees us)
+          "-T", "5", # Pause between packets
+          "-R", # Release IP on exit
+          "-f", # Run in foreground
+          "-a", # Validate offerred address with ARP ping (so everyone sees us)
+          "-O", "12", # request Host Name
+          "-O", "15", # request Domain Name
+          "-O", "42", # request NTP Servers
+          "-O", "119", # request Doman Search
+          "-O", "120", # request SIP Servers
+          "-x", "hostname:{{ .Release.Name }}", # provide option 22
+          # "-x", "lease:60", # request short 60-second lease
+          "-F", "{{ .Release.Name }}", # Ask server to update DNS mapping 
+          "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
+        ]
+        volumeMounts:
+        - mountPath: "/usr/share/udhcpc"
+          name: udhcpc-scripts
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+      
+      - image: jonasped/wsdd
+        name: wsd
+        env:
+        - name: WSDD_ARGS
+          value: "--interface net1 --hostname {{ .Release.Name }} --workgroup WORKGROUP"
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST"]
