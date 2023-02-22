@@ -21,9 +21,9 @@ spec:
       shareProcessNamespace: true
 
       volumes:
-      - name: home
+      - name: shares
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-home
+          claimName: {{ .Release.Name }}-shares
       - name: logs
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-logs
@@ -34,32 +34,30 @@ spec:
         configMap:
           name: {{ .Release.Name }}-udhcpc-scripts
           defaultMode: 0700
+      - name: mkall
+        configMap:
+          name: {{ .Release.Name }}-mkall
+          defaultMode: 0700
 
       initContainers:
       - name: mkall
         image: busybox
-        command: ["/bin/sh","-c"]
-        args:
-        - >-
-          set +x ;
-          mkdir -m 0755 /home/public ;
-          chown nobody:nobody /home/public ;
-          mkdir -m 0755 /home/guest ;
-          chown nobody:nobody /home/guest ;
-          mkdir /var/log/samba ;
+        command: ["/opt/create_empty_files.sh","/opt/file_list.txt"]
         volumeMounts:
-        - name: home
-          mountPath: /home
+        - name: shares
+          mountPath: /shares
         - name: logs
           mountPath: /var/log
+        - name: mkall
+          mountPath: /opt
 
       containers:
       - name: smb
-        image: servercontainers/samba:latest
-        command: ["smbd", "--foreground"]
+        image: servercontainers/samba:smbd-only-latest
+        command: [ "runsvdir", "-P", "/container/config/runit" ]
         volumeMounts:
-        - name: home
-          mountPath: /home
+        - name: shares
+          mountPath: /shares
         - name: logs
           mountPath: /var/log
         - name: config
