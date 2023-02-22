@@ -8,7 +8,7 @@ metadata:
 data:
   SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth full_audit:1@/var/log/samba/log.audit"
   # SAMBA_CONF_LOG_LEVEL: "1 auth_json_audit:5@/var/log/samba/json.auth"
-  SAMBA_CONF_WORKGROUP: "WORKGROUP"
+  SAMBA_CONF_WORKGROUP: {{ .Values.workgroup }}
   SAMBA_CONF_SERVER_STRING: "Samba Server Version %v"
   GROUP_staff: "1500"
   ACCOUNT_groucho: swordfish

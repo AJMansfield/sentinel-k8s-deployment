@@ -6,4 +6,4 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 data:
-{{ (.Files.Glob "smb-conf/*.*").AsConfig | indent 2 }}
+{{ (.Files.Glob "udhcpc/*.script").AsConfig | indent 2 }}

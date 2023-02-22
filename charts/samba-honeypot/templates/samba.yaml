@@ -15,7 +15,7 @@ spec:
       labels:
         app: {{ .Release.Name }}
       annotations:
-        k8s.v1.cni.cncf.io/networks: honeynet/macvlan
+        k8s.v1.cni.cncf.io/networks: {{ .Values.networks }}
     spec:
       hostname: {{ .Release.Name }}
       shareProcessNamespace: true
@@ -80,9 +80,9 @@ spec:
           "-O", "42", # request NTP Servers
           "-O", "119", # request Doman Search
           "-O", "120", # request SIP Servers
-          "-x", "hostname:{{ .Release.Name }}", # provide option 22
+          "-x", "hostname:{{ .Values.hostname }}", # provide option 22
           # "-x", "lease:60", # request short 60-second lease
-          "-F", "{{ .Release.Name }}", # Ask server to update DNS mapping 
+          "-F", "{{ .Values.hostname }}", # Ask server to update DNS mapping 
           "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
         ]
         volumeMounts:
@@ -97,7 +97,7 @@ spec:
         name: wsd
         env:
         - name: WSDD_ARGS
-          value: "--interface net1 --hostname {{ .Release.Name }} --workgroup WORKGROUP"
+          value: "--interface net1 --hostname {{ .Values.hostname }} --workgroup {{ .Values.workgroup }}"
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:

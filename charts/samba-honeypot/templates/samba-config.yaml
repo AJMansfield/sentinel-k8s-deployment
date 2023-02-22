@@ -6,4 +6,4 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 data:
-{{ (.Files.Glob "etc-samba/*.*").AsConfig | indent 2 }}
+{{ (.Files.Glob "samba/*.*").AsConfig | indent 2 }}
