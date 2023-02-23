@@ -36,7 +36,7 @@ spec:
           defaultMode: 0700
       - name: mkall
         configMap:
-          name: {{ .Release.Name }}-mkall
+          name: {{ .Release.Name }}-mkall-config
           defaultMode: 0700
 
       initContainers:

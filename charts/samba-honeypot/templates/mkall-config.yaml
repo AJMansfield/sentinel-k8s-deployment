@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-mkall
+  name: {{ .Release.Name }}-mkall-config
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}
