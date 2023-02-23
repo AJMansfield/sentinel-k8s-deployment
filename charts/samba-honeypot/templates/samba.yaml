@@ -27,6 +27,9 @@ spec:
       - name: logs
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-logs
+      - name: resolv
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-resolv
       - name: config
         configMap:
           name: {{ .Release.Name }}-samba-config
@@ -67,6 +70,9 @@ spec:
           mountPath: /etc/samba
         - name: avahi
           mountPath: /etc/avahi
+        - name: resolv
+          mountPath: /etc/resolv.conf
+          subPath: resolv.conf
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
@@ -95,6 +101,9 @@ spec:
         volumeMounts:
         - name: udhcpc-scripts
           mountPath: "/usr/share/udhcpc"
+        - name: resolv
+          mountPath: /etc/resolv.conf
+          subPath: resolv.conf
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
@@ -111,6 +120,10 @@ spec:
             --workgroup {{ .Values.workgroup }}
             --discovery
             -vv
+        volumeMounts:
+        - name: resolv
+          mountPath: /etc/resolv.conf
+          subPath: resolv.conf
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
