@@ -93,8 +93,8 @@ spec:
           "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
         ]
         volumeMounts:
-        - mountPath: "/usr/share/udhcpc"
-          name: udhcpc-scripts
+        - name: udhcpc-scripts
+          mountPath: "/usr/share/udhcpc"
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
@@ -104,8 +104,14 @@ spec:
         name: wsd
         env:
         - name: WSDD_ARGS
-          value: "--interface net1 --hostname {{ .Values.hostname }} --workgroup {{ .Values.workgroup }}"
+          value: >-
+            --interface lo
+            --interface net1
+            --hostname {{ .Values.hostname }}
+            --workgroup {{ .Values.workgroup }}
+            --discovery
+            -vv
         securityContext:
           allowPrivilegeEscalation: true
           capabilities:
-            add: ["NET_BIND_SERVICE", "NET_BROADCAST"]
+            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
