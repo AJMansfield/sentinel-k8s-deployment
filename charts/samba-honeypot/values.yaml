@@ -8,5 +8,5 @@ eck:
     namespace: elastic
 
 hostname: "SAMBA"
-workgroup: "WORKGROUP"
+workgroup: "QUINKAP"
 networks: honeynet/macvlan
