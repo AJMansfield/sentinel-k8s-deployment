@@ -1,0 +1,3 @@
+secure|nobody:nobody|u+rwX,a+rX
+public|nobody:nobody|a+rwX
+/var/log/samba||
