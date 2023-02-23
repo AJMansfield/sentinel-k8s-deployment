@@ -7,6 +7,6 @@ eck:
     name: kibana
     namespace: elastic
 
-hostname: "SAMBA"
-workgroup: "QUINKAP"
+hostname: samba
+workgroup: QUINKAP
 networks: honeynet/macvlan

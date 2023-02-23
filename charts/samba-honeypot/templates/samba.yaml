@@ -17,7 +17,7 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: {{ .Values.networks }}
     spec:
-      hostname: {{ .Release.Name }}
+      hostname: {{ .Values.hostname }}
       shareProcessNamespace: true
 
       volumes:
