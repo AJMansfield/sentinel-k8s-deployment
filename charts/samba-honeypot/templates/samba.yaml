@@ -61,7 +61,7 @@ spec:
 
       containers:
       - name: smb
-        image: servercontainers/samba:smbd-avahi-latest
+        image: servercontainers/samba:latest
         command: [ "runsvdir", "-P", "/container/config/runit" ]
         volumeMounts:
         - name: shares
@@ -103,26 +103,6 @@ spec:
         volumeMounts:
         - name: udhcpc-scripts
           mountPath: "/usr/share/udhcpc"
-        - name: resolv
-          mountPath: /etc/resolv.conf
-          subPath: resolv.conf
-        securityContext:
-          allowPrivilegeEscalation: true
-          capabilities:
-            add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
-      
-      - image: jonasped/wsdd
-        name: wsd
-        env:
-        - name: WSDD_ARGS
-          value: >-
-            --interface lo
-            --interface net1
-            --hostname {{ .Values.hostname }}
-            --workgroup {{ .Values.workgroup }}
-            --discovery
-            -vv
-        volumeMounts:
         - name: resolv
           mountPath: /etc/resolv.conf
           subPath: resolv.conf
