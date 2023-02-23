@@ -34,6 +34,11 @@ spec:
           - '2006/01/02 15:04:05'
           test:
           - '2023/02/21 19:17:24'
+      - dissect:
+          tokenizer: "  %{local_user}|%{src_user}|%{src_ip|ip}|%{src_host}|%{share}|%{timestamp}|%{user_type}|%{syscall}|%{result}|%{args}"
+          field: dissect.body
+          target_prefix: samba
+          ignore_failure: true
 
     - type: filestream
       id: samba-json-logs
