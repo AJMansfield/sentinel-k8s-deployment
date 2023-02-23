@@ -1,38 +1,38 @@
-/shares/public/documents/readme.txt|2020-03-11 12:30:00-04:00|1048
-/shares/public/documents/todo.txt|2021-01-18 15:45:00-05:00|1096
-/shares/public/documents/notes.txt|2021-02-05 09:00:00-05:00|1072
-/shares/public/documents/legal/terms-of-service.txt|2021-03-15 11:20:00-04:00|2024
-/shares/public/documents/legal/privacy-policy.txt|2022-01-01 13:00:00-05:00|1048
-/shares/public/pictures/family/family_vacation_in_hawaii-001.jpg|2021-04-01 09:00:00-04:00|45760
-/shares/public/pictures/family/family_vacation_in_hawaii-002.jpg|2021-04-02 09:00:00-04:00|22880
-/shares/public/pictures/family/family_vacation_in_hawaii-003.jpg|2021-04-03 09:00:00-04:00|8304
-/shares/public/pictures/family/family_portrait_at_beach.jpg|2021-05-01 12:00:00-04:00|104800
-/shares/public/pictures/friends/party_at_johns_house-001.jpg|2021-04-10 19:00:00-04:00|86720
-/shares/public/pictures/friends/party_at_johns_house-002.jpg|2021-04-11 19:00:00-04:00|63840
-/shares/public/pictures/friends/party_at_johns_house-003.jpg|2021-04-12 19:00:00-04:00|14688
-/shares/public/pictures/friends/bbq_at_daves_house-001.jpg|2022-01-02 14:00:00-05:00|45760
-/shares/public/pictures/friends/bbq_at_daves_house-002.jpg|2022-01-02 15:00:00-05:00|104800
-/shares/secure/LegalDocs/Non-disclosure-agreement.pdf|@581675622|47378
-/shares/secure/LegalDocs/Invoice-20190401.pdf|@554144601|2561
-/shares/secure/LegalDocs/Research_Note.docx|@642962105|10454
-/shares/secure/LegalDocs/Archive/August-2017-Client-Research-Notes.zip|@502901956|919787
-/shares/secure/LegalDocs/Archive/September-2017-Client-Research-Notes.zip|@505540142|834712
-/shares/secure/LegalDocs/Archive/July-2018-Client-Research-Notes.zip|@533106937|388726
-/shares/secure/LegalDocs/Archive/2019-Tax-Returns.zip|@579478488|2353428
-/shares/secure/LegalDocs/Archive/2020-Tax-Returns.zip|@610209022|10706923
-/shares/secure/LegalDocs/Archive/2021-Tax-Returns.zip|@640939556|9435657
-/shares/secure/LegalDocs/Archive/2022-Tax-Returns.zip|@671670090|1303958
-/shares/secure/IT/ServerDocs/Backups/2020-07-14-server-backup.zip|@594722012|1248045
-/shares/secure/IT/ServerDocs/Backups/2021-08-23-server-backup.zip|@629729684|1720032
-/shares/secure/IT/ServerDocs/Configuration/ServerConfig-20210101.yaml|@609459200|25
-/shares/secure/IT/ServerDocs/Configuration/ServerConfig-20220101.yaml|@641067200|25
-/shares/secure/IT/ServerDocs/Logs/server-log-2020-06-12.txt|@591939200|2000
-/shares/secure/IT/ServerDocs/Logs/server-log-2021-09-15.txt|@631731200|2000
-/shares/secure/IT/ServerDocs/UserManuals/UserManual-20220401.pdf|@672531200|18204
-/shares/secure/IT/ServerDocs/UserManuals/UserManual-20220401.docx|@672531200|12049
-/shares/secure/HR/EmploymentDocs/JobDescriptions/Senior-Software-Engineer-Job-Description.pdf|@611475200|8755
-/shares/secure/HR/EmploymentDocs/JobDescriptions/Human-Resources-Manager-Job-Description.pdf|@609478400|1062
-/shares/secure/HR/EmploymentDocs/Resumes/Thomas-Morris-Resume.docx|@641926400|7928
-/shares/secure/HR/EmploymentDocs/Resumes/Richard-Khan-Resume.docx|@638748800|8255
-/shares/secure/HR/EmploymentDocs/Resumes/Edmund-Rodriguez-Resume.docx|@625337600|5422
-/shares/secure/HR/EmploymentDocs/Resumes/Krystal-Barnes-Resume.docx|@633228800|6578
+public/documents/readme.txt|2020-03-11 12:30:00-04:00|1048
+public/documents/todo.txt|2021-01-18 15:45:00-05:00|1096
+public/documents/notes.txt|2021-02-05 09:00:00-05:00|1072
+public/documents/legal/terms-of-service.txt|2021-03-15 11:20:00-04:00|2024
+public/documents/legal/privacy-policy.txt|2022-01-01 13:00:00-05:00|1048
+public/pictures/family/family_vacation_in_hawaii-001.jpg|2021-04-01 09:00:00-04:00|45760
+public/pictures/family/family_vacation_in_hawaii-002.jpg|2021-04-02 09:00:00-04:00|22880
+public/pictures/family/family_vacation_in_hawaii-003.jpg|2021-04-03 09:00:00-04:00|8304
+public/pictures/family/family_portrait_at_beach.jpg|2021-05-01 12:00:00-04:00|104800
+public/pictures/friends/party_at_johns_house-001.jpg|2021-04-10 19:00:00-04:00|86720
+public/pictures/friends/party_at_johns_house-002.jpg|2021-04-11 19:00:00-04:00|63840
+public/pictures/friends/party_at_johns_house-003.jpg|2021-04-12 19:00:00-04:00|14688
+public/pictures/friends/bbq_at_daves_house-001.jpg|2022-01-02 14:00:00-05:00|45760
+public/pictures/friends/bbq_at_daves_house-002.jpg|2022-01-02 15:00:00-05:00|104800
+secure/LegalDocs/Non-disclosure-agreement.pdf|@581675622|47378
+secure/LegalDocs/Invoice-20190401.pdf|@554144601|2561
+secure/LegalDocs/Research_Note.docx|@642962105|10454
+secure/LegalDocs/Archive/August-2017-Client-Research-Notes.zip|@502901956|919787
+secure/LegalDocs/Archive/September-2017-Client-Research-Notes.zip|@505540142|834712
+secure/LegalDocs/Archive/July-2018-Client-Research-Notes.zip|@533106937|388726
+secure/LegalDocs/Archive/2019-Tax-Returns.zip|@579478488|2353428
+secure/LegalDocs/Archive/2020-Tax-Returns.zip|@610209022|10706923
+secure/LegalDocs/Archive/2021-Tax-Returns.zip|@640939556|9435657
+secure/LegalDocs/Archive/2022-Tax-Returns.zip|@671670090|1303958
+secure/IT/ServerDocs/Backups/2020-07-14-server-backup.zip|@594722012|1248045
+secure/IT/ServerDocs/Backups/2021-08-23-server-backup.zip|@629729684|1720032
+secure/IT/ServerDocs/Configuration/ServerConfig-20210101.yaml|@609459200|25
+secure/IT/ServerDocs/Configuration/ServerConfig-20220101.yaml|@641067200|25
+secure/IT/ServerDocs/Logs/server-log-2020-06-12.txt|@591939200|2000
+secure/IT/ServerDocs/Logs/server-log-2021-09-15.txt|@631731200|2000
+secure/IT/ServerDocs/UserManuals/UserManual-20220401.pdf|@672531200|18204
+secure/IT/ServerDocs/UserManuals/UserManual-20220401.docx|@672531200|12049
+secure/HR/EmploymentDocs/JobDescriptions/Senior-Software-Engineer-Job-Description.pdf|@611475200|8755
+secure/HR/EmploymentDocs/JobDescriptions/Human-Resources-Manager-Job-Description.pdf|@609478400|1062
+secure/HR/EmploymentDocs/Resumes/Thomas-Morris-Resume.docx|@641926400|7928
+secure/HR/EmploymentDocs/Resumes/Richard-Khan-Resume.docx|@638748800|8255
+secure/HR/EmploymentDocs/Resumes/Edmund-Rodriguez-Resume.docx|@625337600|5422
+secure/HR/EmploymentDocs/Resumes/Krystal-Barnes-Resume.docx|@633228800|6578
