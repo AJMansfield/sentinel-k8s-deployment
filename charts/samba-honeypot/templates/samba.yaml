@@ -69,7 +69,7 @@ spec:
         - name: config
           mountPath: /etc/samba
         - name: avahi
-          mountPath: /etc/avahi
+          mountPath: /etc/avahi/services
         - name: resolv
           mountPath: /etc/resolv.conf
           subPath: resolv.conf
