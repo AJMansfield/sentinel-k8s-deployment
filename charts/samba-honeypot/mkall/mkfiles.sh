@@ -30,16 +30,14 @@ while read line; do
     size=$(echo "$line" | cut -d '|' -f 3)
     
     dir="$(dirname "$path")"
-    [ -n "$size" ] && trunc_cmd="truncate -s $size $path" || trunc_cmd=''
-    [ -n "$ctime" ] && ctime_cmd="touch -d $ctime $path" || ctime_cmd=''
 
     # Create the file with the specified size and set the ctime
     (
       cd "$base_path" ;
       set -x ;
       mkdir -p "$dir" ;
-      $trunc_cmd ;
-      $ctime_cmd ;
+      truncate -s "$size" "$path";
+      touch -d "$ctime" "$path";
     )
 
 done < "$file_list"

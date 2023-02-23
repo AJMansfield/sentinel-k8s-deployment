@@ -29,16 +29,13 @@ while read line; do
     owner=$(echo "$line" | cut -d '|' -f 2)
     attrs=$(echo "$line" | cut -d '|' -f 3)
 
-    [ -n "$owner" ] && chown_cmd="chown -R -H -c $owner $path" || chown_cmd=''
-    [ -n "$attrs" ] && chmod_cmd="chmod -R -c $attrs $path" || chmod_cmd=''
-
     # recursively create, chown, and chmod the specified directories
     (
       cd "$base_path" ;
       set -x ;
       mkdir -p "$path" ;
-      $chown_cmd ;
-      $chmod_cmd ;
+      chown -R -H -c "$owner"  "$path" ;
+      chmod -R -c "$attrs" "$path" ;
     )
 
 done < "$dir_list"
