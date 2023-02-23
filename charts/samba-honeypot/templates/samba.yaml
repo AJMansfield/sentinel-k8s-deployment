@@ -54,6 +54,8 @@ spec:
           mountPath: /shares
         - name: logs
           mountPath: /var/log
+        - name: resolv
+          mountPath: /mnt/resolv
         - name: mkall
           mountPath: /opt
 

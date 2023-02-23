@@ -1,3 +1,4 @@
+/mnt/resolv/resolv.conf|@0|0
 public/documents/readme.txt|2020-03-11 12:30:00-04:00|1048
 public/documents/todo.txt|2021-01-18 15:45:00-05:00|1096
 public/documents/notes.txt|2021-02-05 09:00:00-05:00|1072

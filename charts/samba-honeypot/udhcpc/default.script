@@ -21,7 +21,7 @@ case $1 in
 
         # replace resolv.conf with the backup, if the backup exists:
         if [ -f "$resolv_bak" ]; then
-            mv "$resolv_bak" "$resolv_conf"
+            cat "$resolv_bak" > "$resolv_conf"
         fi
         
         # set the interface's address to 0.0.0.0 for now
@@ -41,7 +41,7 @@ case $1 in
         
         #
         if [ ! -f "$resolv_bak" ] && [ -f "$resolv_conf" ]; then
-            mv "$resolv_conf" "$resolv_bak"
+            cat "$resolv_conf" > "$resolv_bak"
         fi
 
         # clear `resolv.conf`
