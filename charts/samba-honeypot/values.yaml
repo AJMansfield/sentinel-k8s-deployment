@@ -1,4 +1,5 @@
 
+# ECK reference info to give to file/auditbeat
 eck:
   elasticsearchRef:
     name: elasticsearch
@@ -7,6 +8,11 @@ eck:
     name: kibana
     namespace: elastic
 
+# Samba Hostname
 hostname: samba
+
+# Samba Workgroup
 workgroup: QUINKAP
+
+# CNI Networking Definition (i.e. the k8s.v1.cni.cncf.io/networks annotation value)
 networks: honeynet/macvlan
