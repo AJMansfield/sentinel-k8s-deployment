@@ -42,7 +42,7 @@ spec:
       initContainers:
       - name: mkall
         image: busybox
-        command: ["/opt/create_empty_files.sh","/opt/file_list.txt"]
+        command: ["/opt/mkall.sh","/opt/file_list.txt","/opt/dir_list.txt","/shares"]
         volumeMounts:
         - name: shares
           mountPath: /shares
