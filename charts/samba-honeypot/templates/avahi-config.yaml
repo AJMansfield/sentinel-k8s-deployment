@@ -6,4 +6,4 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 data:
-{{ tpl (.Files.Glob "avahi/*.*").AsConfig . | indent 2 }}
+{{ tpl (.Files.Glob "avahi/*").AsConfig . | indent 2 }}
