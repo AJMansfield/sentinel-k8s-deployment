@@ -14,5 +14,8 @@ hostname: samba
 # Samba Workgroup
 workgroup: QUINKAP
 
+# DHCP Vendor Name
+vendor: Microsloth
+
 # CNI Networking Definition (i.e. the k8s.v1.cni.cncf.io/networks annotation value)
 networks: honeynet/macvlan

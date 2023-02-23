@@ -96,9 +96,8 @@ spec:
           "-O", "119", # request Doman Search
           "-O", "120", # request SIP Servers
           "-x", "hostname:{{ .Values.hostname }}", # provide option 22
-          # "-x", "lease:60", # request short 60-second lease
           "-F", "{{ .Values.hostname }}", # Ask server to update DNS mapping 
-          "-V", "Microsloth", # Vendor identifier (replacing udhcp version info)
+          "-V", "{{ .Values.vendor }}", # Vendor identifier (replacing udhcp version info)
         ]
         volumeMounts:
         - name: udhcpc-scripts

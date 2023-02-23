@@ -15,32 +15,3 @@ spec:
       "mode": "bridge",
       "master": "eno1"
     }'
----
-# DHCP interface configuration script
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: udhcpc-scripts
-  namespace: honeynet
-data:
-  default.script: |
-    #!/bin/sh
-    [ -n "$1" ] || { echo "Error: should be called from udhcpc"; exit 1; }
-
-    NETMASK=""
-    [ -n "$subnet" ] && NETMASK="netmask $subnet"
-    BROADCAST="broadcast +"
-    [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
-
-    case "$1" in
-      deconfig)
-        echo "Setting IP address 0.0.0.0 on $interface"
-        ifconfig $interface 0.0.0.0
-        ;;
-
-      renew|bound)
-        echo "Setting IP address $ip on $interface"
-        ifconfig $interface $ip $NETMASK $BROADCAST
-    esac
-
-    exit 0
