@@ -14,20 +14,28 @@ spec:
     - type: filestream
       id: {{ .Release.Name }}-text-logs
       paths:
-      - /var/log/**.log
+      - /var/log/*/*.log
+      parsers:
+      - multiline:
+          type: pattern
+          pattern: '^[[:space:]]|^During handling |^Traceback |^Caused by'
+          negate: false
+          match: after
 
     - type: filestream
       id: {{ .Release.Name }}-json-logs
       paths:
-      - /var/log/**.json
+      - /var/log/*/*.json
       parsers:
       - ndjson:
+          expand_keys: true
           add_error_key: true
+          message_key: message
 
     - type: filestream
       id: {{ .Release.Name }}-csv-logs
       paths:
-      - /var/log/**.csv
+      - /var/log/*/*.csv
       processors:
       - decode_csv_fields:
           fields:
