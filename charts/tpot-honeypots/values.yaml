@@ -209,7 +209,7 @@ services:
   #   image: "dtagdevsec/conpot:2204"
   #   hostnameList: industrial
   #   logDir: /var/log/conpot
-  cowrie: # Emulate a linux system with open ssh/telnet
+  cowrie: # Emulate a linux system with exposed ssh/telnet
     image: "dtagdevsec/cowrie:2204"
     hostnameList: linux
     logDir: /home/cowrie/cowrie/log
