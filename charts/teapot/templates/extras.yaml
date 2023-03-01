@@ -1,0 +1,5 @@
+{{- range $behavior, $config := $.Values.behaviors }}
+{{- $template := printf "%v.extras" $behavior -}}
+{{- include $template $ }}
+---
+{{- end }}

@@ -1,0 +1,9 @@
+
+
+hostname: joes-samsung-galaxy-phone
+
+networks: honeynet/macvlan
+
+behaviors:
+  adbhoney: {}
+  dhcp: {}

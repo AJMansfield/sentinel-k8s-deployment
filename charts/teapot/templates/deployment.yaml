@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $.Release.Name }}
+      annotations:
+        k8s.v1.cni.cncf.io/networks: {{ $.Values.networks }}
+    spec:
+      hostname: {{ $.Values.hostname }}
+      containers:
+        {{- range $behavior, $config := $.Values.behaviors }}
+        {{- $template := printf "%v.containers" $behavior -}}
+        {{- include $template $ | indent 6 }}
+        {{- end }}
+      volumes:
+        {{- range $behavior, $config := $.Values.behaviors }}
+        {{- $template := printf "%v.volumes" $behavior -}}
+        {{- include $template $ | indent 6 }}
+        {{- end }}
