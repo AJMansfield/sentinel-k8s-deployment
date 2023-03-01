@@ -34,4 +34,17 @@
   name: glutton-run
 {{- end }}
 {{- define "glutton.extras" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: '{{ .Release.Namespace }}'
+  name: '{{ .Release.Name }}-root'
+  namespace: '{{ .Release.Namespace }}'
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
 {{- end }}
