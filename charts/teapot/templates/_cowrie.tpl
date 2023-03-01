@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/cowrie/docker-compose.yml */}}
 {{/* container spec and volumes for cowrie */}}
 {{- define "cowrie.containers" }}
+## Source: _cowrie.tpl
 - image: dtagdevsec/cowrie:2204
   name: cowrie
   securityContext:
@@ -26,6 +27,7 @@
     name: cowrie-tmp-cowrie-data
 {{- end }}
 {{- define "cowrie.volumes" }}
+## Source: _cowrie.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -37,4 +39,5 @@
   name: cowrie-tmp-cowrie-data
 {{- end }}
 {{- define "cowrie.extras" }}
+## Source: _cowrie.tpl
 {{- end }}

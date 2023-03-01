@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/glutton/docker-compose.yml */}}
 {{/* container spec and volumes for glutton */}}
 {{- define "glutton.containers" }}
+## Source: _glutton.tpl
 - image: dtagdevsec/glutton:2204
   name: glutton
   securityContext:
@@ -20,6 +21,7 @@
     name: glutton-run
 {{- end }}
 {{- define "glutton.volumes" }}
+## Source: _glutton.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -34,6 +36,7 @@
   name: glutton-run
 {{- end }}
 {{- define "glutton.extras" }}
+## Source: _glutton.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

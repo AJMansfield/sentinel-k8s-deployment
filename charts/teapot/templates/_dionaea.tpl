@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/dionaea/docker-compose.yml */}}
 {{/* container spec and volumes for dionaea */}}
 {{- define "dionaea.containers" }}
+## Source: _dionaea.tpl
 - image: dtagdevsec/dionaea:2204
   name: dionaea
   volumeMounts:
@@ -30,9 +31,11 @@
     subPath: dionaea/rtp
 {{- end }}
 {{- define "dionaea.volumes" }}
+## Source: _dionaea.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
 {{- end }}
 {{- define "dionaea.extras" }}
+## Source: _dionaea.tpl
 {{- end }}

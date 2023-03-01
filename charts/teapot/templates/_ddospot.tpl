@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/ddospot/docker-compose.yml */}}
 {{/* container spec and volumes for ddospot */}}
 {{- define "ddospot.containers" }}
+## Source: _ddospot.tpl
 - image: dtagdevsec/ddospot:2204
   name: ddospot
   volumeMounts:
@@ -15,9 +16,11 @@
     subPath: ddospot/db
 {{- end }}
 {{- define "ddospot.volumes" }}
+## Source: _ddospot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
 {{- end }}
 {{- define "ddospot.extras" }}
+## Source: _ddospot.tpl
 {{- end }}

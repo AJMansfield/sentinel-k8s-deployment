@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/conpot/docker-compose.yml */}}
 {{/* container spec and volumes for conpot-default */}}
 {{- define "conpot-default.containers" }}
+## Source: _conpot.tpl
 - env:
   - CONPOT_CONFIG=/etc/conpot/conpot.cfg
   - CONPOT_JSON_LOG=/var/log/conpot/conpot_default.json
@@ -21,6 +22,7 @@
     name: conpot-default-tmp-conpot
 {{- end }}
 {{- define "conpot-default.volumes" }}
+## Source: _conpot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -29,9 +31,11 @@
   name: conpot-default-tmp-conpot
 {{- end }}
 {{- define "conpot-default.extras" }}
+## Source: _conpot.tpl
 {{- end }}
 {{/* container spec and volumes for conpot-iec104 */}}
 {{- define "conpot-iec104.containers" }}
+## Source: _conpot.tpl
 - env:
   - CONPOT_CONFIG=/etc/conpot/conpot.cfg
   - CONPOT_JSON_LOG=/var/log/conpot/conpot_IEC104.json
@@ -52,6 +56,7 @@
     name: conpot-iec104-tmp-conpot
 {{- end }}
 {{- define "conpot-iec104.volumes" }}
+## Source: _conpot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -60,9 +65,11 @@
   name: conpot-iec104-tmp-conpot
 {{- end }}
 {{- define "conpot-iec104.extras" }}
+## Source: _conpot.tpl
 {{- end }}
 {{/* container spec and volumes for conpot-guardian-ast */}}
 {{- define "conpot-guardian-ast.containers" }}
+## Source: _conpot.tpl
 - env:
   - CONPOT_CONFIG=/etc/conpot/conpot.cfg
   - CONPOT_JSON_LOG=/var/log/conpot/conpot_guardian_ast.json
@@ -83,6 +90,7 @@
     name: conpot-guardian-ast-tmp-conpot
 {{- end }}
 {{- define "conpot-guardian-ast.volumes" }}
+## Source: _conpot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -91,9 +99,11 @@
   name: conpot-guardian-ast-tmp-conpot
 {{- end }}
 {{- define "conpot-guardian-ast.extras" }}
+## Source: _conpot.tpl
 {{- end }}
 {{/* container spec and volumes for conpot-ipmi */}}
 {{- define "conpot-ipmi.containers" }}
+## Source: _conpot.tpl
 - env:
   - CONPOT_CONFIG=/etc/conpot/conpot.cfg
   - CONPOT_JSON_LOG=/var/log/conpot/conpot_ipmi.json
@@ -114,6 +124,7 @@
     name: conpot-ipmi-tmp-conpot
 {{- end }}
 {{- define "conpot-ipmi.volumes" }}
+## Source: _conpot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -122,9 +133,11 @@
   name: conpot-ipmi-tmp-conpot
 {{- end }}
 {{- define "conpot-ipmi.extras" }}
+## Source: _conpot.tpl
 {{- end }}
 {{/* container spec and volumes for conpot-kamstrup-382 */}}
 {{- define "conpot-kamstrup-382.containers" }}
+## Source: _conpot.tpl
 - env:
   - CONPOT_CONFIG=/etc/conpot/conpot.cfg
   - CONPOT_JSON_LOG=/var/log/conpot/conpot_kamstrup_382.json
@@ -145,6 +158,7 @@
     name: conpot-kamstrup-382-tmp-conpot
 {{- end }}
 {{- define "conpot-kamstrup-382.volumes" }}
+## Source: _conpot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -153,4 +167,5 @@
   name: conpot-kamstrup-382-tmp-conpot
 {{- end }}
 {{- define "conpot-kamstrup-382.extras" }}
+## Source: _conpot.tpl
 {{- end }}

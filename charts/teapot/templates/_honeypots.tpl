@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/honeypots/docker-compose.yml */}}
 {{/* container spec and volumes for honeypots */}}
 {{- define "honeypots.containers" }}
+## Source: _honeypots.tpl
 - image: dtagdevsec/honeypots:2204
   name: honeypots
   securityContext:
@@ -15,6 +16,7 @@
     name: honeypots-tmp
 {{- end }}
 {{- define "honeypots.volumes" }}
+## Source: _honeypots.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -23,4 +25,5 @@
   name: honeypots-tmp
 {{- end }}
 {{- define "honeypots.extras" }}
+## Source: _honeypots.tpl
 {{- end }}

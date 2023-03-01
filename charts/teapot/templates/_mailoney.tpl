@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/mailoney/docker-compose.yml */}}
 {{/* container spec and volumes for mailoney */}}
 {{- define "mailoney.containers" }}
+## Source: _mailoney.tpl
 - env:
   - HPFEEDS_SERVER=
   - HPFEEDS_IDENT=user
@@ -15,9 +16,11 @@
     subPath: mailoney/log
 {{- end }}
 {{- define "mailoney.volumes" }}
+## Source: _mailoney.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
 {{- end }}
 {{- define "mailoney.extras" }}
+## Source: _mailoney.tpl
 {{- end }}

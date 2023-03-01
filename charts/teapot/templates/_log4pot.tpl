@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/log4pot/docker-compose.yml */}}
 {{/* container spec and volumes for log4pot */}}
 {{- define "log4pot.containers" }}
+## Source: _log4pot.tpl
 - image: dtagdevsec/log4pot:2204
   name: log4pot
   securityContext:
@@ -18,6 +19,7 @@
     name: log4pot-tmp
 {{- end }}
 {{- define "log4pot.volumes" }}
+## Source: _log4pot.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -26,4 +28,5 @@
   name: log4pot-tmp
 {{- end }}
 {{- define "log4pot.extras" }}
+## Source: _log4pot.tpl
 {{- end }}

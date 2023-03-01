@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/honeytrap/docker-compose.yml */}}
 {{/* container spec and volumes for honeytrap */}}
 {{- define "honeytrap.containers" }}
+## Source: _honeytrap.tpl
 - image: dtagdevsec/honeytrap:2204
   name: honeytrap
   securityContext:
@@ -21,6 +22,7 @@
     name: honeytrap-tmp-honeytrap
 {{- end }}
 {{- define "honeytrap.volumes" }}
+## Source: _honeytrap.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -29,4 +31,5 @@
   name: honeytrap-tmp-honeytrap
 {{- end }}
 {{- define "honeytrap.extras" }}
+## Source: _honeytrap.tpl
 {{- end }}

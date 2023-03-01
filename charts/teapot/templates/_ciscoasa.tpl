@@ -1,6 +1,7 @@
 {{/* derived from https://github.com/telekom-security/tpotce/tree/master/docker/ciscoasa/docker-compose.yml */}}
 {{/* container spec and volumes for ciscoasa */}}
 {{- define "ciscoasa.containers" }}
+## Source: _ciscoasa.tpl
 - image: dtagdevsec/ciscoasa:2204
   name: ciscoasa
   securityContext:
@@ -15,6 +16,7 @@
     name: ciscoasa-tmp-ciscoasa
 {{- end }}
 {{- define "ciscoasa.volumes" }}
+## Source: _ciscoasa.tpl
 - name: data
   persistentVolumeClaim:
     claimName: '{{ .Release.Name }}-data'
@@ -23,4 +25,5 @@
   name: ciscoasa-tmp-ciscoasa
 {{- end }}
 {{- define "ciscoasa.extras" }}
+## Source: _ciscoasa.tpl
 {{- end }}
