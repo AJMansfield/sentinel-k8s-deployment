@@ -1,5 +1,6 @@
 {{/* container spec and volumes for dhcp client */}}
 {{- define "dhcp.containers" }}
+## Source: _dhcp.tpl
 - name: dhcp
   image: busybox
   command: [
@@ -27,12 +28,14 @@
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 {{- end }}
 {{- define "dhcp.volumes" }}
+## Source: _dhcp.tpl
 - name: udhcpc-scripts
   configMap:
     name: {{ .Release.Name }}-udhcpc-scripts
     defaultMode: 0700
 {{- end }}
 {{- define "dhcp.extras" }}
+## Source: _dhcp.tpl
 apiVersion: v1
 kind: ConfigMap
 metadata:
