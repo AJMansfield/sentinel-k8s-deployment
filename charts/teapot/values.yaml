@@ -5,6 +5,7 @@ hostname: joes-samsung-galaxy-phone
 networks: honeynet/macvlan
 
 behaviors:
+  defaults: {}
   adbhoney: {}
   dhcp: {}
   endlessh: {}

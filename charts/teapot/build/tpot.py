@@ -55,12 +55,13 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
         pvc_name, pvc_path = host_path.removeprefix("/").split("/", 1)
         pvc_name = slugify(pvc_name)
         vol_name = pvc_name
-
-        volumes[vol_name] = {
-            'name': vol_name,
-            'persistentVolumeClaim': {
-                'claimName': pvc_name_template.format(name=pvc_name),
-            }}
+        
+        if vol_name not in ignore_volumes:
+            volumes[vol_name] = {
+                'name': vol_name,
+                'persistentVolumeClaim': {
+                    'claimName': pvc_name_template.format(name=pvc_name),
+                }}
         
         container['volumeMounts'].append({
             'name': vol_name,
