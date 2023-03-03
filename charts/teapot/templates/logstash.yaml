@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-logstash
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:8.3.0
+          env:
+            - name: ES_HOSTS
+              value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
+            - name: ES_USER
+              value: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-filebeat-beat-user"
+                  key: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/logstash/config
+            - name: pipeline-volume
+              mountPath: /usr/share/logstash/pipeline
+            - name: elasticsearch-certs
+              mountPath: /etc/logstash/certificates
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-logstash-config
+        - name: pipeline-volume
+          configMap:
+            name: {{ .Release.Name }}-logstash-pipeline
+
+        - name: elasticsearch-certs
+          secret:
+            defaultMode: 420
+            optional: false
+            secretName: {{ .Release.Name }}-beat-es-ca
