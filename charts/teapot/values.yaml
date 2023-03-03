@@ -9,3 +9,13 @@ behaviors:
   adbhoney: {}
   dhcp: {}
   endlessh: {}
+
+
+# ECK reference info to give to file/auditbeat
+eck:
+  elasticsearchRef:
+    name: elasticsearch
+    namespace: elastic
+  kibanaRef:
+    name: kibana
+    namespace: elastic
