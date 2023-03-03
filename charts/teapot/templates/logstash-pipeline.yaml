@@ -6,4 +6,4 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 data:
-{{ tpl (.Files.Glob "files/logstash/pipeline/*").AsConfig . | indent 2 }}
+{{ (.Files.Glob "files/logstash/pipeline/*").AsConfig | indent 2 }}
