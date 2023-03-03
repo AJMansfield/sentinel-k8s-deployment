@@ -31,19 +31,7 @@ spec:
         #   persistentVolumeClaim:
         #     claimName: {{ .Release.Name }}-logs
 
-## for the moment we're using this Beat to get eck-operator to copy in these secrets to our namespace:
-#     - name: config
-#       secret:
-#         defaultMode: 292
-#         optional: false
-#         secretName: {{ .Release.Name }}-beat-filebeat-config
-#     - name: elasticsearch-certs
-#       secret:
-#         defaultMode: 420
-#         optional: false
-#         secretName: {{ .Release.Name }}-beat-es-ca
-#     - name: kibana-certs
-#       secret:
-#         defaultMode: 420
-#         optional: false
-#         secretName: {{ .Release.Name }}-beat-kibana-ca
+## for the moment we're using this Beat to get eck-operator grant us some creds
+## - elasticsearch CA, in secret "{{ .Release.Name }}-beat-es-ca"
+## - a username, "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
+## - a password, in secret ""{{ .Release.Name }}-beat-user"
