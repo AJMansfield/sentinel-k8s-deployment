@@ -16,8 +16,12 @@ spec:
       paths:
       - /var/log/*/*
 
-  daemonSet:
+  deployment:
+    replicas: 1
     podTemplate:
+      metadata:
+        labels:
+          app: {{ .Release.Name }}
       spec:
         securityContext:
           runAsUser: 0
