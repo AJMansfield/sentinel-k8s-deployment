@@ -28,6 +28,18 @@ spec:
             secretKeyRef:
               name: "{{ .Release.Name }}-beat-user"
               key: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
+        
+        - name: MY_EXTIP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+          #TODO some way to get the honeypot's IP
+        - name: MY_INTIP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MY_HOSTNAME
+          value: {{ .Values.hostname }}
 
         volumeMounts:
           - name: data
