@@ -15,9 +15,24 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      initContainers:
+      - name: listbot-dl
+        image: alpine
+        volumeMounts:
+        - name: listbot
+          mountPath: /etc/listbot
+        command:
+        - /bin/sh
+        - -c
+        - |
+          cd /etc/listbot
+          wget https://listbot.sicherheitstacho.eu/cve.yaml.bz2
+          wget https://listbot.sicherheitstacho.eu/iprep.yaml.bz2
+          bunzip2 -f *.bz2
+      
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:8.3.0
+        image: docker.elastic.co/logstash/logstash:8.6.2
         env:
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
@@ -42,19 +57,24 @@ spec:
           value: {{ .Values.hostname }}
 
         volumeMounts:
-          - name: data
-            mountPath: /data
-          - name: config-volume
-            mountPath: /usr/share/logstash/config
-          - name: pipeline-volume
-            mountPath: /usr/share/logstash/pipeline
-          - name: elasticsearch-certs
-            mountPath: /etc/logstash/certificates
-            readOnly: true
+        - name: data
+          mountPath: /data
+        - name: listbot
+          mountPath: /etc/listbot
+        - name: config-volume
+          mountPath: /usr/share/logstash/config
+        - name: pipeline-volume
+          mountPath: /usr/share/logstash/pipeline
+        - name: elasticsearch-certs
+          mountPath: /etc/logstash/certificates
+          readOnly: true
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-data
+      - name: listbot
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-logstash-listbot
 
       - name: config-volume
         configMap:
