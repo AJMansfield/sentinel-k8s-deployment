@@ -25,10 +25,14 @@ spec:
         - /bin/sh
         - -c
         - |
+          set -x
           cd /etc/listbot
           wget https://listbot.sicherheitstacho.eu/cve.yaml.bz2
           wget https://listbot.sicherheitstacho.eu/iprep.yaml.bz2
           bunzip2 -f *.bz2
+          head -c 3145728 cve.yaml > cve.yaml
+          head -c 3145728 iprep.yaml > iprep.yaml
+          sed -i '$ d' *.yaml
       
       containers:
       - name: logstash
