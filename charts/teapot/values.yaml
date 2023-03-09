@@ -19,3 +19,6 @@ eck:
   kibanaRef:
     name: kibana
     namespace: elastic
+autoUser: false
+elasticUser: tpot_logstash
+elasticPass: "26OqZ*UBHEXsJd81"

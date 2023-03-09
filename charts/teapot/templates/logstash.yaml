@@ -37,9 +37,12 @@ spec:
       containers:
       - name: logstash
         image: docker.elastic.co/logstash/logstash:8.6.2
+        # command: [ "sleep", "99999" ]
+        # args: [ "--log.level=debug" ]
         env:
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
+        {{- if .Values.autoUser }}
         - name: ES_USER
           value: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
         - name: ES_PASSWORD
@@ -47,7 +50,13 @@ spec:
             secretKeyRef:
               name: "{{ .Release.Name }}-beat-user"
               key: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
-        
+        {{- else }}
+        - name: ES_USER
+          value: "{{ .Values.elasticUser }}"
+        - name: ES_PASSWORD
+          value: "{{ .Values.elasticPass }}"
+        {{- end }}
+
         - name: MY_EXTIP
           valueFrom:
             fieldRef:
@@ -86,7 +95,6 @@ spec:
       - name: pipeline-volume
         configMap:
           name: {{ .Release.Name }}-logstash-pipeline
-
       - name: elasticsearch-certs
         secret:
           defaultMode: 420
