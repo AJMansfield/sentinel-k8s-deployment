@@ -2,7 +2,7 @@
 {{- define "dhcp.containers" }}
 ## Source: _dhcp.tpl
 - name: dhcp
-  image: busybox
+  image: alpine
   command: [
     "udhcpc",
     "-i", "net1", # Interface to use
@@ -19,6 +19,17 @@
     "-x", "hostname:{{ .Values.hostname }}", # provide option 22
     "-F", "{{ .Values.hostname }}", # Ask server to update DNS mapping 
   ]
+  lifecycle:
+    postStart:
+      exec:
+        command:
+        - /bin/sh
+        - -c
+        - |
+          while [ ! -f /etc/resolv.saved ]
+          do
+            sleep 0.1
+          done
   volumeMounts:
   - name: udhcpc-scripts
     mountPath: "/usr/share/udhcpc"
@@ -42,7 +53,7 @@ metadata:
   name: {{ .Release.Name }}-udhcpc-scripts
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "teapot.labels" . | indent 4 }}
+    app: {{ .Release.Name }}
 data:
 {{ (.Files.Glob "files/udhcpc/*.script").AsConfig | indent 2 }}
 {{- end }}
