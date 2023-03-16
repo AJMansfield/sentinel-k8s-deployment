@@ -21,11 +21,50 @@ metadata:
   namespace: elastic
 spec:
   version: 8.6.1
+  auth:
+    fileRealm:
+    - secretName: logstash-user
+    roles:
+    - secretName: logstash-role
   nodeSets:
   - name: default
     count: 1
     config:
       node.store.allow_mmap: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstash-user
+  namespace: elastic
+type: kubernetes.io/basic-auth
+stringData:
+  username: logstash
+  password: "JIi8qtZTZJxWP45W"
+  roles: logstash_role
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstash-role
+  namespace: elastic
+stringData:
+  roles.yml: |-
+    logstash_role:
+      cluster:
+      - monitor
+      - manage_index_templates
+      - manage_pipeline
+      indices:
+      - names: ["logstash-*"]
+        privileges:
+        - auto_configure
+        - create
+        - delete
+        - index
+        - manage
+        - read
+        - write
 ---
 # TODO replace with helm chart install?
 apiVersion: kibana.k8s.elastic.co/v1
