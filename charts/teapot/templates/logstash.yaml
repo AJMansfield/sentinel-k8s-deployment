@@ -99,4 +99,4 @@ spec:
         secret:
           defaultMode: 420
           optional: false
-          secretName: {{ .Release.Name }}-beat-es-ca
+          secretName: {{ .Release.Name }}-logstash-beat-es-ca
