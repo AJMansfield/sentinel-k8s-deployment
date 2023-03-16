@@ -15,7 +15,8 @@ spec:
     - module: auditd
       audit_rules: |
         -a always,exit -F dir=/shares/ -F perm=rwxa -F key={{ .Release.Name }}
-  daemonSet:
+  deployment:
+    replicas: 1
     podTemplate:
       spec:
         hostPID: true  # Required by auditd module

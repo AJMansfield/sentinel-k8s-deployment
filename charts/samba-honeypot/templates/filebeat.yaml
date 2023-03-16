@@ -59,7 +59,8 @@ spec:
           test:
           - '2023-02-21T19:20:09.712746+0000'
 
-  daemonSet:
+  deployment:
+    replicas: 1
     podTemplate:
       spec:
         securityContext:
