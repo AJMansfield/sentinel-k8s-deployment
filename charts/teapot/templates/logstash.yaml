@@ -61,7 +61,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-          #TODO some way to get the honeypot's IP
+          #TODO some way to get the honeypot's DHCP-acquired IP
         - name: MY_INTIP
           valueFrom:
             fieldRef:
