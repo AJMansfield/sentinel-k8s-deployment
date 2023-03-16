@@ -32,6 +32,7 @@ spec:
     config:
       node.store.allow_mmap: false
 ---
+# TODO replace with helm install that auto-generates this:
 apiVersion: v1
 kind: Secret
 metadata:
