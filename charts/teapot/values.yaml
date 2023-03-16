@@ -6,9 +6,9 @@ networks: honeynet/macvlan
 
 behaviors:
   default: {}
+  dhcp: {}
   packetbeat: {}
   adbhoney: {}
-  dhcp: {}
   endlessh: {}
 
 
