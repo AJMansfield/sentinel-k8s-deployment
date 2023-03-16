@@ -66,9 +66,9 @@ spec:
     # packetbeat.interfaces.bpf_filter: "ifname net1"
     setup.dashboards.enabled: true
     setup.template.enabled: true
-    # packetbeat.protocols:
-    # - type: icmp
-    #   enabled: true
+    packetbeat.protocols:
+    - type: icmp
+      enabled: true
   deployment:
     replicas: 0
 {{- end }}
