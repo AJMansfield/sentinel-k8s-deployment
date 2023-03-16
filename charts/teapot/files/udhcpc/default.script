@@ -9,53 +9,64 @@
 # $dns is the list of dns servers we get from the dhcp server
 # $domain is the domain of the network
 
+set -x
+
 # constants for the resolv.conf and backup files
 resolv_conf="/etc/resolv.conf"
-resolv_bak="/etc/resolv.backup_dhcp"
-
+resolv_orig="/etc/resolv.orig.conf"
+resolv_saved="/etc/resolv.saved"
 
 case $1 in
     deconfig)
         # deconfig - put the interface up but deconfigured
         # called when udhcpc is started or a lease is lost
 
-        # replace resolv.conf with the backup, if the backup exists:
-        if [ -f "$resolv_bak" ]; then
-            cat "$resolv_bak" > "$resolv_conf"
+        # replace resolv.conf with the original
+        if [ -f "$resolv_saved" ]; then
+            cat "$resolv_orig" > "$resolv_conf"
+            rm "$resolv_orig" "$resolv_saved"
         fi
         
         # set the interface's address to 0.0.0.0 for now
-        ifconfig $interface 0.0.0.0;;
+        ifconfig $interface 0.0.0.0
+        ;;
 
     renew|bound)
+    
+        if [ ! -f "$resolv_saved" ]; then
+            cat "$resolv_conf" > "$resolv_orig"
+            touch "$resolv_saved"
+        fi
+
         # renew - lease is renewed
         # bound - move from unbound to bound state
         
         # configure the interface with the given ip, broadcast address, and netmask
         ifconfig $interface $ip ${broadcast:+broadcast $broadcast} ${subnet:+netmask $subnet}
 
-        # for each given gateway, overwrite the defaults??? hell if I know.
+        # add routes for each gateway
         for i in $router; do
-            route add default gw $i dev $interface
+            route add default gw $i dev $interface metric 1000
         done
         
-        #
-        if [ ! -f "$resolv_bak" ] && [ -f "$resolv_conf" ]; then
-            cat "$resolv_conf" > "$resolv_bak"
-        fi
+        # # reset resolv.conf to original so we can append everything
+        # if [ -f "$resolv_saved" ] ; then
+        #     cat "$resolv_orig" > "$resolv_conf"
+        # else
+        #     # clear `resolv.conf`
+        #     echo -n "" > "$resolv_conf"
+        # fi
 
-        # clear `resolv.conf`
-        echo -n "" > "$resolv_conf"
-        
-        # if there's a domain given, add it to `resolv.conf`.
-        if [ -n "$domain" ]; then
-            echo "search $domain" >> "$resolv_conf"
-        fi
+        # # if there's a domain given, add it to `resolv.conf`.
+        # if [ -n "$domain" ]; then
+        #     echo "search $domain" >> "$resolv_conf"
+        # fi
     
-        # for each given dns server, add it to `resolv.conf`.
-        for i in $dns; do
-            echo "nameserver $i" >> "$resolv_conf"
-        done;;
+        # # for each given dns server, add it to `resolv.conf`.
+        # for i in $dns; do
+        #     echo "nameserver $i" >> "$resolv_conf"
+        # done
+        ;;
 esac
 
 exit 0
