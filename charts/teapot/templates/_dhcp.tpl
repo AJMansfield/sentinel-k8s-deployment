@@ -42,7 +42,7 @@ metadata:
   name: {{ .Release.Name }}-udhcpc-scripts
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Release.Name }}
+    {{- include "teapot.labels" . | indent 4 }}
 data:
 {{ (.Files.Glob "files/udhcpc/*.script").AsConfig | indent 2 }}
 {{- end }}
