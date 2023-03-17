@@ -63,7 +63,7 @@ class FudgedAnalyzer:
         bound_analyzer = self.base_func.__get__(obj, objtype)
         def analyzer_function(self, scalar):
             if isinstance(scalar, MarkedString):
-                return ScalarAnalysis( # force the helm tags (using marked strings) to be written unquoted
+                return yaml.emitter.ScalarAnalysis( # force the helm tags (using marked strings) to be written unquoted
                     scalar,
                     empty = False,
                     multiline = False,
