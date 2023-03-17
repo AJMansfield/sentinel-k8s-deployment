@@ -23,5 +23,5 @@ systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-s
 systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
 
 # copy authentication for installed server to user's config
-cp --backup --force ~/.kube/config ~/.kube/config
+cp --backup --force ~/.kube/config ~/.kube/config || true
 sudo cat /etc/rancher/rke2/rke2.yaml | tee ~/.kube/config
