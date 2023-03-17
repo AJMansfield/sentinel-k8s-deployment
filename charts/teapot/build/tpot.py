@@ -76,6 +76,7 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
                 'metadata': {
                     'name': pvc_name_template.format(name=pvc_name),
                     'namespace': "{{ .Release.Namespace }}",
+                    # 'labels' : "{{- include \"teapot.labels\" . | indent 4 }}",
                     'labels' : {
                         'app': "{{ .Release.Namespace }}"
                     }
