@@ -13,6 +13,7 @@ sys_root="${1:-}"
 shopt -s globstar
 pushd "${pkg_root}"
 for f in **/*.*; do
+    sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
     sudo install --mode=644 "${pkg_root}/${f}" "${sys_root}/${f}"
 done
 popd
