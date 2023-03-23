@@ -10,6 +10,8 @@ import argparse
 import yaml
 from slugify import slugify
 
+from helmtag import HelmTag
+
 DEFAULT_REPO = "https://github.com/telekom-security/tpotce.git"
 DEFAULT_BRANCH = "master"
 DEFAULT_PATH = "docker"
@@ -76,10 +78,7 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
                 'metadata': {
                     'name': pvc_name_template.format(name=pvc_name),
                     'namespace': "{{ .Release.Namespace }}",
-                    # 'labels' : "{{- include \"teapot.labels\" . | indent 4 }}",
-                    'labels' : {
-                        'app': "{{ .Release.Namespace }}"
-                    }
+                    'labels': HelmTag('{{- include "teapot.labels" . | toYaml | nindent 4 }}'),
                 },
                 'spec': {
                     'accessModes': ['ReadWriteOnce'],
@@ -211,20 +210,20 @@ def main():
                             '{{- define "' + service_name + '.containers" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
-                        yaml.safe_dump([container], stream)
+                        yaml.dump([container], stream)
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.volumes" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
                         if volumes:
-                            yaml.safe_dump(list(volumes.values()), stream)
+                            yaml.dump(list(volumes.values()), stream)
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.extras" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
-                        yaml.safe_dump_all(extras, stream)
+                        yaml.dump_all(extras, stream)
                         stream.writelines([
                             '{{- end }}\n',
                         ])
