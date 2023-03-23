@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-honeypot
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "teapot.labels" . | toYaml | nindent 4 }}
+  labels: {{- include "teapot.potLabels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: {{ .Release.Name }}
+    matchLabels: {{- include "teapot.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      labels: {{- include "teapot.potLabels" . | nindent 8 }}
       annotations:
         k8s.v1.cni.cncf.io/networks: {{ .Values.networks }}
     spec:

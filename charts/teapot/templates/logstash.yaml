@@ -3,17 +3,14 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-logstash
   namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Release.Name }}
+  labels: {{- include "teapot.logLabels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: {{ .Release.Name }}
+    matchLabels: {{- include "teapot.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: {{ .Release.Name }}
+      labels: {{- include "teapot.logLabels" . | nindent 8 }}
     spec:
       initContainers:
       - name: listbot-dl

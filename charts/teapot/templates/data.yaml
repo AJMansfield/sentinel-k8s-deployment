@@ -3,8 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-data
   namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Release.Name }}
+  labels: {{- include "teapot.potLabels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce

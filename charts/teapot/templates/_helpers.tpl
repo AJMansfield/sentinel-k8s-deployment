@@ -34,7 +34,6 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "teapot.labels" -}}
-app: {{ include "teapot.fullname" . }}
 helm.sh/chart: {{ include "teapot.chart" . }}
 {{ include "teapot.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -49,6 +48,21 @@ Selector labels
 {{- define "teapot.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "teapot.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Specific specializations
+*/}}
+{{- define "teapot.logLabels" -}}
+{{ include "teapot.labels" . }}
+app.kubernetes.io/part-of: logging
+app.kubernetes.io/component: logging
+{{- end }}
+
+{{- define "teapot.potLabels" -}}
+{{ include "teapot.labels" . }}
+app.kubernetes.io/part-of: honeypot
+app.kubernetes.io/component: honeypot
 {{- end }}
 
 {{/*

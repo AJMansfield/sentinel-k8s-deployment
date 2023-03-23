@@ -78,7 +78,7 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
                 'metadata': {
                     'name': HelmTag(pvc_name_template.format(name=pvc_name)),
                     'namespace': HelmTag('{{ .Release.Namespace }}'),
-                    'labels': HelmTag('{{- include "teapot.labels" . | toYaml | nindent 4 }}'),
+                    'labels': HelmTag('{{- include "teapot.potLabels" . | nindent 4 }}'),
                 },
                 'spec': {
                     'accessModes': ['ReadWriteOnce'],

@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-logstash-pipeline
   namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Release.Name }}
+  labels: {{- include "teapot.logLabels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/logstash/pipeline/*").AsConfig | indent 2 }}

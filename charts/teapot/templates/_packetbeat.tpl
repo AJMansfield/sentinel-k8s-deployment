@@ -53,8 +53,7 @@ kind: Beat
 metadata:
   name: {{ .Release.Name }}-packetbeat
   namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Release.Name }}
+  labels: {{- include "teapot.potLabels" . | nindent 4 }}
 spec:
   type: packetbeat
   version: 8.6.2
