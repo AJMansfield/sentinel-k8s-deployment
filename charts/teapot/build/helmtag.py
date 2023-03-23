@@ -24,36 +24,9 @@ class HelmTag(yaml.YAMLObject):
     yaml_tag: ClassVar[str] = "{{"
 
     contents: str
-    munch_head: bool = None
-    munch_tail: bool = None
-
-    def __post_init__(self):
-        if self.munch_head is None:
-            if self.contents.startswith('{{-'):
-                self.munch_head = True
-            elif self.contents.startswith('{{'):
-                self.munch_head = False
-            else:
-                raise ValueError("cannot determine munch_head")
-            self.contents = self.contents.removeprefix(self.head_delimiter).lstrip()
-        if self.munch_tail is None:
-            if self.contents.endswith('-}}'):
-                self.munch_tail = True
-            elif self.contents.endswith('}}'):
-                self.munch_tail = False
-            else:
-                raise ValueError("cannot determine munch_tail")
-            self.contents = self.contents.removesuffix(self.tail_delimiter).rstrip()
-    
-    @property
-    def head_delimiter(self) -> str:
-        return '{{-' if self.munch_head else '{{'
-    @property
-    def tail_delimiter(self) -> str:
-        return '-}}' if self.munch_tail else '}}'
     
     def __str__(self) -> str:
-        return self.head_delimiter + ' ' + self.contents + ' ' + self.tail_delimiter
+        return self.contents
 
     @classmethod
     def to_yaml(cls, dumper: yaml.Dumper, data: HelmTag) -> yaml.Node:
@@ -98,11 +71,11 @@ class EnableHelmTag:
     def __enter__(self):
         # have to access via __dict__ to dodge function descriptor binding
         self.base_func = Emitter.__dict__['analyze_scalar']
-        Emitter.__dict__['analyze_scalar'] = self
+        Emitter.analyze_scalar = self
         return self
     def __exit__(self, typ, val, tb):
         assert Emitter.__dict__['analyze_scalar'] is self, "unknown yaml.emitter.Emitter.analyze_scalar -- exit patches in reverse order!"
-        Emitter.__dict__['analyze_scalar'] = self.base_func
+        Emitter.analyze_scalar = self.base_func
         del self.base_func
 
     def __get__(self, obj, objtype=None):
