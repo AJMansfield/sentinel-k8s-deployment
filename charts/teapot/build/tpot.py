@@ -10,7 +10,7 @@ import argparse
 import yaml
 from slugify import slugify
 
-from helmtag import HelmTag
+from helmtag import HelmTag, EnableHelmTag
 
 DEFAULT_REPO = "https://github.com/telekom-security/tpotce.git"
 DEFAULT_BRANCH = "master"
@@ -210,20 +210,23 @@ def main():
                             '{{- define "' + service_name + '.containers" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
-                        yaml.dump([container], stream)
+                        with EnableHelmTag():
+                            yaml.dump([container], stream)
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.volumes" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
                         if volumes:
-                            yaml.dump(list(volumes.values()), stream)
+                            with EnableHelmTag():
+                                yaml.dump(list(volumes.values()), stream)
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.extras" }}\n',
                             f'## Source: {out_fname}\n',
                         ])
-                        yaml.dump_all(extras, stream)
+                        with EnableHelmTag():
+                            yaml.dump_all(extras, stream)
                         stream.writelines([
                             '{{- end }}\n',
                         ])
