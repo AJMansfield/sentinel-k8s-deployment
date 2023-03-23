@@ -62,7 +62,7 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
             volumes[vol_name] = {
                 'name': vol_name,
                 'persistentVolumeClaim': {
-                    'claimName': pvc_name_template.format(name=pvc_name),
+                    'claimName': HelmTag(pvc_name_template.format(name=pvc_name)),
                 }}
         
         container['volumeMounts'].append({
@@ -76,8 +76,8 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
                 'apiVersion': "v1",
                 'kind': "PersistentVolumeClaim",
                 'metadata': {
-                    'name': pvc_name_template.format(name=pvc_name),
-                    'namespace': "{{ .Release.Namespace }}",
+                    'name': HelmTag(pvc_name_template.format(name=pvc_name)),
+                    'namespace': HelmTag('{{ .Release.Namespace }}'),
                     'labels': HelmTag('{{- include "teapot.labels" . | toYaml | nindent 4 }}'),
                 },
                 'spec': {
