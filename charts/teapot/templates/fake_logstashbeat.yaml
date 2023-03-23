@@ -3,7 +3,7 @@ kind: Beat
 metadata:
   name: {{ .Release.Name }}-logstash
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "teapot.loglabels" . | nindent 4 }}
+  labels: {{- include "teapot.logLabels" . | nindent 4 }}
 spec:
   type: logstash
   version: 8.6.2
