@@ -34,6 +34,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "teapot.labels" -}}
+app: {{ include "teapot.fullname" . }}
 helm.sh/chart: {{ include "teapot.chart" . }}
 {{ include "teapot.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
