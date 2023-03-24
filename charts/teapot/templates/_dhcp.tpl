@@ -27,16 +27,14 @@
         - /bin/sh
         - -c
         - |
-          while [ ! -f /etc/resolv.saved ]
-          do
+          while [ ! -f /var/lease-acquired ] ; do
             sleep 0.1
           done
   volumeMounts:
   - name: udhcpc-scripts
     mountPath: "/usr/share/udhcpc"
   - name: resolv
-    mountPath: /etc/resolv.conf
-    subPath: resolv.conf
+    mountPath: /etc/resolv.d/
   securityContext:
     allowPrivilegeEscalation: true
     capabilities:
@@ -49,8 +47,8 @@
     name: {{ .Release.Name }}-udhcpc-scripts
     defaultMode: 0700
 - name: resolv
-  persistentVolumeClaim:
-    claimName: {{ .Release.Name }}-resolv
+  emptyDir:
+    medium: Memory
 {{- end }}
 {{- define "dhcp.extras" }}
 ## Source: templates/_dhcp.tpl
@@ -62,20 +60,4 @@ metadata:
   labels: {{- include "teapot.potLabels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/udhcpc/*.script").AsConfig | indent 2 }}
-{{- /*
----
-## Source: templates/_dhcp.tpl
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Release.Name }}-resolv
-  namespace: {{ .Release.Namespace }}
-  labels: {{- include "teapot.potLabels" . | nindent 4 }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Mi
-*/}}
 {{- end }}
