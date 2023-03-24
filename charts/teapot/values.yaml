@@ -6,7 +6,9 @@ networks: honeynet/macvlan
 
 behaviors:
   default: {}
-  dhcp: {}
+  dhcp:
+    hostname: joes-samsung-galaxy-phone
+    vendor: android
   packetbeat: {}
   adbhoney: {}
   endlessh: {}

@@ -16,8 +16,8 @@
     "-O", "42", # request NTP Servers
     "-O", "119", # request Doman Search
     "-O", "120", # request SIP Servers
-    "-x", "hostname:{{ .Values.hostname }}", # provide option 22
-    "-F", "{{ .Values.hostname }}", # Ask server to update DNS mapping 
+    "-x", "hostname:{{ .Values.behaviors.dhcp.hostname | default .Values.hostname }}", # provide option 22
+    "-F", "{{ .Values.behaviors.dhcp.hostname | default .Values.hostname }}", # Ask server to update DNS mapping 
   ]
   lifecycle:
     postStart:
