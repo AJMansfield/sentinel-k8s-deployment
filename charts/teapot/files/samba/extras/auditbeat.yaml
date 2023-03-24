@@ -28,10 +28,10 @@ spec:
             capabilities:
               add: ['AUDIT_READ', 'AUDIT_WRITE', 'AUDIT_CONTROL']
           volumeMounts:
-          - name: shares
-            mountPath: "/shares"
-            readOnly: true
+          - name: data
+            mountPath: /shares
+            subPath: samba/shares
         volumes:
-        - name: shares
+        - name: data
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-samba-shares
+            claimName: {{ .Release.Name }}-data

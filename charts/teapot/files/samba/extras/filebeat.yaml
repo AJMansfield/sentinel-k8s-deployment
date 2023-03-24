@@ -68,9 +68,10 @@ spec:
         containers:
         - name: filebeat
           volumeMounts:
-          - name: logs
-            mountPath: /var/log
+          - name: data
+            mountPath: /var/log/samba
+            subPath: samba/log
         volumes:
-        - name: logs
+        - name: data
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-samba-logs
+            claimName: {{ .Release.Name }}-data
