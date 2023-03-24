@@ -46,13 +46,16 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
 
     container['name'] = name
     container['image'] = service['image']
+    container['volumeMounts'] = [{
+        'name': 'resolv',
+        'subPath': 'resolv.conf',
+        'mountPath': '/etc/resolv.conf',
+    }]
     if 'environment' in service:
         container['env'] = service['environment']
     
     for vol_mount in service.get('volumes', []):
         # example: vol_mount = '/data/honeypots/log:/var/log/honeypots'
-        if 'volumeMounts' not in container:
-            container['volumeMounts'] = []
         
         host_path, guest_path = vol_mount.split(":")
         pvc_name, pvc_path = host_path.removeprefix("/").split("/", 1)
@@ -93,8 +96,6 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
     
     for tmpfs_mount in service.get('tmpfs', []):
         # example: tmpfs_mount = '/tmp/conpot:uid=2000,gid=2000'
-        if 'volumeMounts' not in container:
-            container['volumeMounts'] = []
         
         guest_path, attrs = tmpfs_mount.split(":")
         attrs = dict(map(lambda a: a.split("="), attrs.split(",")))
@@ -114,11 +115,6 @@ def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{n
             'emptyDir': {
                 'medium': 'Memory',
             }}
-        
-        container['volumeMounts'].append({
-            'name': vol_name,
-            'mountPath': guest_path,
-            })
     
     return container, volumes, extras
  
