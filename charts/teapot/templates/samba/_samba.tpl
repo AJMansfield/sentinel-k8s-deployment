@@ -1,5 +1,5 @@
 {{- define "samba.containers" }}
-## Source: samba/_samba.tpl
+## Source: templates/samba/_samba.tpl
 - name: smb
   image: servercontainers/samba
   command: [ "runsvdir", "-P", "/container/config/runit" ]
@@ -21,7 +21,7 @@
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 {{- end }}
 {{- define "samba.volumes" }}
-## Source: samba/_samba.tpl
+## Source: templates/samba/_samba.tpl
 - name: samba-shares
   persistentVolumeClaim:
     claimName: {{ .Release.Name }}-samba-shares

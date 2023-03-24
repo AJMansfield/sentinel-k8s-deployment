@@ -1,4 +1,4 @@
-## Source: samba/_vol_shares.tpl
+## Source: templates/samba/_vol_shares.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

@@ -1,5 +1,5 @@
 {{- define "samba.extras" }}
-## Source: samba/_extras.tpl
+## Source: templates/_extras.tpl
 {{ .Files.Get "templates/samba/_mkall.yaml" }}
 ---
 {{ .Files.Get "templates/samba/_filebeat.yaml" }}
