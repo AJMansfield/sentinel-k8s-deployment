@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: mkall
-        image: alpine
+        image: busybox
         command: ["/opt/mkall.sh","/opt/file_list.txt","/opt/dir_list.txt","/shares"]
         volumeMounts:
         - name: shares
@@ -25,3 +25,4 @@ spec:
         configMap:
           name: {{ .Release.Name }}-samba-mkall
           defaultMode: 0700
+      restartPolicy: Never
