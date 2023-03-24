@@ -62,7 +62,9 @@ metadata:
   labels: {{- include "teapot.potLabels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/udhcpc/*.script").AsConfig | indent 2 }}
+{{- /*
 ---
+## Source: templates/_dhcp.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -75,4 +77,5 @@ spec:
   resources:
     requests:
       storage: 1Mi
+*/}}
 {{- end }}
