@@ -17,6 +17,7 @@ DEFAULT_BRANCH = "master"
 DEFAULT_PATH = "docker"
 DEFAULT_EXCLUDE = ['p0f', 'fatt', 'suricata', 'elk', 'ewsposter', 'nginx', 'spiderfoot', 'deprecated']
 
+DEFAULT_REL_BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DEFAULT_DEST = os.path.abspath(os.path.join(os.path.dirname(__file__), '../templates/tpot'))
 DEFAULT_MOUNT = ['data']
 
@@ -153,6 +154,7 @@ def main():
     out_dir = args.dest
     if not args.dryrun:
         ensure_dir(out_dir)
+    out_rel_base = os.path.commonpath([DEFAULT_REL_BASE, os.path.abspath(out_dir)])
 
     gitignore_file = os.path.join(out_dir, ".gitignore")
 
@@ -181,6 +183,7 @@ def main():
             compose_file = get_compose_file(container_dir)
             out_fname = "_" + container_dir.name + ".tpl"
             out_file = os.path.join(out_dir, out_fname)
+            out_rel = os.path.relpath(out_file, out_rel_base)
 
             logging.debug(f"writing {out_file}")
             if not args.dryrun:
@@ -208,14 +211,14 @@ def main():
                         stream.writelines([
                             '{{/* container spec and volumes for ' + service_name + ' */}}\n',
                             '{{- define "' + service_name + '.containers" }}\n',
-                            f'## Source: {out_fname}\n',
+                            f'## Source: {out_rel}\n',
                         ])
                         with EnableHelmTag():
                             yaml.dump([container], stream)
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.volumes" }}\n',
-                            f'## Source: {out_fname}\n',
+                            f'## Source: {out_rel}\n',
                         ])
                         if volumes:
                             with EnableHelmTag():
@@ -223,7 +226,7 @@ def main():
                         stream.writelines([
                             '{{- end }}\n',
                             '{{- define "' + service_name + '.extras" }}\n',
-                            f'## Source: {out_fname}\n',
+                            f'## Source: {out_rel}\n',
                         ])
                         with EnableHelmTag():
                             yaml.dump_all(extras, stream)
