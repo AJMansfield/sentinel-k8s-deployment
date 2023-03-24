@@ -10,6 +10,8 @@ behaviors:
   packetbeat: {}
   adbhoney: {}
   endlessh: {}
+  samba:
+    workgroup: QUINKAP
 
 
 # ECK reference info to give to file/auditbeat

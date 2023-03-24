@@ -1,0 +1,77 @@
+{{- define "samba.internal.filebeat" }}
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: {{ .Release.Name }}-samba-filebeat
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "teapot.logLabels" . | nindent 4 }}
+spec:
+  type: filebeat
+  version: 8.6.2
+{{ .Values.eck | toYaml | indent 2 }}
+  config:
+    filebeat.inputs:
+    - type: filestream
+      id: samba-text-logs
+      paths:
+      - /var/log/samba/log.*
+      prospector.scanner.symlinks: true
+      prospector.scanner.resend_on_touch: true
+      parsers:
+      - multiline:
+          type: pattern
+          pattern: '^[[:space:]]'
+          negate: false
+          match: after
+      processors:
+      - dissect:
+          tokenizer: "[%{timestamp},  %{fd|integer}] %{src_path}:%{src_line|integer}(%{src_func})\n%{body}"
+          field: message
+      - timestamp:
+          field: dissect.timestamp
+          # target_field: original_time
+          layouts:
+          - '2006/01/02 15:04:05'
+          test:
+          - '2023/02/21 19:17:24'
+      - dissect:
+          tokenizer: "  %{local_user}|%{src_user}|%{src_ip|ip}|%{src_host}|%{share}|%{timestamp}|%{user_type}|%{syscall}|%{result}|%{args}"
+          field: dissect.body
+          target_prefix: samba
+          ignore_failure: true
+
+    - type: filestream
+      id: samba-json-logs
+      paths:
+      - /var/log/samba/json.*
+      prospector.scanner.symlinks: true
+      prospector.scanner.resend_on_touch: true
+      parsers:
+      - ndjson:
+          target: samba
+          add_error_key: true
+      processors:
+      - timestamp:
+          field: samba.timestamp
+          # target_field: original_time
+          layouts:
+          - '2006-01-02T15:04:05.999999-0700'
+          test:
+          - '2023-02-21T19:20:09.712746+0000'
+
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        securityContext:
+          runAsUser: 0
+        containers:
+        - name: filebeat
+          volumeMounts:
+          - name: logs
+            mountPath: /var/log
+        volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-samba-logs
+{{- end }}
