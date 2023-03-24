@@ -1,6 +1,6 @@
 {{/* container spec and volumes for dhcp client */}}
 {{- define "dhcp.containers" }}
-## Source: _dhcp.tpl
+## Source: templates/_dhcp.tpl
 - name: dhcp
   image: alpine
   command: [
@@ -43,7 +43,7 @@
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 {{- end }}
 {{- define "dhcp.volumes" }}
-## Source: _dhcp.tpl
+## Source: templates/_dhcp.tpl
 - name: udhcpc-scripts
   configMap:
     name: {{ .Release.Name }}-udhcpc-scripts
@@ -53,7 +53,7 @@
     claimName: {{ .Release.Name }}-resolv
 {{- end }}
 {{- define "dhcp.extras" }}
-## Source: _dhcp.tpl
+## Source: templates/_dhcp.tpl
 apiVersion: v1
 kind: ConfigMap
 metadata:

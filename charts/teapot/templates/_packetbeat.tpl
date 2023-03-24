@@ -1,6 +1,6 @@
 {{/* inject packetbeat into the honeypot pod */}}
 {{- define "packetbeat.containers" }}
-## Source: _packetbeat.tpl
+## Source: templates/_packetbeat.tpl
 - name: packetbeat
   image: docker.elastic.co/beats/packetbeat:8.6.2
   args:
@@ -26,7 +26,7 @@
       add: ["NET_ADMIN", "NET_RAW"]
 {{- end }}
 {{- define "packetbeat.volumes" }}
-## Source: _packetbeat.tpl
+## Source: templates/_packetbeat.tpl
 - name: packetbeat-data
   emptyDir: {}
 - name: config
@@ -46,7 +46,7 @@
     secretName: {{ .Release.Name }}-packetbeat-beat-kibana-ca
 {{- end }}
 {{- define "packetbeat.extras" }}
-## Source: _packetbeat.tpl
+## Source: templates/_packetbeat.tpl
 # To ensure the appropriate packetbeat user and secrets all get done up:
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
