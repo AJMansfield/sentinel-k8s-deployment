@@ -24,18 +24,18 @@ fi
 )
 
 while read line; do
-    # Split the line into its components
-    path=$(echo "$line" | cut -d '|' -f 1)
-    owner=$(echo "$line" | cut -d '|' -f 2)
-    attrs=$(echo "$line" | cut -d '|' -f 3)
+  # Split the line into its components
+  path=$(echo "$line" | cut -d '|' -f 1)
+  owner=$(echo "$line" | cut -d '|' -f 2)
+  attrs=$(echo "$line" | cut -d '|' -f 3)
 
-    # recursively create, chown, and chmod the specified directories
-    (
-      cd "$base_path" ;
-      set -x ;
-      mkdir -p "$path" ;
-      chown -R -H -c "$owner"  "$path" ;
-      chmod -R -c "$attrs" "$path" ;
-    )
+  # recursively create, chown, and chmod the specified directories
+  (
+    cd "$base_path" ;
+    set -x ;
+    mkdir -p "$path" ;
+    chown -R -H -c "$owner"  "$path" ;
+    chmod -R -c "$attrs" "$path" ;
+  )
 
 done < "$dir_list"

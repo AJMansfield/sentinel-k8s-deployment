@@ -24,20 +24,19 @@ fi
 )
 
 while read line; do
-    # Split the line into its components
-    path=$(echo "$line" | cut -d '|' -f 1)
-    ctime=$(echo "$line" | cut -d '|' -f 2)
-    size=$(echo "$line" | cut -d '|' -f 3)
-    
-    dir="$(dirname "$path")"
+  # Split the line into its components
+  path=$(echo "$line" | cut -d '|' -f 1)
+  ctime=$(echo "$line" | cut -d '|' -f 2)
+  size=$(echo "$line" | cut -d '|' -f 3)
+  dir="$(dirname "$path")"
 
-    # Create the file with the specified size and set the ctime
-    (
-      cd "$base_path" ;
-      set -x ;
-      mkdir -p "$dir" ;
-      truncate -s "$size" "$path";
-      touch -d "$ctime" "$path";
-    )
+  # Create the file with the specified size and set the ctime
+  (
+    cd "$base_path" ;
+    set -x ;
+    mkdir -p "$dir" ;
+    truncate -s "$size" "$path";
+    touch -d "$ctime" "$path";
+  )
 
 done < "$file_list"
