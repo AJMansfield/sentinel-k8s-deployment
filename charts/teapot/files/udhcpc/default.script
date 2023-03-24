@@ -49,23 +49,23 @@ case $1 in
             route add default gw $i dev $interface metric 1000
         done
         
-        # # reset resolv.conf to original so we can append everything
-        # if [ -f "$resolv_saved" ] ; then
-        #     cat "$resolv_orig" > "$resolv_conf"
-        # else
-        #     # clear `resolv.conf`
-        #     echo -n "" > "$resolv_conf"
-        # fi
+        # reset resolv.conf to original so we can append everything
+        if [ -f "$resolv_saved" ] ; then
+            cat "$resolv_orig" > "$resolv_conf"
+        else
+            # clear `resolv.conf`
+            echo -n "" > "$resolv_conf"
+        fi
 
-        # # if there's a domain given, add it to `resolv.conf`.
-        # if [ -n "$domain" ]; then
-        #     echo "search $domain" >> "$resolv_conf"
-        # fi
+        # if there's a domain given, add it to `resolv.conf`.
+        if [ -n "$domain" ]; then
+            echo "search $domain" >> "$resolv_conf"
+        fi
     
-        # # for each given dns server, add it to `resolv.conf`.
-        # for i in $dns; do
-        #     echo "nameserver $i" >> "$resolv_conf"
-        # done
+        # for each given dns server, add it to `resolv.conf`.
+        for i in $dns; do
+            echo "nameserver $i" >> "$resolv_conf"
+        done
         ;;
 esac
 
