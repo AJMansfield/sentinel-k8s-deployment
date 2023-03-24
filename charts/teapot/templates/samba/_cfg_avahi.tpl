@@ -1,4 +1,4 @@
-{{- define "samba.internal.cfg_avahi" }}
+{{- define "samba.sub.extras.cfg_avahi" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

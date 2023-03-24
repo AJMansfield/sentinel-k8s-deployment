@@ -1,4 +1,4 @@
-{{- define "samba.internal.mkall" }}
+{{- define "samba.sub.extras.mkall" }}
 apiVersion: batch/v1
 kind: Job
 metadata:

@@ -1,4 +1,4 @@
-{{- define "samba.internal.vol-shares" }}
+{{- define "samba.sub.extras.vol-shares" }}
 ## Source: samba/_vol-shares.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim

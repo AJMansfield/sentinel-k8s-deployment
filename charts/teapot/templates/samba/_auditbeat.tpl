@@ -1,4 +1,4 @@
-{{- define "samba.internal.auditbeat" }}
+{{- define "samba.sub.extras.auditbeat" }}
 ## Source: samba/_auditbeat.tpl
 # Adapted from https://raw.githubusercontent.com/elastic/cloud-on-k8s/2.6/config/recipes/beats/auditbeat_hosts.yaml
 apiVersion: beat.k8s.elastic.co/v1beta1

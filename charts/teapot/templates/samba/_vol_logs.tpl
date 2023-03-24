@@ -1,4 +1,4 @@
-{{- define "samba.internal.vol-logs" }}
+{{- define "samba.sub.extras.vol-logs" }}
 ## Source: samba/_vol-logs.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim

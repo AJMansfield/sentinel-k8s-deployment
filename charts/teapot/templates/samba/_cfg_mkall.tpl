@@ -1,4 +1,4 @@
-{{- define "samba.internal.cfg_mkall" }}
+{{- define "samba.sub.extras.cfg_mkall" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

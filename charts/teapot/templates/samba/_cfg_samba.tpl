@@ -1,4 +1,4 @@
-{{- define "samba.internal.cfg_samba" }}
+{{- define "samba.sub.extras.cfg_samba" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

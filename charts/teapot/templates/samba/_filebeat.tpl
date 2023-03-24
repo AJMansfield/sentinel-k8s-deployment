@@ -1,4 +1,4 @@
-{{- define "samba.internal.filebeat" }}
+{{- define "samba.sub.extras.filebeat" }}
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
 metadata:
