@@ -1,4 +1,4 @@
-{{- define "samba.sub.containers" }}
+{{- define "samba.containers" }}
 ## Source: samba/_samba.tpl
 - name: smb
   image: servercontainers/samba
@@ -20,7 +20,7 @@
     capabilities:
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
 {{- end }}
-{{- define "samba.sub.volumes" }}
+{{- define "samba.volumes" }}
 ## Source: samba/_samba.tpl
 - name: samba-shares
   persistentVolumeClaim:

@@ -1,4 +1,3 @@
-{{- define "samba.sub.extras.cfg_mkall" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,4 +6,3 @@ metadata:
   labels: {{- include "teapot.potLabels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/samba/mkall/*").AsConfig | indent 2 }}
-{{- end }}

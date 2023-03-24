@@ -1,5 +1,4 @@
-{{- define "samba.sub.extras.vol-logs" }}
-## Source: samba/_vol-logs.tpl
+## Source: samba/_vol_logs.tpl
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -12,4 +11,3 @@ spec:
   resources:
     requests:
       storage: 100Mi
-{{- end }}
