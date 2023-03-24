@@ -13,14 +13,15 @@ spec:
         image: busybox
         command: ["/opt/mkall.sh","/opt/file_list.txt","/opt/dir_list.txt","/shares"]
         volumeMounts:
-        - name: shares
+        - name: data
           mountPath: /shares
+          subPath: samba/shares
         - name: mkall
           mountPath: /opt
       volumes:
-      - name: shares
+      - name: data
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-samba-shares
+          claimName: {{ .Release.Name }}-data
       - name: mkall
         configMap:
           name: {{ .Release.Name }}-samba-mkall
