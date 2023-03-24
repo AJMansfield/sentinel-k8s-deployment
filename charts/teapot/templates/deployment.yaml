@@ -16,12 +16,12 @@ spec:
     spec:
       hostname: {{ .Values.hostname }}
       containers:
-        {{- range $behavior, $config := .Values.behaviors }}
+        {{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
         {{- $template := printf "%v.containers" $behavior -}}
         {{- include $template $ | indent 6 }}
         {{- end }}
       volumes:
-        {{- range $behavior, $config := .Values.behaviors }}
+        {{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
         {{- $template := printf "%v.volumes" $behavior -}}
         {{- include $template $ | indent 6 }}
         {{- end }}

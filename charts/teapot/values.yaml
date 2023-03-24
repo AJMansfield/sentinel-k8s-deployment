@@ -15,6 +15,13 @@ behaviors:
   samba:
     workgroup: QUINKAP
 
+behaviorOrder:
+- default
+- dhcp
+- packetbeat
+- adbhoney
+- endlessh
+- samba
 
 # ECK reference info to give to file/auditbeat
 eck:

@@ -1,4 +1,4 @@
-{{- range $behavior, $config := $.Values.behaviors }}
+{{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
 {{- $template := printf "%v.extras" $behavior -}}
 {{- include $template $ }}
 ---
