@@ -10,18 +10,69 @@ behaviors:
     hostname: joes-samsung-galaxy-phone
     vendor: android
   packetbeat: {}
-  adbhoney: {}
-  endlessh: {}
   samba:
     workgroup: QUINKAP
+  honeytrap: {}
+  ciscoasa: {}
+  log4pot: {}
+  citrixhoneypot: {}
+  adbhoney: {}
+  tanner: {}
+  cowrie: {}
+  glutton: {}
+  endlessh: {}
+  ddospot: {}
+  conpot-default: {}
+  conpot-iec104: {}
+  conpot-guardian-ast: {}
+  conpot-ipmi: {}
+  conpot-kamstrup-382: {}
+  wordpot: {}
+  ipphoney: {}
+  dionaea: {}
+  medpot: {}
+  dicompot: {}
+  heralding: {}
+  sentrypeer: {}
+  mailoney: {}
+  hellpot: {}
+  redishoneypot: {}
+  elasticpot: {}
+  honeypots: {}
 
 behaviorOrder:
 - default
 - dhcp
 - packetbeat
-- adbhoney
-- endlessh
 - samba
+- honeytrap
+- ciscoasa
+- log4pot
+- citrixhoneypot
+- adbhoney
+- tanner
+- cowrie
+- glutton
+- endlessh
+- ddospot
+- conpot-default
+- conpot-iec104
+- conpot-guardian-ast
+- conpot-ipmi
+- conpot-kamstrup-382
+- wordpot
+- ipphoney
+- dionaea
+- medpot
+- dicompot
+- heralding
+- sentrypeer
+- mailoney
+- hellpot
+- redishoneypot
+- elasticpot
+- honeypots
+
 
 # ECK reference info to give to file/auditbeat
 eck:
