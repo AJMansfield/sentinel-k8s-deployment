@@ -55,26 +55,29 @@ def convert_service(name: str, service: dict,
         'mountPath': '/etc/resolv.conf',
     }]
     if 'environment' in service:
-        container['env'] = service['environment']
+        env_dict = dict(entry.split('=', 1) for entry in service['environment'])
+        container['env'] = [ {'name': name, 'value': value} for name, value in env_dict.items() ]
     
     for vol_mount in service.get('volumes', []):
         # example: vol_mount = '/data/honeypots/log:/var/log/honeypots'
         
         host_path, guest_path = vol_mount.split(":")
-        pvc_name, pvc_path = host_path.removeprefix("/").split("/", 1)
-        pvc_name = slugify(pvc_name)
-        vol_name = pvc_name
-        
-        if vol_name not in ignore_volumes:
+        mount_name, mount_path = host_path.removeprefix("/").split("/", 1)
+        mount_name = slugify(mount_name)
+
+        if mount_name in ignore_volumes:
+            vol_name = mount_name
+        else: #if mount_name not in ignore_volumes:
+            vol_name = name + '-' + mount_name
             volumes[vol_name] = {
                 'name': vol_name,
                 'persistentVolumeClaim': {
-                    'claimName': HelmTag(pvc_name_template.format(name=pvc_name)),
+                    'claimName': HelmTag(pvc_name_template.format(name=vol_name)),
                 }}
         
         container['volumeMounts'].append({
             'name': vol_name,
-            'subPath': pvc_path,
+            'subPath': mount_path,
             'mountPath': guest_path,
             })
         
@@ -83,7 +86,7 @@ def convert_service(name: str, service: dict,
                 'apiVersion': "v1",
                 'kind': "PersistentVolumeClaim",
                 'metadata': {
-                    'name': HelmTag(pvc_name_template.format(name=pvc_name)),
+                    'name': HelmTag(pvc_name_template.format(name=vol_name)),
                     'namespace': HelmTag('{{ .Release.Namespace }}'),
                     'labels': HelmTag('{{- include "teapot.potLabels" . | nindent 4 }}'),
                 },
