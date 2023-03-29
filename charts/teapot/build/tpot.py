@@ -109,7 +109,7 @@ def convert_service(name: str, service: dict,
             securityContext['runAsUser'] = int(attrs['uid'])
         if 'gid' in attrs:
             securityContext['runAsGroup'] = int(attrs['gid'])
-            securityContext['fsGroup'] = int(attrs['gid'])
+            # securityContext['fsGroup'] = int(attrs['gid'])
         if securityContext:
             container['securityContext'] = securityContext
         
