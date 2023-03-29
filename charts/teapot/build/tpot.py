@@ -39,7 +39,10 @@ def get_compose_file(dir):
     else:
         return None
 
-def convert_service(name, service, pvc_name_template="{{{{ .Release.Name }}}}-{name}", ignore_volumes=[]):
+def convert_service(name: str, service: dict,
+                    pvc_name_template: str = "{{{{ .Release.Name }}}}-{name}",
+                    ignore_volumes: list[str] = None):
+    if ignore_volumes is None: ignore_volumes = []
     container = {}
     volumes = {}
     extras = []
