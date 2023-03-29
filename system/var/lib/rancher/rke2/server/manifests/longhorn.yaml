@@ -11,7 +11,7 @@ metadata:
   name: longhorn
   namespace: kube-system
 spec:
-  chart: longhorn/longhorn
+  chart: longhorn
   repo: https://charts.longhorn.io
   targetNamespace: longhorn-system
   set:
@@ -33,14 +33,12 @@ metadata:
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
     # custom max body size for file uploading like backing image uploading
     nginx.ingress.kubernetes.io/proxy-body-size: 10000m
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   rules:
   - http:
       paths:
       - pathType: Prefix
-        path: /longhorn(/|$)(.*)
+        path: /
         backend:
           service:
             name: longhorn-frontend
@@ -65,7 +63,7 @@ parameters:
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: longhorn-nodelete
+  name: longhorn-static
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 reclaimPolicy: Retain
