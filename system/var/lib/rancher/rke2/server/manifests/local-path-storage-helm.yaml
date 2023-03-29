@@ -13,4 +13,4 @@ spec:
   repo: https://ebrianne.github.io/helm-charts
   targetNamespace: local-path-storage
   set:
-    storageClass.defaultClass: "true"
+    storageClass.defaultClass: "false"
