@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "virusalert"
+version = "0.0.1"
+authors = [
+  { name="Anson Mansfield", email="amansfield@mantaro.com" },
+]
+description = "Package for sending email alerts from elasticsearch logs."
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+requires-python = ">=3.10"
+dependencies = [
+    "yagmail[dkim]",
+    "elasticsearch",
+    "elasticsearch_dsl",
+    "python-decouple",
+    "humanize",
+]

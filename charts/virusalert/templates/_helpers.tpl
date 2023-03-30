@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "email-sender.name" -}}
+{{- define "virusalert.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "email-sender.fullname" -}}
+{{- define "virusalert.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "email-sender.chart" -}}
+{{- define "virusalert.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "email-sender.labels" -}}
-helm.sh/chart: {{ include "email-sender.chart" . }}
-{{ include "email-sender.selectorLabels" . }}
+{{- define "virusalert.labels" -}}
+helm.sh/chart: {{ include "virusalert.chart" . }}
+{{ include "virusalert.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,8 +45,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "email-sender.selectorLabels" -}}
+{{- define "virusalert.selectorLabels" -}}
 app.kubernetes.io/part-of: sentinel
-app.kubernetes.io/name: {{ include "email-sender.name" . }}
+app.kubernetes.io/name: {{ include "virusalert.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
