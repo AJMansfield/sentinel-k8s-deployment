@@ -45,33 +45,33 @@ behaviorOrder:
 - dhcp
 - packetbeat
 - samba
-- honeytrap
-- ciscoasa
-- log4pot
-- citrixhoneypot
+# - honeytrap
+# - ciscoasa
+# - log4pot
+# - citrixhoneypot
 - adbhoney
-- tanner
-- cowrie
-- glutton
+# - tanner
+# - cowrie
+# - glutton
 - endlessh
-- ddospot
-- conpot-default
-- conpot-iec104
-- conpot-guardian-ast
-- conpot-ipmi
-- conpot-kamstrup-382
-- wordpot
-- ipphoney
-- dionaea
-- medpot
-- dicompot
-- heralding
-- sentrypeer
-- mailoney
-- hellpot
+# - ddospot
+# - conpot-default
+# - conpot-iec104
+# - conpot-guardian-ast
+# - conpot-ipmi
+# - conpot-kamstrup-382
+# - wordpot
+# - ipphoney
+# - dionaea
+# - medpot
+# - dicompot
+# - heralding
+# - sentrypeer
+# - mailoney
+# - hellpot
 - redishoneypot
-- elasticpot
-- honeypots
+# - elasticpot
+# - honeypots
 
 
 # ECK reference info to give to file/auditbeat
