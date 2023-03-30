@@ -1,3 +1,0 @@
-/var/log/samba|root:root|u+rwX
-secure|nobody:nobody|u+rwX,a+rX
-public|nobody:nobody|a+rwX
