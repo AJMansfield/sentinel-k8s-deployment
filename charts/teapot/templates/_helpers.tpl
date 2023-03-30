@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "teapot.selectorLabels" -}}
+app.kubernetes.io/part-of: sentinel
 app.kubernetes.io/name: {{ include "teapot.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -55,13 +56,11 @@ Specific specializations
 */}}
 {{- define "teapot.logLabels" -}}
 {{ include "teapot.labels" . }}
-app.kubernetes.io/part-of: logging
 app.kubernetes.io/component: logging
 {{- end }}
 
 {{- define "teapot.potLabels" -}}
 {{ include "teapot.labels" . }}
-app.kubernetes.io/part-of: honeypot
 app.kubernetes.io/component: honeypot
 {{- end }}
 
