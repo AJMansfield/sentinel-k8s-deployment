@@ -38,9 +38,9 @@ smtp = yagmail.SMTP(
 @dataclass
 class Alerter:
     scan_interval: timedelta = timedelta(seconds=5)
-    scan_window: timedelta = timedelta(minutes=5)
+    scan_window: timedelta = timedelta(minutes=1)
     alert_interval: timedelta = timedelta(minutes=5)
-    allowed_threat_interval: timedelta = timedelta(seconds=10) # only alert if more threats than 1>allowed_threat_interval
+    allowed_threat_interval: timedelta = timedelta(seconds=1) # only alert if more threats than 1>allowed_threat_interval
     
     last_scan_time: datetime = field(default_factory=datetime.now)
     next_scan_time: datetime = field(default_factory=datetime.now)
@@ -116,11 +116,11 @@ class Alerter:
 
 def main():
     alerter = Alerter()
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     while True:
         sleep_until = alerter.loop()
-        sleep_len = max(timedelta(seconds=0.1), (sleep_until - datetime.now()))
-        logging.debug(f"Sleeping for {sleep_len} (until {sleep_until}).")
+        sleep_len = max(timedelta(seconds=0), (sleep_until - datetime.now()))
+        logging.info(f"Sleeping for {sleep_len} (until {sleep_until}).")
         sleep(sleep_len.total_seconds())
 
 if __name__ == "__main__":
