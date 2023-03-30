@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "email-sender.selectorLabels" -}}
+app.kubernetes.io/part-of: sentinel
 app.kubernetes.io/name: {{ include "email-sender.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
