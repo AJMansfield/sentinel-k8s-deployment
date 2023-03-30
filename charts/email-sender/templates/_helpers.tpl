@@ -50,14 +50,3 @@ app.kubernetes.io/part-of: sentinel
 app.kubernetes.io/name: {{ include "email-sender.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "email-sender.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "email-sender.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}

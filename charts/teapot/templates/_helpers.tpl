@@ -63,14 +63,3 @@ app.kubernetes.io/component: logging
 {{ include "teapot.labels" . }}
 app.kubernetes.io/component: honeypot
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "teapot.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "teapot.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
