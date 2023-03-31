@@ -7,10 +7,36 @@ import threading
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from time import sleep
-from typing import Any
+from typing import Any, Callable
 import logging
 import humanize
 import pytimeparse
+from types import SimpleNamespace
+import functools
+import string
+import re
+
+class HumanizeFormatter(string.Formatter):
+    def __init__(self, *a, **k) -> None:
+        super().__init__(*a, **k)
+        self.converters = {
+            name: getattr(humanize, name) for name in dir(humanize) if callable(getattr(humanize, name, None))
+        }
+        self.converter_args_re = re.compile( r'([^(]*)(?:\(([^)]*)\))?' )
+    
+    def format_field(self, value: Any, format_spec: str) -> Any:
+        if m := self.converter_args_re.match(format_spec):
+            conv_name = m[1]
+            conv_args = m[2]
+            if conv := self.converters.get(conv_name):
+                if conv_args:
+                    args = eval(f"_({conv_args})", {'_': SimpleNamespace}, {})
+                    conv = functools.partial(conv, **args.__dict__)
+                value = conv(value)
+            return super().format_field(value, "")
+        return super().format_field(value, format_spec)
+
+humanize_formatter = HumanizeFormatter()
 
 def parse_dt(s: str) -> timedelta:
     return timedelta(seconds=pytimeparse.parse(s))
@@ -21,15 +47,15 @@ es = elasticsearch.Elasticsearch(
     verify_certs = False,
 )
 
-# if any(config(param, default=None) for param in ("DKIM_DOMAIN", "DKIM_KEY", "DKIM_SELECTOR")):
-#     dkim = yagmail.dkim.DKIM(
-#         domain = config("DKIM_DOMAIN").encode('ascii'),
-#         private_key = config("DKIM_KEY").encode('ascii'),
-#         include_headers = None,
-#         selector = config("DKIM_SELECTOR").encode('ascii'),
-#     )
-# else:
-#     dkim = None
+if any(config(param, default=None) for param in ("DKIM_DOMAIN", "DKIM_KEY", "DKIM_SELECTOR")):
+    dkim = yagmail.dkim.DKIM(
+        domain = config("DKIM_DOMAIN").encode('ascii'),
+        private_key = config("DKIM_KEY").encode('ascii'),
+        include_headers = None,
+        selector = config("DKIM_SELECTOR").encode('ascii'),
+    )
+else:
+    dkim = None
 
 smtp = yagmail.SMTP(
     user = config("SMTP_USER"),
@@ -38,6 +64,12 @@ smtp = yagmail.SMTP(
     port = config("SMTP_PORT", default=None),
     # dkim = dkim,
 )
+
+mail_to = config("MAIL_TO")
+mail_subject = "Alert: {info.num_hits:apnumber} threats detected in the last {info.scan_len:naturaldelta}"
+mail_body = """
+{info.num_hits} events detected between {info.scan_begin} and {info.scan_end}.
+"""
 
 @dataclass
 class Alerter:
@@ -61,19 +93,21 @@ class Alerter:
         scan_cooldown = now >= self.next_scan_time
 
         if alert_cooldown and scan_cooldown:
-            scan_begin = min(self.last_scan_time, self.last_alert_time, now - self.scan_window)
-            scan_end = now
+            info = SimpleNamespace()
 
-            scan_result = self.scan(begin=scan_begin, end=scan_end)
+            info.scan_begin = min(self.last_scan_time, self.last_alert_time, now - self.scan_window)
+            info.scan_end = now
+
+            info.scan = self.scan(begin=info.scan_begin, end=info.scan_end)
             self.last_scan_time = now
             self.next_scan_time = now + self.scan_interval
 
-            analysis = self.analyze(s=scan_result, query_info=locals())
+            self.analyze(info)
 
-            trigger = self.trigger(analysis)
+            trigger = self.trigger(info)
 
             if trigger:
-                self.alert(analysis)
+                self.alert(info)
                 self.last_alert_time = now
                 self.next_alert_time = now + self.alert_interval
 
@@ -92,29 +126,25 @@ class Alerter:
             }
         })
     
-    def analyze(self, s: dict[str, Any], query_info: dict[str,Any]) -> dict[str, Any]:
-        r = {}
-        r.update(query_info)
-        r['num_hits'] = s['hits']['total']['value'] #type: int
-        r['scan_len'] = r['scan_end'] - r['scan_begin'] #type: timedelta
-        r['allowed_hits'] = r['scan_len'] / self.allowed_threat_interval #type: float
-        return r
+    def analyze(self, info: SimpleNamespace) -> SimpleNamespace:
+        info.num_hits = info.scan['hits']['total']['value'] #type: int
+        info.scan_len = info.scan_end - info.scan_begin #type: timedelta
+        info.allowed_hits = info.scan_len / self.allowed_threat_interval #type: float
+        return info
     
-    def trigger(self, analysis: dict[str, Any]) -> bool:
-        if analysis['num_hits'] > analysis['allowed_hits']:
-            self.log.info(f"Triggering on {analysis['num_hits']}/{analysis['allowed_hits']} hits.")
+    def trigger(self, info: SimpleNamespace) -> bool:
+        if info.num_hits > info.allowed_hits:
+            self.log.info(f"Triggering on {info.num_hits}/{info.allowed_hits} hits.")
             return True
         else:
-            self.log.info(f"Suppressing {analysis['num_hits']}/{analysis['allowed_hits']} hits.")
+            self.log.info(f"Suppressing {info.num_hits}/{info.allowed_hits} hits.")
 
         return False
     
-    def alert(self, a: dict[str, Any]) -> None:
-        to = config("MAILTO")
-        subject = f"Alert: {apnumber(a['num_hits'])} threats detected in the last {naturaldelta(a['scan_len'])}"
-        contents = f"""
-{a['num_hits']} events detected between {a['scan_begin']} and {a['scan_end']}.
-"""
+    def alert(self, info: SimpleNamespace) -> None:
+        to = mail_to
+        subject = humanize_formatter.format(mail_subject, info=info)
+        contents = humanize_formatter.format(mail_body, info=info)
         self.log.info(f"Sending email with subject: {subject}")
         smtp.send(to, subject, contents)
         self.log.info(f"Email sent!")
