@@ -95,7 +95,7 @@ class Alerter:
         if alert_cooldown and scan_cooldown:
             info = SimpleNamespace()
 
-            info.scan_begin = min(self.last_scan_time, self.last_alert_time, now - self.scan_window)
+            info.scan_begin = min(self.last_scan_time, now - self.scan_window)
             info.scan_end = now
 
             info.scan = self.scan(begin=info.scan_begin, end=info.scan_end)
