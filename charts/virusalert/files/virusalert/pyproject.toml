@@ -21,4 +21,5 @@ dependencies = [
     "elasticsearch_dsl",
     "python-decouple",
     "humanize",
+    "pytimeparse",
 ]

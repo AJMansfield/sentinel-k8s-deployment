@@ -9,7 +9,11 @@ from dataclasses import dataclass, field
 from time import sleep
 from typing import Any
 import logging
-from humanize import *
+import humanize
+import pytimeparse
+
+def parse_dt(s: str) -> timedelta:
+    return timedelta(seconds=pytimeparse.parse(s))
 
 es = elasticsearch.Elasticsearch(
     hosts = config("ES_HOSTS"),
@@ -37,10 +41,11 @@ smtp = yagmail.SMTP(
 
 @dataclass
 class Alerter:
-    scan_interval: timedelta = timedelta(seconds=5)
-    scan_window: timedelta = timedelta(minutes=1)
-    alert_interval: timedelta = timedelta(minutes=5)
-    allowed_threat_interval: timedelta = timedelta(seconds=1) # only alert if more threats than 1>allowed_threat_interval
+    scan_interval: timedelta = config("SCAN_INTERVAL", cast=parse_dt)
+    scan_window: timedelta = config("SCAN_WINDOW", cast=parse_dt)
+    alert_interval: timedelta = config("ALERT_INTERVAL", cast=parse_dt)
+    allowed_threat_interval: timedelta = config("ALLOWED_THREAT_INTERVAL", cast=parse_dt)
+    # only alert if more threats than 1>allowed_threat_interval
     
     last_scan_time: datetime = field(default_factory=datetime.now)
     next_scan_time: datetime = field(default_factory=datetime.now)
