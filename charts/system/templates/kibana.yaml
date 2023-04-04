@@ -1,0 +1,14 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "system.labels" . | nindent 4 }}
+spec:
+  version: 8.6.1
+  count: 1
+  elasticsearchRef:
+    name: {{ .Release.Name }}
+  config:
+    server.basePath: /kibana
+    server.publicBaseUrl: https://{{ .Values.hostname }}/kibana

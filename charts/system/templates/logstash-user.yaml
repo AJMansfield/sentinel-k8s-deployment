@@ -1,0 +1,11 @@
+# TODO auto-generate this secret:
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logstash-user
+  namespace: elastic
+type: kubernetes.io/basic-auth
+stringData:
+  username: logstash
+  password: "JIi8qtZTZJxWP45W"
+  roles: logstash_role

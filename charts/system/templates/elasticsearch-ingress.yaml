@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-es
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "system.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/issuer: {{ .Release.Name }}
+    cert-manager.io/issuer-kind: Issuer
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  rules:
+  - host: {{ .Values.hostname }}
+    http:
+      paths:
+      - path: /elasticsearch(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-es-http
+            port:
+              name: https
+  tls:
+  - hosts:
+    - {{ .Values.hostname }}
+    secretName: tls-{{ .Release.Name }}-es-ingress

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-logstash-role
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "system.labels" . | nindent 4 }}
+stringData:
+  roles.yml: |-
+    logstash_role:
+      cluster:
+      - monitor
+      - manage_index_templates
+      - manage_pipeline
+      indices:
+      - names: ["logstash-*"]
+        privileges:
+        - auto_configure
+        - create
+        - delete
+        - index
+        - manage
+        - read
+        - write
