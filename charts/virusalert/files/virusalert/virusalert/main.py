@@ -22,7 +22,7 @@ class HumanizeFormatter(string.Formatter):
         self.converters = {
             name: getattr(humanize, name) for name in dir(humanize) if callable(getattr(humanize, name, None))
         }
-        self.converter_args_re = re.compile( r'([^(]*)(?:\(([^)]*)\))?' )
+        self.converter_args_re = re.compile( r'([^(]*)(?:\(([^)]*)\))?' ) # matches "conv_name(conv_args)"
     
     def format_field(self, value: Any, format_spec: str) -> Any:
         if m := self.converter_args_re.match(format_spec):
