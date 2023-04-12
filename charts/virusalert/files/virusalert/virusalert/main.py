@@ -170,6 +170,48 @@ class Alerter:
         info.num_hits = info.scan['hits']['total']['value'] #type: int
         info.scan_len = info.scan_end - info.scan_begin #type: timedelta
         info.allowed_hits = info.scan_len / self.config.allowed_threat_interval #type: float
+        self.collect_sources(info)
+        return info
+    
+    def collect_sources(self, info: SimpleNamespace) -> SimpleNamespace:
+        sources = set()
+        hits = info.scan['hits']['hits']
+
+        field_names = [
+            ('source.ip', 'ip: {}'),
+            ('samba.src_host', 'host: {}'),
+            ('samba.src_ip', 'ip: {}'),
+            ('samba.src_user', 'user: {}'),
+            ('src_ip', 'ip: {}'),
+            ('tpot.src_ip', 'ip: {}'),
+        ]
+        def get_dotted(source:dict, dotted_key:str, default=None):
+            for element in dotted_key.split('.'):
+                try:
+                    source = source[element]
+                except KeyError:
+                    return default
+            return source
+        
+        for hit in hits:
+            hit = hit['_source']
+            for field, label in field_names:
+                value = get_dotted(hit, field)
+                #self.log.debug(f"{field=}\n{hit=}\n{values=}")
+                if value is None:
+                    pass
+                elif isinstance(value, str):
+                    sources.add(label.format(value))
+                elif isinstance(value, list):
+                    sources.update((label.format(v) for v in value))
+                else:
+                    self.log.warning(f"unknown type for {field}")
+        
+        info.sources = sources
+        if sources:
+            info.sources_list = '\n'.join(f"- {src}" for src in sources)
+        else:
+            info.sources_list = "(no specific sources identified)"
         return info
     
     def trigger(self, info: SimpleNamespace) -> bool:
