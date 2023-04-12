@@ -1,110 +1,13 @@
-from __future__ import annotations
-import yagmail
-import yagmail.dkim
-import elasticsearch
-from decouple import config
-import threading
-from datetime import datetime, timedelta
 from dataclasses import dataclass, field
-from time import sleep
-from typing import Any, Callable
-import logging
-import humanize
-import pytimeparse
+from datetime import datetime, timedelta
+
 from types import SimpleNamespace
-import functools
-import string
-import re
+from typing import Any
 
-default_subject = "Alert: {info.num_hits:apnumber} threat(s) detected in the last {info.scan_len:naturaldelta}"
-default_body = """
-{info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+from virusalert.config import Config
+from virusalert.humanize import humanize_formatter
 
-Threat sources include:
-{info.sources_list}
-"""
-
-class HumanizeFormatter(string.Formatter):
-    def __init__(self, *a, **k) -> None:
-        super().__init__(*a, **k)
-        self.converters = {
-            name: getattr(humanize, name) for name in dir(humanize) if callable(getattr(humanize, name, None))
-        }
-        self.converter_args_re = re.compile( r'([^(]*)(?:\(([^)]*)\))?' ) # matches "conv_name(conv_args)"
-    
-    def format_field(self, value: Any, format_spec: str) -> Any:
-        if m := self.converter_args_re.match(format_spec):
-            conv_name = m[1]
-            conv_args = m[2]
-            if conv := self.converters.get(conv_name):
-                if conv_args:
-                    args = eval(f"_({conv_args})", {'_': SimpleNamespace}, {})
-                    conv = functools.partial(conv, **args.__dict__)
-                value = conv(value)
-            return super().format_field(value, "")
-        return super().format_field(value, format_spec)
-
-humanize_formatter = HumanizeFormatter()
-
-def parse_dt(s: str) -> timedelta:
-    return timedelta(seconds=pytimeparse.parse(s))
-
-@dataclass
-class Config:
-    scan_interval: timedelta = config("SCAN_INTERVAL", cast=parse_dt)
-    scan_window: timedelta = config("SCAN_WINDOW", cast=parse_dt)
-    alert_interval: timedelta = config("ALERT_INTERVAL", cast=parse_dt)
-    allowed_threat_interval: timedelta = config("ALLOWED_THREAT_INTERVAL", cast=parse_dt)
-    # only alert if more threats than 1>allowed_threat_interval
-
-    es_hosts: str = config("ES_HOSTS")
-    es_user: str = config("ES_USER")
-    es_password: str = field(default=config("ES_PASSWORD"), repr=False)
-    @functools.cached_property
-    def es(self) -> elasticsearch.Elasticsearch:
-        return elasticsearch.Elasticsearch(
-            hosts = self.es_hosts,
-            http_auth = (self.es_user, self.es_password),
-            verify_certs = False,
-        )
-    
-    dkim_domain: str = config("DKIM_DOMAIN", default=None)
-    dkim_key: str = field(default=config("DKIM_KEY", default=None), repr=False)
-    dkim_selector: str = config("DKIM_SELECTOR", default=None)
-    @functools.cached_property
-    def dkim(self) -> yagmail.dkim.DKIM | None:
-        try:
-            return yagmail.dkim.DKIM(
-                domain = self.dkim_domain.encode('ascii'),
-                private_key = self.dkim_key.encode('ascii'),
-                selector = self.dkim_selector.encode('ascii'),
-                include_headers = None,
-            )
-        except AttributeError as e:
-            # AttributeError("'NoneType' object has no attribute 'encode'")
-            if e.obj is None and e.name == 'encode':
-                return None
-            else:
-                raise e
-
-    smtp_user: str = config("SMTP_USER")
-    smtp_password: str = field(default=config("SMTP_PASSWORD"), repr=False)
-    smtp_host: str = config("SMTP_HOST")
-    smtp_port: str = config("SMTP_PORT", default=None)
-    @functools.cached_property
-    def smtp(self) -> yagmail.SMTP:
-        return yagmail.SMTP(
-            user = self.smtp_user,
-            password = self.smtp_password,
-            host = self.smtp_host,
-            port = self.smtp_port,
-            dkim = self.dkim,
-        )
-    
-    mail_to: str = config("MAIL_TO")
-    mail_subject_template: str = config("MAIL_SUBJECT", default = default_subject)
-    mail_body_template: str = config("MAIL_BODY", default= default_body)
-
+import logging
 
 @dataclass
 class Alerter:
@@ -231,24 +134,5 @@ class Alerter:
         self.log.info(f"TO: {to}")
         self.log.info(f"SUBJECT: {subject}")
         self.log.info(f"BODY: {body}")
-        # self.config.smtp.send(to, subject, contents)
+        self.config.smtp.send(to, subject, body)
         self.log.info(f"Email sent!")
-
-
-def main():
-    logging.basicConfig(level=logging.INFO)
-    logging.getLogger('elasticsearch').setLevel(logging.WARNING)
-    import urllib3
-    urllib3.disable_warnings()
-    logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
-
-    config = Config()
-    alerter = Alerter(config=config)
-    while True:
-        sleep_until = alerter.loop()
-        sleep_len = max(timedelta(seconds=0.1), (sleep_until - datetime.now()))
-        logging.info(f"Sleeping for {sleep_len} (until {sleep_until}).")
-        sleep(sleep_len.total_seconds())
-
-if __name__ == "__main__":
-    main()
