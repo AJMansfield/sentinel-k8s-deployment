@@ -115,8 +115,12 @@ class Alerter:
     next_alert_time: datetime = field(default_factory=datetime.now)
 
     config: Config = field(default_factory=Config)
+    log: logging.Logger = field(default=logging.getLogger("alerter"), repr=False)
+    def __str__(self) -> str:
+        return f"LS={self.last_scan_time} NS={self.next_scan_time} LA={self.last_alert_time} NA={self.next_alert_time}"
 
     def loop(self, now: datetime = None) -> datetime:
+        self.log.info(f"begin loop: {self!s}")
         if now is None: now = datetime.now()
 
         alert_cooldown = now >= self.next_alert_time
@@ -134,6 +138,10 @@ class Alerter:
 
             self.analyze(info)
 
+            self.log.info(f"{info.scan_len=!s}")
+            self.log.info(f"{info.num_hits=}")
+            self.log.info(f"{info.allowed_hits=}")
+
             trigger = self.trigger(info)
 
             if trigger:
@@ -143,6 +151,8 @@ class Alerter:
 
         
         may_sleep_until = max(self.next_alert_time, self.next_scan_time)
+
+        self.log.info(f"end loop: {self!s}")
         return may_sleep_until
 
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
@@ -164,10 +174,10 @@ class Alerter:
     
     def trigger(self, info: SimpleNamespace) -> bool:
         if info.num_hits > info.allowed_hits:
-            self.log.info(f"Triggering on {info.num_hits}/{info.allowed_hits} hits.")
+            self.log.info(f"Triggering.")
             return True
         else:
-            self.log.info(f"Suppressing {info.num_hits}/{info.allowed_hits} hits.")
+            self.log.info(f"Suppressing.")
 
         return False
     
@@ -175,11 +185,21 @@ class Alerter:
         to = self.config.mail_to
         subject = humanize_formatter.format(self.config.mail_subject_template, info=info)
         body = humanize_formatter.format(self.config.mail_body_template, info=info)
+        self.log.info(f"Sending email!")
+        self.log.info(f"TO: {to}")
+        self.log.info(f"SUBJECT: {subject}")
+        self.log.info(f"BODY: {body}")
+        # self.config.smtp.send(to, subject, contents)
         self.log.info(f"Email sent!")
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
+    logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+    import urllib3
+    urllib3.disable_warnings()
+    logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
+
     config = Config()
     alerter = Alerter(config=config)
     while True:
