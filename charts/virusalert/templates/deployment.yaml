@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "virusalert.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "virusalert.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "virusalert.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: virusalert
+        image: ajmansfield/virusalert
+
+        env:
+        - name: SCAN_INTERVAL
+          value: "10s"
+        - name: SCAN_WINDOW
+          value: "60s"
+        - name: ALERT_INTERVAL
+          value: "5m"
+        - name: ALLOWED_THREAT_INTERVAL
+          value: "20s"
+        
+        - name: ES_HOSTS
+          value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
+        - name: ES_USER
+          value: "{{ .Values.elasticUser }}"
+        - name: ES_PASSWORD
+          value: "{{ .Values.elasticPass }}"
+
+        # - name: DKIM_DOMAIN
+        #   value: 
+        # - name: DKIM_KEY
+        #   value: 
+        # - name: DKIM_SELECTOR
+        #   value: 
+        - name: SMTP_USER
+          value: example@example.com
+        - name: SMTP_PASSWORD
+          value: swordfish
+        - name: SMTP_HOST
+          value: smtp.example.com
+        # - name: SMTP_PORT
+        #   value: 
+        - name: MAIL_TO
+          value: "noreply@sentinel.mantaro.com"
+        - name: MAIL_SUBJECT
+          value: >-
+            Alert: {info.num_hits:apnumber} or more threats detected in since {info.scan_len:naturaldelta} ago.
+        - name: MAIL_BODY
+          value: |
+            {info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+
+            Threat sources include:
+            {info.sources_list}
+        
+

@@ -6,3 +6,6 @@ eck:
   kibanaRef:
     name: kibana
     namespace: elastic
+
+elasticUser: elastic
+elasticPass: password
