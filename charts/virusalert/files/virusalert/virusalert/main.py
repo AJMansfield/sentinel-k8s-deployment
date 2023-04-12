@@ -246,7 +246,7 @@ def main():
     alerter = Alerter(config=config)
     while True:
         sleep_until = alerter.loop()
-        sleep_len = max(timedelta(seconds=0), (sleep_until - datetime.now()))
+        sleep_len = max(timedelta(seconds=0.1), (sleep_until - datetime.now()))
         logging.info(f"Sleeping for {sleep_len} (until {sleep_until}).")
         sleep(sleep_len.total_seconds())
 
