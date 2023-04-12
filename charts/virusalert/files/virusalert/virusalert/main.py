@@ -16,6 +16,14 @@ import functools
 import string
 import re
 
+default_subject = "Alert: {info.num_hits:apnumber} threat(s) detected in the last {info.scan_len:naturaldelta}"
+default_body = """
+{info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+
+Threat sources include:
+{info.sources_list}
+"""
+
 class HumanizeFormatter(string.Formatter):
     def __init__(self, *a, **k) -> None:
         super().__init__(*a, **k)
@@ -41,50 +49,72 @@ humanize_formatter = HumanizeFormatter()
 def parse_dt(s: str) -> timedelta:
     return timedelta(seconds=pytimeparse.parse(s))
 
-es = elasticsearch.Elasticsearch(
-    hosts = config("ES_HOSTS"),
-    http_auth = (config("ES_USER"), config("ES_PASSWORD")),
-    verify_certs = False,
-)
-
-if any(config(param, default=None) for param in ("DKIM_DOMAIN", "DKIM_KEY", "DKIM_SELECTOR")):
-    dkim = yagmail.dkim.DKIM(
-        domain = config("DKIM_DOMAIN").encode('ascii'),
-        private_key = config("DKIM_KEY").encode('ascii'),
-        include_headers = None,
-        selector = config("DKIM_SELECTOR").encode('ascii'),
-    )
-else:
-    dkim = None
-
-smtp = yagmail.SMTP(
-    user = config("SMTP_USER"),
-    password = config("SMTP_PASSWORD"),
-    host = config("SMTP_HOST"),
-    port = config("SMTP_PORT", default=None),
-    # dkim = dkim,
-)
-
-mail_to = config("MAIL_TO")
-mail_subject = "Alert: {info.num_hits:apnumber} threats detected in the last {info.scan_len:naturaldelta}"
-mail_body = """
-{info.num_hits} events detected between {info.scan_begin} and {info.scan_end}.
-"""
-
 @dataclass
-class Alerter:
+class Config:
     scan_interval: timedelta = config("SCAN_INTERVAL", cast=parse_dt)
     scan_window: timedelta = config("SCAN_WINDOW", cast=parse_dt)
     alert_interval: timedelta = config("ALERT_INTERVAL", cast=parse_dt)
     allowed_threat_interval: timedelta = config("ALLOWED_THREAT_INTERVAL", cast=parse_dt)
     # only alert if more threats than 1>allowed_threat_interval
+
+    es_hosts: str = config("ES_HOSTS")
+    es_user: str = config("ES_USER")
+    es_password: str = field(default=config("ES_PASSWORD"), repr=False)
+    @functools.cached_property
+    def es(self) -> elasticsearch.Elasticsearch:
+        return elasticsearch.Elasticsearch(
+            hosts = self.es_hosts,
+            http_auth = (self.es_user, self.es_password),
+            verify_certs = False,
+        )
+    
+    dkim_domain: str = config("DKIM_DOMAIN", default=None)
+    dkim_key: str = field(default=config("DKIM_KEY", default=None), repr=False)
+    dkim_selector: str = config("DKIM_SELECTOR", default=None)
+    @functools.cached_property
+    def dkim(self) -> yagmail.dkim.DKIM | None:
+        try:
+            return yagmail.dkim.DKIM(
+                domain = self.dkim_domain.encode('ascii'),
+                private_key = self.dkim_key.encode('ascii'),
+                selector = self.dkim_selector.encode('ascii'),
+                include_headers = None,
+            )
+        except AttributeError as e:
+            # AttributeError("'NoneType' object has no attribute 'encode'")
+            if e.obj is None and e.name == 'encode':
+                return None
+            else:
+                raise e
+
+    smtp_user: str = config("SMTP_USER")
+    smtp_password: str = field(default=config("SMTP_PASSWORD"), repr=False)
+    smtp_host: str = config("SMTP_HOST")
+    smtp_port: str = config("SMTP_PORT", default=None)
+    @functools.cached_property
+    def smtp(self) -> yagmail.SMTP:
+        return yagmail.SMTP(
+            user = self.smtp_user,
+            password = self.smtp_password,
+            host = self.smtp_host,
+            port = self.smtp_port,
+            dkim = self.dkim,
+        )
+    
+    mail_to: str = config("MAIL_TO")
+    mail_subject_template: str = config("MAIL_SUBJECT", default = default_subject)
+    mail_body_template: str = config("MAIL_BODY", default= default_body)
+
+
+@dataclass
+class Alerter:
     
     last_scan_time: datetime = field(default_factory=datetime.now)
     next_scan_time: datetime = field(default_factory=datetime.now)
     last_alert_time: datetime = field(default_factory=datetime.now)
     next_alert_time: datetime = field(default_factory=datetime.now)
 
-    log: logging.Logger = logging.getLogger("alerter")
+    config: Config = field(default_factory=Config)
 
     def loop(self, now: datetime = None) -> datetime:
         if now is None: now = datetime.now()
@@ -95,12 +125,12 @@ class Alerter:
         if alert_cooldown and scan_cooldown:
             info = SimpleNamespace()
 
-            info.scan_begin = min(self.last_scan_time, now - self.scan_window)
+            info.scan_begin = min(self.last_scan_time, now - self.config.scan_window)
             info.scan_end = now
 
             info.scan = self.scan(begin=info.scan_begin, end=info.scan_end)
             self.last_scan_time = now
-            self.next_scan_time = now + self.scan_interval
+            self.next_scan_time = now + self.config.scan_interval
 
             self.analyze(info)
 
@@ -109,7 +139,7 @@ class Alerter:
             if trigger:
                 self.alert(info)
                 self.last_alert_time = now
-                self.next_alert_time = now + self.alert_interval
+                self.next_alert_time = now + self.config.alert_interval
 
         
         may_sleep_until = max(self.next_alert_time, self.next_scan_time)
@@ -117,7 +147,7 @@ class Alerter:
 
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
         self.log.info(f"Scanning from {begin} to {end}.")
-        return es.search(query = {
+        return self.config.es.search(query = {
             "range":{
                 "@timestamp":{
                     "gte": begin,
@@ -129,7 +159,7 @@ class Alerter:
     def analyze(self, info: SimpleNamespace) -> SimpleNamespace:
         info.num_hits = info.scan['hits']['total']['value'] #type: int
         info.scan_len = info.scan_end - info.scan_begin #type: timedelta
-        info.allowed_hits = info.scan_len / self.allowed_threat_interval #type: float
+        info.allowed_hits = info.scan_len / self.config.allowed_threat_interval #type: float
         return info
     
     def trigger(self, info: SimpleNamespace) -> bool:
@@ -142,16 +172,16 @@ class Alerter:
         return False
     
     def alert(self, info: SimpleNamespace) -> None:
-        to = mail_to
-        subject = humanize_formatter.format(mail_subject, info=info)
-        contents = humanize_formatter.format(mail_body, info=info)
-        self.log.info(f"Sending email with subject: {subject}")
-        smtp.send(to, subject, contents)
+        to = self.config.mail_to
+        subject = humanize_formatter.format(self.config.mail_subject_template, info=info)
+        body = humanize_formatter.format(self.config.mail_body_template, info=info)
         self.log.info(f"Email sent!")
 
+
 def main():
-    alerter = Alerter()
     logging.basicConfig(level=logging.INFO)
+    config = Config()
+    alerter = Alerter(config=config)
     while True:
         sleep_until = alerter.loop()
         sleep_len = max(timedelta(seconds=0), (sleep_until - datetime.now()))
