@@ -60,14 +60,16 @@ class Alerter:
 
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
         self.log.info(f"Scanning from {begin} to {end}.")
-        return self.config.es.search(query = {
-            "range":{
-                "@timestamp":{
-                    "gte": begin,
-                    "lt": end,
+        return self.config.es.search(
+            size = 10000,
+            query = {
+                "range":{
+                    "@timestamp":{
+                        "gte": begin,
+                        "lt": end,
+                    }
                 }
-            }
-        })
+            })
     
     def analyze(self, info: SimpleNamespace) -> SimpleNamespace:
         info.num_hits = info.scan['hits']['total']['value'] #type: int
@@ -100,12 +102,13 @@ class Alerter:
             hit = hit['_source']
             for field, label in field_names:
                 value = get_dotted(hit, field)
-                #self.log.debug(f"{field=}\n{hit=}\n{values=}")
                 if value is None:
                     pass
                 elif isinstance(value, str):
+                    self.log.debug(f"added source {value}")
                     sources.add(label.format(value))
                 elif isinstance(value, list):
+                    self.log.debug(f"added sources {value}")
                     sources.update((label.format(v) for v in value))
                 else:
                     self.log.warning(f"unknown type for {field}")
