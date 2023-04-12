@@ -14,7 +14,9 @@ def main():
     logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
 
     config = Config()
+    logging.info(f"{config=}")
     alerter = Alerter(config=config)
+    
     while True:
         sleep_until = alerter.loop()
         sleep_len = max(timedelta(seconds=0.1), (sleep_until - datetime.now()))
