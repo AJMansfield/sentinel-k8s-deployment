@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: virusalert-user
+  name: logstash-user
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "system.labels" . | nindent 4 }}
+  labels: {{- include "elastic.labels" . | nindent 4 }}
 type: kubernetes.io/basic-auth
 stringData:
-  username: virusalert
+  username: logstash
   password: {{ randAlphaNum 32 }}
-  roles: virusalert_role
+  roles: logstash_role

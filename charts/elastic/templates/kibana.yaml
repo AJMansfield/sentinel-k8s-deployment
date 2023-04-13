@@ -3,7 +3,7 @@ kind: Kibana
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "system.labels" . | nindent 4 }}
+  labels: {{- include "elastic.labels" . | nindent 4 }}
 spec:
   version: 8.6.1
   count: 1

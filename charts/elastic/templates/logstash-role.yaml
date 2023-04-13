@@ -3,7 +3,7 @@ kind: Secret
 metadata:
   name: logstash-role
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "system.labels" . | nindent 4 }}
+  labels: {{- include "elastic.labels" . | nindent 4 }}
 stringData:
   roles.yml: |-
     logstash_role:
