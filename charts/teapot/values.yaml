@@ -1,59 +1,59 @@
 
 
-hostname: joes-samsung-galaxy-phone
+#hostname: 
 
 networks: honeynet/macvlan
 
 behaviors:
   default: {}
-  dhcp:
-    hostname: joes-samsung-galaxy-phone
-    vendor: android
+  dhcp: {}
+  #   #hostname:
+  #   #vendor: 
   packetbeat: {}
-  samba:
-    workgroup: QUINKAP
-  honeytrap: {}
-  ciscoasa: {}
-  log4pot: {}
-  citrixhoneypot: {}
-  adbhoney: {}
-  tanner: {}
-  cowrie: {}
-  glutton: {}
-  endlessh: {}
-  ddospot: {}
-  conpot-default: {}
-  conpot-iec104: {}
-  conpot-guardian-ast: {}
-  conpot-ipmi: {}
-  conpot-kamstrup-382: {}
-  wordpot: {}
-  ipphoney: {}
-  dionaea: {}
-  medpot: {}
-  dicompot: {}
-  heralding: {}
-  sentrypeer: {}
-  mailoney: {}
-  hellpot: {}
-  redishoneypot: {}
-  elasticpot: {}
-  honeypots: {}
+  # samba: {}
+  #   # workgroup: QUINKAP
+  # honeytrap: {}
+  # ciscoasa: {}
+  # log4pot: {}
+  # citrixhoneypot: {}
+  # adbhoney: {}
+  # tanner: {}
+  # cowrie: {}
+  # glutton: {}
+  # endlessh: {}
+  # ddospot: {}
+  # conpot-default: {}
+  # conpot-iec104: {}
+  # conpot-guardian-ast: {}
+  # conpot-ipmi: {}
+  # conpot-kamstrup-382: {}
+  # wordpot: {}
+  # ipphoney: {}
+  # dionaea: {}
+  # medpot: {}
+  # dicompot: {}
+  # heralding: {}
+  # sentrypeer: {}
+  # mailoney: {}
+  # hellpot: {}
+  # redishoneypot: {}
+  # elasticpot: {}
+  # honeypots: {}
 
 behaviorOrder:
 - default
 - dhcp
 - packetbeat
-- samba
+# - samba
 # - honeytrap
 # - ciscoasa
 # - log4pot
 # - citrixhoneypot
-- adbhoney
+# - adbhoney
 # - tanner
 # - cowrie
 # - glutton
-- endlessh
+# - endlessh
 # - ddospot
 # - conpot-default
 # - conpot-iec104
@@ -69,7 +69,7 @@ behaviorOrder:
 # - sentrypeer
 # - mailoney
 # - hellpot
-- redishoneypot
+# - redishoneypot
 # - elasticpot
 # - honeypots
 
