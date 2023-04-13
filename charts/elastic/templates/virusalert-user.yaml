@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: virusalert-user
+  name: {{ .Release.Name }}-virusalert-user
   namespace: {{ .Release.Namespace }}
   labels: {{- include "elastic.labels" . | nindent 4 }}
 type: kubernetes.io/basic-auth

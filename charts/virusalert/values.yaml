@@ -1,14 +1,14 @@
 # ECK reference info
 eck:
   elasticsearchRef:
-    name: elasticsearch
+    name: elastic
     namespace: elastic
   kibanaRef:
-    name: kibana
+    name: elastic
     namespace: elastic
 
 elasticUserRef:
-  name: virusalert-user
+  name: elastic-virusalert-user
   namespace: elastic
 
 alert:

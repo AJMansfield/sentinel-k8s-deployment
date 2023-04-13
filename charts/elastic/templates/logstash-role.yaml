@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: logstash-role
+  name: {{ .Release.Name }}-logstash-role
   namespace: {{ .Release.Namespace }}
   labels: {{- include "elastic.labels" . | nindent 4 }}
 stringData:

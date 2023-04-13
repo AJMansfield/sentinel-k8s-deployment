@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: logstash-user
+  name: {{ .Release.Name }}-logstash-user
   namespace: {{ .Release.Namespace }}
   labels: {{- include "elastic.labels" . | nindent 4 }}
 type: kubernetes.io/basic-auth

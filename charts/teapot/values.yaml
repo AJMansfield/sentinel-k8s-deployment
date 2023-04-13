@@ -77,12 +77,12 @@ behaviorOrder:
 # ECK reference info to give to file/auditbeat
 eck:
   elasticsearchRef:
-    name: elasticsearch
+    name: elastic
     namespace: elastic
   kibanaRef:
-    name: kibana
+    name: elastic
     namespace: elastic
 
 logstashUserRef:
-  name: logstash-user
+  name: elastic-logstash-user
   namespace: elastic
