@@ -14,7 +14,7 @@ EOF
 hostname=$(hostname -f)
 password=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 12)
 sys_root=''
-while getopts h:p:d o; do
+while getopts h:p:d: o; do
   case $o in
     (h) hostname="$OPTARG";;
     (p) password="$OPTARG";;
@@ -49,8 +49,8 @@ EOF
 
 # install RKE2 if not already installed
 [ -f "${sys_root}/usr/local/bin/rke2" ] || { 
-    # INSTALL_RKE2_TAR_PREFIX="${sys_root}/usr/local" # maybe??
-    curl -sfL https://get.rke2.io | sudo sh - ; 
+    curl -sfL https://get.rke2.io | \
+    INSTALL_RKE2_TAR_PREFIX="${sys_root}/usr/local" sudo sh - ; 
 }
 
 # install our custom kubernetes manifest files
