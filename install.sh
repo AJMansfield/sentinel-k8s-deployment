@@ -38,7 +38,7 @@ cat > "${config_file}" <<EOF
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-  name: rke2-coredns
+  name: rancher
   namespace: kube-system
 spec:
   valuesContent: |- 
