@@ -1,3 +1,4 @@
+{{- required "Hostname is required." .Values.hostname -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -5,13 +6,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "elastic.labels" . | nindent 4 }}
   annotations:
-    cert-manager.io/issuer: elastic
+    cert-manager.io/issuer: {{ .Release.Name }}
     cert-manager.io/issuer-kind: Issuer
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   rules:
-  - http:
+  - host: {{ .Values.hostname }}
+    http:
       paths:
       - path: /kibana(/|$)(.*)
         pathType: Prefix
@@ -21,4 +23,6 @@ spec:
             port:
               name: https
   tls:
-  - secretName: tls-{{ .Release.Name }}-kb-ingress
+  - hosts:
+    - {{ .Values.hostname }}
+    secretName: tls-{{ .Release.Name }}-kb-ingress
