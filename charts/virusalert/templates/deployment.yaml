@@ -51,12 +51,12 @@ spec:
           value: "noreply@sentinel.mantaro.com"
         - name: MAIL_SUBJECT
           value: >-
-            Alert: {info.num_hits:apnumber} or more threats detected in since {info.scan_len:naturaldelta} ago.
+            Alert: {info.num_hits:apnumber} event(s) detected since {info.scan_len:naturaldelta} ago.
         - name: MAIL_BODY
           value: |
             {info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
 
-            Threat sources include:
+            Event sources include:
             {info.sources_list}
         
 
