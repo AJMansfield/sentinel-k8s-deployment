@@ -1,1 +1,2 @@
 *.pyc
+system/var/lib/rancher/rke2/server/manifests/rancher-config.yaml
