@@ -1,6 +1,6 @@
-{{- required "SMTP username is required." .Values.smtp.username -}}
-{{- required "SMTP password is required." .Values.smtp.password -}}
-{{- required "SMTP hostname is required." .Values.smtp.hostname -}}
+{{- $username := .Values.smtp.username | required "SMTP username is required."  -}}
+{{- $password := .Values.smtp.password | required "SMTP password is required."  -}}
+{{- $hostname := .Values.smtp.hostname | required "SMTP hostname is required."  -}}
 apiVersion: v1
 kind: Secret
 metadata:

@@ -1,6 +1,6 @@
-{{- required "Email adddress is required." .Values.mail.to -}}
-{{- required "Email subject template is required." .Values.mail.subject -}}
-{{- required "Email body template is required." .Values.mail.body -}}
+{{- $to := .Values.mail.to | required "Email adddress is required." -}}
+{{- $subject := .Values.mail.subject | required "Email subject template is required." -}}
+{{- $body := .Values.mail.body | required "Email body template is required." -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
