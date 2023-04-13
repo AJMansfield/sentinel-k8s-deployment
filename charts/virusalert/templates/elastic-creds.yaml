@@ -5,5 +5,8 @@ metadata:
   name: {{ .Release.Name }}-elastic
   namespace: {{ .Release.Namespace }}
   labels: {{- include "virusalert.labels" . | nindent 4 }}
+  annotations:
+    source-namespace: {{ .Values.elasticUserRef.namespace }}
+    source-secret: {{ .Values.elasticUserRef.name }}
 type: {{ $source.type }}
 data: {{- $source.data | toYaml | nindent 2 }}
