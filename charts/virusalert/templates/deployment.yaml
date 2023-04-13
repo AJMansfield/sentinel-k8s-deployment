@@ -19,22 +19,22 @@ spec:
         env:
         - name: SCAN_INTERVAL
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-alert"
               key: scan_interval
         - name: SCAN_WINDOW
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-alert"
               key: scan_window
         - name: ALERT_INTERVAL
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-alert"
               key: alert_interval
         - name: ALLOWED_THREAT_INTERVAL
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-alert"
               key: allowed_threat_interval
           
@@ -62,10 +62,12 @@ spec:
               name: "{{ .Release.Name }}-smtp"
               key: password
         - name: SMTP_HOST
+          valueFrom:
             secretKeyRef:
               name: "{{ .Release.Name }}-smtp"
               key: hostname
         - name: SMTP_PORT
+          valueFrom:
             secretKeyRef:
               name: "{{ .Release.Name }}-smtp"
               key: port
@@ -92,17 +94,17 @@ spec:
 
         - name: MAIL_TO
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-mail"
               key: to
         - name: MAIL_SUBJECT
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-mail"
               key: subject
         - name: MAIL_BODY
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: "{{ .Release.Name }}-mail"
               key: body
         
