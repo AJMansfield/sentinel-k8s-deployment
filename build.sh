@@ -30,11 +30,15 @@ all() {
     tpot
     virusalert
 }
+local() { # targets that need to be built locally on each machine
+    tpot
+}
 
 case $1 in
     (tpot) tpot ;;
     (virusalert) virusalert ;;
     (all) all ;;
+    (local) local ;;
     (-h) usage ;;
-    (*) all ;;
+    (*) local ;;
 esac
