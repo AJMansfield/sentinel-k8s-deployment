@@ -1,4 +1,3 @@
-# TODO auto-generate this secret:
 apiVersion: v1
 kind: Secret
 metadata:
