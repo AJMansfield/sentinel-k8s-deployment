@@ -1,0 +1,13 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: {{ .Release.Name }}-fakebeat
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "virusalert.labels" . | nindent 4 }}
+spec:
+  type: virusalert
+  version: 8.6.2
+  image: alpine
+{{ .Values.eck | toYaml | indent 2 }}
+  deployment:
+    replicas: 0
