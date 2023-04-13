@@ -6,11 +6,12 @@ script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 usage() {
     cat >&2 <<EOF
-Usage: $0 <target>
+Usage: $0 [target]
 Available Targets:
+  local (default)
+  all
   tpot
   virusalert
-  all
 EOF
     exit 1
 }
@@ -34,11 +35,11 @@ local() { # targets that need to be built locally on each machine
     tpot
 }
 
-case $1 in
+target=${1:-local}
+case $target in
     (tpot) tpot ;;
     (virusalert) virusalert ;;
     (all) all ;;
     (local) local ;;
-    (-h) usage ;;
-    (*) local ;;
+    (*) usage ;;
 esac
