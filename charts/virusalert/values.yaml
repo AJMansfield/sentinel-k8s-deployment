@@ -18,18 +18,18 @@ alert:
   allowed_threat_interval: 20s
 
 smtp: {}
-  #username: noreply@example.com
-  #password: swordfish
-  #hostname: smtp.example.com
-  #port:
+  # username: noreply@example.com
+  # password: swordfish
+  # hostname: smtp.example.com
+  # port: 
 
 dkim: {}
-  #domain:
-  #key:
-  #selector:
+  # domain:
+  # key:
+  # selector:
 
 mail:
-  #to: it@example.com
+  # to: it@example.com
   subject: >-
     Alert: {info.num_hits:apnumber} event(s) detected since {info.scan_len:naturaldelta} ago.
   body: |
