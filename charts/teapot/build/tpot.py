@@ -116,11 +116,15 @@ def convert_service(name: str, service: dict,
         if securityContext:
             container['securityContext'] = securityContext
         
+        container['volumeMounts'].append({
+            'name': vol_name,
+            'mountPath': guest_path,
+        })
+        
         volumes[vol_name] = {
             'name': vol_name,
-            'emptyDir': {
-                'medium': 'Memory',
-            }}
+            'emptyDir': {},
+        }
     
     return container, volumes, extras
  
