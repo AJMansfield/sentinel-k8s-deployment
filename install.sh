@@ -3,8 +3,8 @@
 
 usage() {
     cat >&2 <<EOF
-Usage: $0 [-n <hostname>] [-p <password>] [-d <sys_root>] 
-  -h <hostname>: FQDN hostname for Rancher (default: "$(hostname -f)")
+Usage: $0 [-h <hostname>] [-p <password>] [-d <sys_root>] 
+  -h <hostname>: FQDN hostname for Rancher (default: "$(hostname -f)").
   -p <password>: Bootstrap password for Rancher (default: random).
   -d <sys_root>: System root to install into (default: "/").
 EOF
@@ -80,5 +80,5 @@ cat - <<EOF
 Install Complete!
 =================
 hostname: https://${hostname}/dashboard/
-bootstrap password: ${bootstrapPassword}
+bootstrap password: ${password}
 EOF

@@ -6,6 +6,3 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |- ### INSTALLER POSTSCRIPT MARKER ###
-    ### BEGIN GENERATED CONFIGURATION ###
-    hostname: "rancher"
-    bootstrapPassword: ""
