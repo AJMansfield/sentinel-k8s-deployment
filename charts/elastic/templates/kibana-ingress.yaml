@@ -1,4 +1,4 @@
-{{- required "Hostname is required." .Values.hostname -}}
+{{- $hostname := .Values.hostname | required "Hostname is required." }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,7 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   rules:
-  - host: {{ .Values.hostname }}
+  - host: {{ $hostname }}
     http:
       paths:
       - path: /kibana(/|$)(.*)
@@ -24,5 +24,5 @@ spec:
               name: https
   tls:
   - hosts:
-    - {{ .Values.hostname }}
+    - {{ $hostname }}
     secretName: tls-{{ .Release.Name }}-kb-ingress
