@@ -35,5 +35,6 @@ case $1 in
     (tpot) tpot ;;
     (virusalert) virusalert ;;
     (all) all ;;
-    (*) usage ;;
+    (-h) usage ;;
+    (*) all ;;
 esac
