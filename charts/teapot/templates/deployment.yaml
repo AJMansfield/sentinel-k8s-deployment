@@ -1,4 +1,4 @@
-{{- required "Hostname is required." .Values.hostname -}}
+{{- $hostname := .Values.hostname | required "Hostname is required." -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
