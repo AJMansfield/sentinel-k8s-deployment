@@ -18,45 +18,92 @@ spec:
 
         env:
         - name: SCAN_INTERVAL
-          value: "10s"
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-alert"
+              key: scan_interval
         - name: SCAN_WINDOW
-          value: "60s"
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-alert"
+              key: scan_window
         - name: ALERT_INTERVAL
-          value: "5m"
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-alert"
+              key: alert_interval
         - name: ALLOWED_THREAT_INTERVAL
-          value: "20s"
-        
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-alert"
+              key: allowed_threat_interval
+          
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
         - name: ES_USER
-          value: "{{ .Values.elasticUser }}"
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-elastic"
+              key: username
         - name: ES_PASSWORD
-          value: "{{ .Values.elasticPass }}"
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-elastic"
+              key: password
 
-        # - name: DKIM_DOMAIN
-        #   value: 
-        # - name: DKIM_KEY
-        #   value: 
-        # - name: DKIM_SELECTOR
-        #   value: 
         - name: SMTP_USER
-          value: example@example.com
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-smtp"
+              key: username
         - name: SMTP_PASSWORD
-          value: swordfish
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-smtp"
+              key: password
         - name: SMTP_HOST
-          value: smtp.example.com
-        # - name: SMTP_PORT
-        #   value: 
-        - name: MAIL_TO
-          value: "noreply@sentinel.mantaro.com"
-        - name: MAIL_SUBJECT
-          value: >-
-            Alert: {info.num_hits:apnumber} event(s) detected since {info.scan_len:naturaldelta} ago.
-        - name: MAIL_BODY
-          value: |
-            {info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+            secretKeyRef:
+              name: "{{ .Release.Name }}-smtp"
+              key: hostname
+        - name: SMTP_PORT
+            secretKeyRef:
+              name: "{{ .Release.Name }}-smtp"
+              key: port
+              optional: true
+        
+        - name: DKIM_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-dkim"
+              key: domain
+              optional: true
+        - name: DKIM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-dkim"
+              key: key
+              optional: true
+        - name: DKIM_SELECTOR
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-dkim"
+              key: selector
+              optional: true
 
-            Event sources include:
-            {info.sources_list}
+        - name: MAIL_TO
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-mail"
+              key: to
+        - name: MAIL_SUBJECT
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-mail"
+              key: subject
+        - name: MAIL_BODY
+          valueFrom:
+            configMapRef:
+              name: "{{ .Release.Name }}-mail"
+              key: body
         
 

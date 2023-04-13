@@ -1,0 +1,6 @@
+{{- required "SMTP username is required." .Values.smtp.username -}}
+{{- required "SMTP password is required." .Values.smtp.password -}}
+{{- required "SMTP hostname is required." .Values.smtp.hostname -}}
+{{- required "Email adddress is required." .Values.mail.to -}}
+{{- required "Email subject template is required." .Values.mail.subject -}}
+{{- required "Email body template is required." .Values.mail.body -}}

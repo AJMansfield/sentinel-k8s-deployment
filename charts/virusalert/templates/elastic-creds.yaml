@@ -1,0 +1,9 @@
+{{- $source := lookup "v1" "Secret" .Values.elasticUserRef.namespace .Values.elasticUserRef.name -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-elastic
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "virusalert.labels" . | nindent 4 }}
+type: {{ $source.type }}
+data: {{- $source.data | toYaml | nindent 2 }}

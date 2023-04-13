@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-dkim
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "virusalert.labels" . | nindent 4 }}
+type: Opaque
+stringData: {{- .Values.dkim | toYaml | nindent 2 }}

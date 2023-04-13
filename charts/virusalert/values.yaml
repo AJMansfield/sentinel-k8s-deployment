@@ -7,5 +7,33 @@ eck:
     name: kibana
     namespace: elastic
 
-elasticUser: elastic
-elasticPass: password
+elasticUserRef:
+  name: virusalert-user
+  namespace: elastic
+
+alert:
+  scan_interval: 10s
+  scan_window: 60s
+  alert_interval: 5m
+  allowed_threat_interval: 20s
+
+smtp: {}
+  #username: noreply@example.com
+  #password: swordfish
+  #hostname: smtp.example.com
+  #port:
+
+dkim: {}
+  #domain:
+  #key:
+  #selector:
+
+mail:
+  #to: it@example.com
+  subject: >-
+    Alert: {info.num_hits:apnumber} event(s) detected since {info.scan_len:naturaldelta} ago.
+  body: |
+    {info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+
+    Event sources include:
+    {info.sources_list}

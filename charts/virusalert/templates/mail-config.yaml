@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-mail
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "virusalert.labels" . | nindent 4 }}
+data: {{- .Values.mail | toYaml | nindent 2 }}
