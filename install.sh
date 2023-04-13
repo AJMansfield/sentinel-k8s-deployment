@@ -32,22 +32,19 @@ pkg_root="${script_dir}/system"
 sys_root="${sys_root}"
 
 
-# hacky on-the-fly editing the rancher config to set hostname + bootstrap pass
+# template out the config with the hostname and password
 config_file="${pkg_root}/var/lib/rancher/rke2/server/manifests/rancher-config.yaml"
-
-temp_dir=$(mktemp -d)
-pushd "${temp_dir}"
-
-csplit "${config_file}" '/### INSTALLER POSTSCRIPT MARKER ###/1'
-cat xx00 - > "${config_file}" <<EOF
-    ### BEGIN GENERATED CONFIGURATION ###
+cat > "${config_file}" <<EOF
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |- 
     hostname: "${hostname}"
     bootstrapPassword: "${password}"
 EOF
-
-popd
-rm -rd "${temp_dir}"
-# end hacky on-the-fly config modifications
 
 
 # install RKE2 if not already installed
