@@ -5,13 +5,13 @@ from virusalert.alerter import Alerter
 import logging
 from time import sleep
 from datetime import datetime, timedelta
-import urllib3
+# import urllib3
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    logging.getLogger('elasticsearch').setLevel(logging.WARNING)
-    urllib3.disable_warnings()
-    logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
+    # logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+    # urllib3.disable_warnings()
+    # logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
 
     config = Config()
     logging.info(f"{config=}")
