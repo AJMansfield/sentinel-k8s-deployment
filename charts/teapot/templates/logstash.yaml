@@ -20,20 +20,16 @@ spec:
         env:
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
-        {{- if .Values.autoUser }}
         - name: ES_USER
-          value: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-logstash-user"
+              key: username
         - name: ES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-beat-user"
-              key: "{{ .Release.Namespace }}-{{ .Release.Name }}-beat-user"
-        {{- else }}
-        - name: ES_USER
-          value: "{{ .Values.elasticUser }}"
-        - name: ES_PASSWORD
-          value: "{{ .Values.elasticPass }}"
-        {{- end }}
+              name: "{{ .Release.Name }}-logstash-user"
+              key: password
 
         - name: MY_EXTIP
           valueFrom:

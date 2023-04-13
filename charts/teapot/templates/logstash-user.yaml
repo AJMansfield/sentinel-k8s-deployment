@@ -1,0 +1,9 @@
+{{- $source := lookup "v1" "Secret" .Values.logstashUserRef.namespace .Values.logstashUserRef.name -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-logstash-user
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "teapot.logLabels" . | nindent 4 }}
+type: {{ $source.type }}
+data: {{- $source.data | toYaml | nindent 2 }}

@@ -82,8 +82,7 @@ eck:
   kibanaRef:
     name: kibana
     namespace: elastic
-autoUser: false
-# TODO: helm can read the values of secrets at install-time
-# use this to copy the secret into the target namespace and then use that
-elasticUser: logstash
-elasticPass: "JIi8qtZTZJxWP45W"
+
+logstashUserRef:
+  name: logstash-user
+  namespace: elastic
