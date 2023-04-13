@@ -14,6 +14,4 @@ spec:
   targetNamespace: cattle-system
   set:
     installCRDs: "true"
-    hostname: "rancher.dutnet.local"
     replicas: "1"
-    bootstrapPassword: "yzT9KVCKtlBsjlYA"

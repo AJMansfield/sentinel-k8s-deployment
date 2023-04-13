@@ -5,6 +5,27 @@ script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 pkg_root="${script_dir}/system"
 sys_root="${1:-}"
 
+
+# hacky on-the-fly editing the rancher config to set hostname + bootstrap pass
+config_file="${pkg_root}/var/lib/rancher/rke2/server/manifests/rancher-config.yaml"
+
+hostname="$(hostname -f)"
+bootstrapPassword=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 12)
+
+temp_dir=$(mktemp -d)
+pushd "${temp_dir}"
+
+csplit "${config_file}" '/### INSTALLER POSTSCRIPT MARKER ###/1'
+cat xx00 - > "${config_file}" <<EOF
+    ### BEGIN GENERATED CONFIGURATION ###
+    hostname: "${hostname}"
+    bootstrapPassword: "${gen_pw}"
+EOF
+
+popd
+rm -rd "${temp_dir}"
+# end hacky on-the-fly config modifications
+
 # install RKE2 if not already installed
 # TODO pass sys_root to the RKE2 install script too
 [ -f /usr/local/bin/rke2 ] || { curl -sfL https://get.rke2.io | sudo sh - ; }
@@ -25,4 +46,13 @@ systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-ser
 # copy authentication for installed server to user's config
 mkdir -p ~/.kube
 cp --backup --force ~/.kube/config ~/.kube/config || true
-sudo cat /etc/rancher/rke2/rke2.yaml | tee ~/.kube/config
+sudo cat /etc/rancher/rke2/rke2.yaml | tee ~/.kube/config > /dev/null
+
+set +x
+cat - <<EOF
+
+Install Complete!
+=================
+hostname: https://${hostname}/dashboard/
+bootstrap password: ${bootstrapPassword}
+EOF
