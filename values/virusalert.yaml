@@ -1,0 +1,28 @@
+
+alert:
+  scan_interval: 10s
+  scan_window: 2m
+  alert_interval: 10m
+  allowed_threat_interval: 1s
+
+
+smtp:
+  username: "noreply@example.com"
+  password: "example"
+  hostname: "smtp.example.com"
+  # port:
+
+# dkim:
+#   domain:
+#   key:
+#   selector:
+
+mail:
+  to: it@example.com
+  subject: >-
+    Alert: {info.num_hits:apnumber} event(s) detected since {info.scan_len:naturaldelta} ago.
+  body: |
+    {info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
+
+    Event sources include:
+    {info.sources_list}
