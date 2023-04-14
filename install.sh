@@ -4,7 +4,7 @@ script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 cluster [-h <hostname>] [-p <password>] [-d <sys_root>] 
+Usage: $0 [-h <hostname>] [-p <password>] [-d <sys_root>] 
   -h <hostname>: FQDN hostname for Rancher (default: "$(hostname -f)").
   -p <password>: Bootstrap password for Rancher (default: random).
   -d <sys_root>: System root to install into (default: "/").
