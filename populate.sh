@@ -16,26 +16,26 @@ EOF
 }
 
 elastic() {
-  helm $2 elastic "${script_dir}/charts/elastic" \
+  helm $1 elastic "${script_dir}/charts/elastic" \
     --namespace elastic --create-namespace \
     --values "${script_dir}/values/elastic.yaml"
 }
 
 virusalert() {
-  helm $2 virusalert "${script_dir}/charts/virusalert" \
+  helm $1 virusalert "${script_dir}/charts/virusalert" \
     --namespace virusalert --create-namespace \
     --values "${script_dir}/values/virusalert.yaml"
 }
 
 honeypot() {
-  helm $2 "honeypot-${3}" "${script_dir}/charts/teapot" \
-    --namespace "honeypot-${3}" --create-namespace \
-    --values "${script_dir}/values/honeypot-${3}.yaml"
+  helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
+    --namespace "honeypot-${2}" --create-namespace \
+    --values "${script_dir}/values/honeypot-${2}.yaml"
 }
 
 case $1 in
-  (elastic) elastic ;;
-  (virusalert) virusalert ;;
-  (honeypot) honeypot ;;
+  (elastic) elastic $2 ;;
+  (virusalert) virusalert $2 ;;
+  (honeypot) honeypot $2 "${3}" ;;
   (*) usage ;;
 esac
