@@ -1,14 +1,15 @@
 #!/bin/bash
 
+script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 usage() {
-    cat >&2 <<EOF
-Usage: $0 [-h <hostname>] [-p <password>] [-d <sys_root>] 
+  cat >&2 <<EOF
+Usage: $0 cluster [-h <hostname>] [-p <password>] [-d <sys_root>] 
   -h <hostname>: FQDN hostname for Rancher (default: "$(hostname -f)").
   -p <password>: Bootstrap password for Rancher (default: random).
   -d <sys_root>: System root to install into (default: "/").
 EOF
-    exit 1
+  exit 1
 }
 
 hostname=$(hostname -f)
@@ -24,13 +25,9 @@ while getopts h:p:d: o; do
 done
 shift "$((OPTIND - 1))"
 
-
-
 set -e -x
-script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 pkg_root="${script_dir}/system"
 sys_root="${sys_root}"
-
 
 # template out the config with the hostname and password
 config_file="${pkg_root}/var/lib/rancher/rke2/server/manifests/rancher-config.yaml"
@@ -46,7 +43,6 @@ spec:
     bootstrapPassword: "${password}"
 EOF
 
-
 # install RKE2 if not already installed
 [ -f "${sys_root}/usr/local/bin/rke2" ] || { 
     curl -sfL https://get.rke2.io | \
@@ -57,8 +53,8 @@ EOF
 shopt -s globstar
 pushd "${pkg_root}"
 for f in **/*.*; do
-    sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
-    sudo install --mode=644 "${pkg_root}/${f}" "${sys_root}/${f}"
+  sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
+  sudo install --mode=644 "${pkg_root}/${f}" "${sys_root}/${f}"
 done
 popd
 
