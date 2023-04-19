@@ -21,6 +21,12 @@ class Alerter:
     log: logging.Logger = field(default=logging.getLogger("alerter"), repr=False)
     def __str__(self) -> str:
         return f"LS={self.last_scan_time} NS={self.next_scan_time} LA={self.last_alert_time} NA={self.next_alert_time}"
+    
+    def updateConfig(self, new_config: Config):
+        self.next_alert_time = self.next_alert_time - self.config.alert_interval + new_config.alert_interval
+        self.next_scan_time = self.next_scan_time - self.config.scan_interval + new_config.scan_interval
+
+        self.config = new_config
 
     def loop(self, now: datetime = None) -> datetime:
         self.log.info(f"begin loop: {self!s}")
