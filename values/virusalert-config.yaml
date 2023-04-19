@@ -5,18 +5,6 @@ alert:
   alert_interval: 10m
   allowed_threat_interval: 1s
 
-
-smtp:
-  username: "noreply@example.com"
-  password: "example"
-  hostname: "smtp.example.com"
-  # port:
-
-# dkim:
-#   domain:
-#   key:
-#   selector:
-
 mail:
   to: it@example.com
   subject: >-

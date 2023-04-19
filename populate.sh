@@ -24,7 +24,8 @@ elastic() {
 virusalert() {
   helm $1 virusalert "${script_dir}/charts/virusalert" \
     --namespace virusalert --create-namespace \
-    --values "${script_dir}/values/virusalert.yaml"
+    --values "${script_dir}/values/virusalert-config.yaml"
+    --values "${script_dir}/values/virusalert-secret.yaml"
 }
 
 honeypot() {
