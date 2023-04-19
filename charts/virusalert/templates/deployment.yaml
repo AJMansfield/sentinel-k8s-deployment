@@ -15,29 +15,8 @@ spec:
       containers:
       - name: virusalert
         image: ajmansfield/virusalert
-
+        
         env:
-        - name: SCAN_INTERVAL
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-alert"
-              key: scan_interval
-        - name: SCAN_WINDOW
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-alert"
-              key: scan_window
-        - name: ALERT_INTERVAL
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-alert"
-              key: alert_interval
-        - name: ALLOWED_THREAT_INTERVAL
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-alert"
-              key: allowed_threat_interval
-          
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
         - name: ES_USER
@@ -51,61 +30,32 @@ spec:
               name: "{{ .Release.Name }}-elastic"
               key: password
 
-        - name: SMTP_USER
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-smtp"
-              key: username
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-smtp"
-              key: password
-        - name: SMTP_HOST
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-smtp"
-              key: hostname
-        - name: SMTP_PORT
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-smtp"
-              key: port
-              optional: true
-        
-        - name: DKIM_DOMAIN
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-dkim"
-              key: domain
-              optional: true
-        - name: DKIM_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-dkim"
-              key: key
-              optional: true
-        - name: DKIM_SELECTOR
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-dkim"
-              key: selector
-              optional: true
+        volumeMounts:
+        - name: alert
+          path: /etc/virusalert/alert
+          readOnly: true
+        - name: smtp
+          path: /etc/virusalert/smtp
+          readOnly: true
+        - name: dkim
+          path: /etc/virusalert/dkim
+          readOnly: true
+        - name: mail
+          path: /etc/virusalert/mail
+          readOnly: true
 
-        - name: MAIL_TO
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-mail"
-              key: to
-        - name: MAIL_SUBJECT
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-mail"
-              key: subject
-        - name: MAIL_BODY
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ .Release.Name }}-mail"
-              key: body
-        
+      volumes:
+        - name: alert
+          configMap:
+            name: "{{ .Release.Name }}-alert"
+        - name: smtp
+          secret:
+            secretName: "{{ .Release.Name }}-smtp"
+        - name: dkim
+          secret:
+            secretName: "{{ .Release.Name }}-dkim"
+            optional: true
+        - name: mail
+          configMap:
+            name: "{{ .Release.Name }}-mail"
 

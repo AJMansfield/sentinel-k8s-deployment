@@ -1,43 +1,79 @@
+from __future__ import annotations
 from dataclasses import dataclass, field
 import functools
+from typing import TypeVar, Generic, Callable
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 import pytimeparse
 
 import decouple
-
 import yagmail, yagmail.dkim
 import elasticsearch
 
 __all__ = ["Config"]
 
-default_subject = "Alert: {info.num_hits:apnumber} threat(s) detected in the last {info.scan_len:naturaldelta}"
-default_body = """
-{info.num_hits} event(s) detected between {info.scan_begin} and {info.scan_end}.
-
-Threat sources include:
-{info.sources_list}
-"""
-
 def parse_dt(s: str) -> timedelta:
     return timedelta(seconds=pytimeparse.parse(s))
 
+class Missing(object):
+    """
+    Class to represent missing value.
+    """
+    pass
+MISSING = Missing()
+class MissingConfigError(Exception):
+    pass
+
+T = TypeVar('T')
+@dataclass
+class ConfigFactory(Generic[T]):
+    var: str = ''
+    path: str = ''
+    default: T | Missing = MISSING
+    cast: Callable[[str],T] = lambda x: x
+
+    def decouple_strategy(self) -> T | Missing:
+        return decouple.config(self.var, default=MISSING, cast=self.cast)
+    def kuberfile_strategy(self) -> T | Missing:
+        try:
+            with open(self.path, 'r') as f:
+                value = f.read()
+        except FileNotFoundError:
+            return MISSING
+        return self.cast(value)
+    def default_strategy(self) -> T | Missing:
+        return self.default
+    
+    def __call__(self) -> T:
+        strategies = [
+            self.kuberfile_strategy,
+            self.decouple_strategy,
+            self.default_strategy,
+        ]
+        for strategy in strategies:
+            result = strategy()
+            if result is not MISSING:
+                return result
+        else:
+            raise MissingConfigError(f"cannot find config with {self.var=}, {self.path=}")
+
 def config_value(*a, **k):
-    return field(default_factory=functools.partial(decouple.config, *a, **k))
+    return field(default_factory=ConfigFactory(*a, **k))
 def config_secret(*a, **k):
-    return field(default_factory=functools.partial(decouple.config, *a, **k), repr=False)
+    return field(default_factory=ConfigFactory(*a, **k), repr=False)
+
 
 @dataclass
 class Config:
-    scan_interval: timedelta = config_value("SCAN_INTERVAL", cast=parse_dt)
-    scan_window: timedelta = config_value("SCAN_WINDOW", cast=parse_dt)
-    alert_interval: timedelta = config_value("ALERT_INTERVAL", cast=parse_dt)
-    allowed_threat_interval: timedelta = config_value("ALLOWED_THREAT_INTERVAL", cast=parse_dt)
+    scan_interval: timedelta = config_value("SCAN_INTERVAL", "alerter/scan_interval", cast=parse_dt)
+    scan_window: timedelta = config_value("SCAN_WINDOW", "alerter/scan_window", cast=parse_dt)
+    alert_interval: timedelta = config_value("ALERT_INTERVAL", "alerter/alert_interval", cast=parse_dt)
+    allowed_threat_interval: timedelta = config_value("ALLOWED_THREAT_INTERVAL", "alerter/allowed_threat_interval", cast=parse_dt)
     # only alert if more threats than 1>allowed_threat_interval
 
-    es_hosts: str = config_value("ES_HOSTS")
-    es_user: str = config_value("ES_USER")
-    es_password: str = config_secret("ES_PASSWORD")
+    es_hosts: str = config_value("ES_HOSTS", "elastic/hosts")
+    es_user: str = config_value("ES_USER", "elastic/user")
+    es_password: str = config_secret("ES_PASSWORD", "elastic/password")
     @functools.cached_property
     def es(self) -> elasticsearch.Elasticsearch:
         return elasticsearch.Elasticsearch(
@@ -46,9 +82,9 @@ class Config:
             verify_certs = False,
         )
     
-    dkim_domain: str = config_value("DKIM_DOMAIN", default=None)
-    dkim_key: str = config_secret("DKIM_KEY", default=None)
-    dkim_selector: str = config_value("DKIM_SELECTOR", default=None)
+    dkim_domain: str = config_value("DKIM_DOMAIN", "dkim/domain", default=None)
+    dkim_key: str = config_secret("DKIM_KEY", "dkim/key", default=None)
+    dkim_selector: str = config_value("DKIM_SELECTOR", "dkim/selector", default=None)
     @functools.cached_property
     def dkim(self) -> yagmail.dkim.DKIM | None:
         try:
@@ -65,10 +101,10 @@ class Config:
             else:
                 raise e
 
-    smtp_user: str = config_value("SMTP_USER")
-    smtp_password: str = config_secret("SMTP_PASSWORD")
-    smtp_host: str = config_value("SMTP_HOST")
-    smtp_port: str = config_value("SMTP_PORT", default=None)
+    smtp_user: str = config_value("SMTP_USER", "smtp/user")
+    smtp_password: str = config_secret("SMTP_PASSWORD", "smtp/password")
+    smtp_host: str = config_value("SMTP_HOST", "smtp/host")
+    smtp_port: str = config_value("SMTP_PORT", "smtp/port", default=None)
     @functools.cached_property
     def smtp(self) -> yagmail.SMTP:
         return yagmail.SMTP(
@@ -79,6 +115,6 @@ class Config:
             dkim = self.dkim,
         )
     
-    mail_to: str = config_value("MAIL_TO")
-    mail_subject_template: str = config_value("MAIL_SUBJECT", default=default_subject)
-    mail_body_template: str = config_value("MAIL_BODY", default=default_body)
+    mail_to: str = config_value("MAIL_TO", "mail/to")
+    mail_subject_template: str = config_value("MAIL_SUBJECT", "mail/subject")
+    mail_body_template: str = config_value("MAIL_BODY", "mail/body")

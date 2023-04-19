@@ -5,6 +5,7 @@ from virusalert.alerter import Alerter
 import logging
 from time import sleep
 from datetime import datetime, timedelta
+import contextlib
 # import urllib3
 
 def main():
@@ -13,11 +14,11 @@ def main():
     # urllib3.disable_warnings()
     # logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
 
-    config = Config()
-    logging.info(f"{config=}")
-    alerter = Alerter(config=config)
+    alerter = Alerter(config=None)
     
     while True:
+        with contextlib.chdir('/etc/virusalert'):
+            alerter.config = Config()
         sleep_until = alerter.loop()
         sleep_len = max(timedelta(seconds=0.1), (sleep_until - datetime.now()))
         logging.info(f"Sleeping for {sleep_len} (until {sleep_until}).")
