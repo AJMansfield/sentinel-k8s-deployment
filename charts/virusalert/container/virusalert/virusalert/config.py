@@ -104,9 +104,9 @@ class Config:
             else:
                 raise e
 
-    smtp_user: str = config_value("SMTP_USER", "smtp/user")
+    smtp_user: str = config_value("SMTP_USER", "smtp/username")
     smtp_password: str = config_secret("SMTP_PASSWORD", "smtp/password")
-    smtp_host: str = config_value("SMTP_HOST", "smtp/host")
+    smtp_host: str = config_value("SMTP_HOST", "smtp/hostname")
     smtp_port: str = config_value("SMTP_PORT", "smtp/port", default=None)
     @functools.cached_property
     def smtp(self) -> yagmail.SMTP:
