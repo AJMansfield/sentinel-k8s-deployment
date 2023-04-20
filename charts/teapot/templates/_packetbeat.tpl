@@ -11,7 +11,7 @@
     - mountPath: /usr/share/packetbeat/data
       name: packetbeat-data
     - mountPath: /etc/beat.yml
-      name: config
+      name: packetbeat-config
       readOnly: true
       subPath: beat.yml
     - mountPath: /mnt/elastic-internal/elasticsearch-certs
@@ -29,7 +29,7 @@
 ## Source: templates/_packetbeat.tpl
 - name: packetbeat-data
   emptyDir: {}
-- name: config
+- name: packetbeat-config
   secret:
     defaultMode: 292
     optional: false
