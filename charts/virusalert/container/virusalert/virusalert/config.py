@@ -68,10 +68,10 @@ def config_secret(*a, **k):
 
 @dataclass
 class Config:
-    scan_interval: timedelta = config_value("SCAN_INTERVAL", "alerter/scan_interval", cast=parse_dt)
-    scan_window: timedelta = config_value("SCAN_WINDOW", "alerter/scan_window", cast=parse_dt)
-    alert_interval: timedelta = config_value("ALERT_INTERVAL", "alerter/alert_interval", cast=parse_dt)
-    allowed_threat_interval: timedelta = config_value("ALLOWED_THREAT_INTERVAL", "alerter/allowed_threat_interval", cast=parse_dt)
+    scan_interval: timedelta = config_value("SCAN_INTERVAL", "alert/scan_interval", cast=parse_dt)
+    scan_window: timedelta = config_value("SCAN_WINDOW", "alert/scan_window", cast=parse_dt)
+    alert_interval: timedelta = config_value("ALERT_INTERVAL", "alert/alert_interval", cast=parse_dt)
+    allowed_threat_interval: timedelta = config_value("ALLOWED_THREAT_INTERVAL", "alert/allowed_threat_interval", cast=parse_dt)
     # only alert if more threats than 1>allowed_threat_interval
 
     es_hosts: str = config_value("ES_HOSTS", "elastic/hosts")
