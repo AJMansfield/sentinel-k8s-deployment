@@ -15,6 +15,7 @@ spec:
       containers:
       - name: virusalert
         image: ajmansfield/virusalert
+        imagePullPolicy: Always
         
         env:
         - name: ES_HOSTS
