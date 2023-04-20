@@ -6,7 +6,7 @@ metadata:
   labels: {{- include "teapot.potLabels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

@@ -29,6 +29,8 @@ set -e -x
 pkg_root="${script_dir}/system"
 sys_root="${sys_root}"
 
+sudo apt install -y nfs-common
+
 # template out the config with the hostname and password
 config_file="${pkg_root}/var/lib/rancher/rke2/server/manifests/rancher-config.yaml"
 cat > "${config_file}" <<EOF
