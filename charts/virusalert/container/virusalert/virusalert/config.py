@@ -33,7 +33,10 @@ class ConfigFactory(Generic[T]):
     cast: Callable[[str],T] = lambda x: x
 
     def decouple_strategy(self) -> T | Missing:
-        return decouple.config(self.var, default=MISSING, cast=self.cast)
+        try:
+            return decouple.config(self.var, cast=self.cast)
+        except decouple.UndefinedValueError:
+            return MISSING
     def kuberfile_strategy(self) -> T | Missing:
         try:
             with open(self.path, 'r') as f:
