@@ -78,22 +78,13 @@ class Config:
     es_hosts: str = config_value("ES_HOSTS", "elastic/hosts")
     es_user: str = config_value("ES_USER", "elastic/user")
     es_password: str = config_secret("ES_PASSWORD", "elastic/password")
-    es_ca_path: str = config_value("ES_CA_PATH", "elastic/ca_path", default='/etc/elastic/elasticsearch/ca.crt')
-    es_tls_path: str = config_value("ES_TLS_PATH", "elastic/tls_path", default='/etc/elastic/elasticsearch/tls.crt')
+    es_ca_path: str = config_value("ES_CA_PATH", "elastic/ca_path", default='/etc/elastic/elasticsearch/certs/ca.crt')
     @functools.cached_property
     def es(self) -> elasticsearch.Elasticsearch:
-        if self.es_ca_path or self.es_tls_path:
-            ssl_context = ssl.create_default_context(cafile=self.es_ca_path)
-            ssl_context.load_cert_chain(certfile=self.es_tls_path)
-            verify_certs = True
-        else:
-            ssl_context = None
-            verify_certs = False
         return elasticsearch.Elasticsearch(
             hosts = self.es_hosts,
             http_auth = (self.es_user, self.es_password),
-            ssl_context = ssl_context,
-            verify_certs = verify_certs,
+            ca_certs = self.es_ca_path,
         )
     
     dkim_domain: str = config_value("DKIM_DOMAIN", "dkim/domain", default=None)

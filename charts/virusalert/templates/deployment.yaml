@@ -45,7 +45,7 @@ spec:
           mountPath: /etc/virusalert/mail
           readOnly: true
         - name: elasticsearch-certs
-          mountPath: /etc/elastic/elasticsearch
+          mountPath: /etc/elastic/elasticsearch/certs
           readOnly: true
         # - mountPath: /etc/elastic/kibana
         #   name: kibana-certs
