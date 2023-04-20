@@ -32,19 +32,19 @@ spec:
 
         volumeMounts:
         - name: alert
-          path: /etc/virusalert/alert
+          mountPath: /etc/virusalert/alert
           readOnly: true
         - name: smtp
-          path: /etc/virusalert/smtp
+          mountPath: /etc/virusalert/smtp
           readOnly: true
         - name: dkim
-          path: /etc/virusalert/dkim
+          mountPath: /etc/virusalert/dkim
           readOnly: true
         - name: mail
-          path: /etc/virusalert/mail
+          mountPath: /etc/virusalert/mail
           readOnly: true
-        - mountPath: /mnt/elastic-internal/elasticsearch-certs
-          name: elasticsearch-certs
+        - name: elasticsearch-certs
+          mountPath: /mnt/elastic-internal/elasticsearch-certs
           readOnly: true
         # - mountPath: /mnt/elastic-internal/kibana-certs
         #   name: kibana-certs
