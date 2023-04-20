@@ -1,0 +1,5 @@
+yagmail[dkim]
+elasticsearch
+python-decouple
+humanize
+pytimeparse
