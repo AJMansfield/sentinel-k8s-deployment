@@ -16,7 +16,7 @@ spec:
       - name: virusalert
         image: ajmansfield/virusalert
         imagePullPolicy: Always
-        
+
         env:
         - name: ES_HOSTS
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
@@ -45,9 +45,9 @@ spec:
           mountPath: /etc/virusalert/mail
           readOnly: true
         - name: elasticsearch-certs
-          mountPath: /mnt/elastic-internal/elasticsearch-certs
+          mountPath: /etc/elastic/elasticsearch
           readOnly: true
-        # - mountPath: /mnt/elastic-internal/kibana-certs
+        # - mountPath: /etc/elastic/kibana
         #   name: kibana-certs
         #   readOnly: true
 
