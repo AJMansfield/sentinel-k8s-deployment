@@ -63,13 +63,3 @@ app.kubernetes.io/component: logging
 {{ include "teapot.labels" . }}
 app.kubernetes.io/component: honeypot
 {{- end }}
-
-{{- define "teapot.logSelectorLabels" -}}
-{{ include "teapot.selectorLabels" . }}
-app.kubernetes.io/component: logging
-{{- end }}
-
-{{- define "teapot.potSelectorLabels" -}}
-{{ include "teapot.selectorLabels" . }}
-app.kubernetes.io/component: honeypot
-{{- end }}

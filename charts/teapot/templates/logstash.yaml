@@ -7,7 +7,7 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: {{- include "teapot.logSelectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "teapot.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels: {{- include "teapot.logLabels" . | nindent 8 }}
