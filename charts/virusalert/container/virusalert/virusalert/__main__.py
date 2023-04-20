@@ -6,14 +6,23 @@ import logging
 from time import sleep
 from datetime import datetime, timedelta
 import contextlib
+import os
 # import urllib3
 
+@contextlib.contextmanager
+def pushd(path: str | os.PathLike):
+    cwd = os.getcwd()
+    os.chdir(path)
+    yield
+    os.chdir(cwd)
+
 def loadConfig():
-    with contextlib.chdir('/etc/virusalert'):
+    with pushd('/etc/virusalert'):
         return Config()
     
 def clamp(x, lower, upper):
     return min(max(x,lower), upper)
+
     
 def main():
     logging.basicConfig(level=logging.INFO)
