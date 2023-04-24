@@ -2,17 +2,11 @@
 hostname: joes-samsung-galaxy-phone
 
 behaviors:
-  default: {}
-  dhcp:
+- name: default
+- name: dhcp
+  spec:
     hostname: joes-samsung-galaxy-phone
     vendor: android
-  packetbeat: {}
-  log4pot: {}
-  adbhoney: {}
-
-behaviorOrder:
-- default
-- dhcp
-- packetbeat
-- log4pot
-- adbhoney
+- name: packetbeat
+- name: log4pot
+- name: adbhoney

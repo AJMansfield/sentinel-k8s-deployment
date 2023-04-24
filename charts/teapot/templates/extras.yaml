@@ -1,5 +1,8 @@
-{{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
-{{- $template := printf "%v.extras" $behavior -}}
-{{- include $template $ }}
+{{- range $behavior := (.Values.behaviors) }}
+{{- $name := $behavior.name }}
+{{- $spec := ( $behavior.spec | default (dict) ) }}
+{{- $data := merge (dict "Name" $name "Spec" $spec) ($) }}
+{{- $template := printf "%v.extras" $name }}
+{{- include $template $data }}
 ---
 {{- end }}

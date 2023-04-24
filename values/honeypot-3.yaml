@@ -2,29 +2,17 @@
 hostname: hp-jetdirect-2304
 
 behaviors:
-  default: {}
-  dhcp:
+- name: default
+- name: dhcp
+  spec:
     hostname: hp-jetdirect-2304
     vendor: hp
-  packetbeat: {}
-  conpot-default: {}
-  # conpot-iec104: {}
-  conpot-guardian-ast: {}
-  conpot-ipmi: {}
-  conpot-kamstrup-382: {}
-  ipphoney: {}
-  medpot: {}
-  sentrypeer: {}
-
-behaviorOrder:
-- default
-- dhcp
-- packetbeat
-- conpot-default
-# - conpot-iec104
-- conpot-guardian-ast
-- conpot-ipmi
-- conpot-kamstrup-382
-- ipphoney
-- medpot
-- sentrypeer
+- name: packetbeat
+- name: conpot-default
+#- name: conpot-iec104
+- name: conpot-guardian-ast
+- name: conpot-ipmi
+- name: conpot-kamstrup-382
+- name: ipphoney
+- name: medpot
+- name: sentrypeer

@@ -19,12 +19,18 @@ spec:
       securityContext:
         fsGroup: 2000
       containers:
-        {{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
-        {{- $template := printf "%v.containers" $behavior -}}
-        {{- include $template $ | indent 6 }}
+        {{- range $behavior := (.Values.behaviors) }}
+        {{- $name := $behavior.name }}
+        {{- $spec := ( $behavior.spec | default (dict) ) }}
+        {{- $data := merge (dict "Name" $name "Spec" $spec) ($) }}
+        {{- $template := printf "%v.containers" $name }}
+        {{- include $template $data | nindent 6 }}
         {{- end }}
       volumes:
-        {{- range $behavior := (.Values.behaviorOrder | default (keys .Values.behaviors)) }}
-        {{- $template := printf "%v.volumes" $behavior -}}
-        {{- include $template $ | indent 6 }}
+        {{- range $behavior := (.Values.behaviors) }}
+        {{- $name := $behavior.name }}
+        {{- $spec := ( $behavior.spec | default (dict) ) }}
+        {{- $data := merge (dict "Name" $name "Spec" $spec) ($) }}
+        {{- $template := printf "%v.containers" $name }}
+        {{- include $template $data | nindent 6 }}
         {{- end }}

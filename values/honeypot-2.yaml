@@ -2,26 +2,18 @@
 hostname: quincap
 
 behaviors:
-  default: {}
-  dhcp:
+- name: default
+- name: dhcp
+  spec:
     hostname: quincap
     vendor: microsoft
-  packetbeat: {}
-  samba:
+- name: packetbeat
+- name: samba
+  spec:
     workgroup: QUINKAP
-  endlessh: {}
-  wordpot: {}
-  mailoney: {}
-  redishoneypot: {}
-  elasticpot: {}
+- name: endlessh
+- name: wordpot
+- name: mailoney
+- name: redishoneypot
+- name: elasticpot
 
-behaviorOrder:
-- default
-- dhcp
-- packetbeat
-- samba
-- endlessh
-- wordpot
-- mailoney
-- redishoneypot
-- elasticpot

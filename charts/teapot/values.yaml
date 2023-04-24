@@ -1,77 +1,46 @@
 
 
-#hostname: 
+# hostname: honeypot.example.com
 
 networks: honeynet/macvlan
 
 behaviors:
-  default: {}
-  dhcp: {}
-  #   #hostname:
-  #   #vendor: 
-  packetbeat: {}
-  # samba: {}
-  #   # workgroup: QUINKAP
-  # honeytrap: {}
-  # ciscoasa: {}
-  # log4pot: {}
-  # citrixhoneypot: {}
-  # adbhoney: {}
-  # tanner: {}
-  # cowrie: {}
-  # glutton: {}
-  # endlessh: {}
-  # ddospot: {}
-  # conpot-default: {}
-  # conpot-iec104: {}
-  # conpot-guardian-ast: {}
-  # conpot-ipmi: {}
-  # conpot-kamstrup-382: {}
-  # wordpot: {}
-  # ipphoney: {}
-  # dionaea: {}
-  # medpot: {}
-  # dicompot: {}
-  # heralding: {}
-  # sentrypeer: {}
-  # mailoney: {}
-  # hellpot: {}
-  # redishoneypot: {}
-  # elasticpot: {}
-  # honeypots: {}
-
-behaviorOrder:
-- default
-- dhcp
-- packetbeat
-# - samba
-# - honeytrap
-# - ciscoasa
-# - log4pot
-# - citrixhoneypot
-# - adbhoney
-# - tanner
-# - cowrie
-# - glutton
-# - endlessh
-# - ddospot
-# - conpot-default
-# - conpot-iec104
-# - conpot-guardian-ast
-# - conpot-ipmi
-# - conpot-kamstrup-382
-# - wordpot
-# - ipphoney
-# - dionaea
-# - medpot
-# - dicompot
-# - heralding
-# - sentrypeer
-# - mailoney
-# - hellpot
-# - redishoneypot
-# - elasticpot
-# - honeypots
+- name: default
+- name: dhcp
+#   spec:
+#     hostname: honeypot.example.com
+#     vendor: example-vendor
+- name: packetbeat
+# - name: samba
+#   spec:
+#     workgroup: QUINKAP
+# - name: honeytrap
+# - name: ciscoasa
+# - name: log4pot
+# - name: citrixhoneypot
+# - name: adbhoney
+# - name: tanner
+# - name: cowrie
+# - name: glutton
+# - name: endlessh
+# - name: ddospot
+# - name: conpot-default
+# - name: conpot-iec104
+# - name: conpot-guardian-ast
+# - name: conpot-ipmi
+# - name: conpot-kamstrup-382
+# - name: wordpot
+# - name: ipphoney
+# - name: dionaea
+# - name: medpot
+# - name: dicompot
+# - name: heralding
+# - name: sentrypeer
+# - name: mailoney
+# - name: hellpot
+# - name: redishoneypot
+# - name: elasticpot
+# - name: honeypots
 
 
 # ECK reference info to give to file/auditbeat
