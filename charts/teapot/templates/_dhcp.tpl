@@ -1,7 +1,7 @@
 {{/* container spec and volumes for dhcp client */}}
 {{- define "dhcp.containers" }}
 ## Source: templates/_dhcp.tpl
-- name: dhcp
+- name: dhcp-{{ .Spec.iface | default "net1" }}
   image: alpine
   command: [
     "udhcpc",
@@ -33,8 +33,10 @@
   volumeMounts:
   - name: udhcpc-scripts
     mountPath: "/usr/share/udhcpc"
+{{- if .Spec.master | default ( eq ( .Spec.iface | default "net1" ) "net1" ) }}
   - name: resolv
     mountPath: /etc/resolv.d/
+{{- end }}
   securityContext:
     allowPrivilegeEscalation: true
     capabilities:
@@ -42,6 +44,7 @@
 {{- end }}
 {{- define "dhcp.volumes" }}
 ## Source: templates/_dhcp.tpl
+{{- if .Spec.master | default ( eq ( .Spec.iface | default "net1" ) "net1" ) }}
 - name: udhcpc-scripts
   configMap:
     name: {{ .Release.Name }}-udhcpc-scripts
@@ -50,8 +53,10 @@
   emptyDir:
     medium: Memory
 {{- end }}
+{{- end }}
 {{- define "dhcp.extras" }}
 ## Source: templates/_dhcp.tpl
+{{- if .Spec.master | default ( eq ( .Spec.iface | default "net1" ) "net1" ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -60,4 +65,5 @@ metadata:
   labels: {{- include "teapot.potLabels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/udhcpc/*.script").AsConfig | indent 2 }}
+{{- end }}
 {{- end }}

@@ -1,12 +1,5 @@
 
 hostname: smartphone
-networks: |-
-  [
-    { "interface": "net1", "name":"macvlan", "namespace":"honeynet", "mac":"00:26:5D:3C:65:F2" },
-    { "interface": "net2", "name":"macvlan", "namespace":"honeynet", "mac":"70:3A:CB:EF:1C:FE" }
-    { "interface": "net3", "name":"macvlan", "namespace":"honeynet", "mac":"C8:E0:EB:9D:3D:A5" }
-    { "interface": "net4", "name":"macvlan", "namespace":"honeynet", "mac":"A0:02:DC:6C:46:B3" }
-  ]
 
 behaviors:
 - name: default
@@ -15,21 +8,25 @@ behaviors:
     hostname: joes-samsung-galaxy-phone
     vendor: android
     iface: net1
+    mac: 00:26:5D:3C:65:F2
 - name: dhcp
   spec:
     hostname: Pixel-4-8G97
     vendor: GOOGLE
     iface: net2
+    mac: 70:3A:CB:EF:1C:FE
 - name: dhcp
   spec:
     hostname: iPhone-4S
     vendor: Apple
     iface: net3
+    mac: C8:E0:EB:9D:3D:A5
 - name: dhcp
   spec:
     hostname: kindle
     vendor: amazon
     iface: net4
+    mac: A0:02:DC:6C:46:B3
 - name: packetbeat
 - name: log4pot
 - name: adbhoney

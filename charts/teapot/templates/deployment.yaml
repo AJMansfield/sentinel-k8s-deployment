@@ -13,7 +13,7 @@ spec:
     metadata:
       labels: {{- include "teapot.potLabels" . | nindent 8 }}
       annotations:
-        k8s.v1.cni.cncf.io/networks: {{ .Values.networks }}
+        k8s.v1.cni.cncf.io/networks: {{ include "teapot.networkList" $ }}
     spec:
       hostname: {{ .Values.hostname }}
       securityContext:
@@ -31,6 +31,6 @@ spec:
         {{- $name := $behavior.name }}
         {{- $spec := ( $behavior.spec | default (dict) ) }}
         {{- $data := merge (dict "Name" $name "Spec" $spec) ($) }}
-        {{- $template := printf "%v.containers" $name }}
+        {{- $template := printf "%v.volumes" $name }}
         {{- include $template $data | nindent 6 }}
         {{- end }}
