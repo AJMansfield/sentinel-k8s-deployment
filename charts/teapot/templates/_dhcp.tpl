@@ -5,7 +5,7 @@
   image: alpine
   command: [
     "udhcpc",
-    "-i", "net1", # Interface to use
+    "-i", "{{ .Spec.iface | default "net1" }}", # Interface to use
     "-B", # Request broadcast replies (so everyone sees us)
     "-T", "5", # Pause between packets
     "-R", # Release IP on exit

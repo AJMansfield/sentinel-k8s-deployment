@@ -11,12 +11,12 @@ bound)
   for i in $router; do
     route add default gw $i dev $interface metric 1000
   done
-  {
-    [ -n "$domain" ] && echo "search $domain"
-    for i in $dns; do
-      echo "nameserver $i" 
-    done
-  } > /etc/resolv.d/resolv.conf
+  # {
+  #   [ -n "$domain" ] && echo "search $domain"
+  #   for i in $dns; do
+  #     echo "nameserver $i" 
+  #   done
+  # } > /etc/resolv.d/resolv.conf
   touch /var/lease-acquired
   ;;
 renew)
