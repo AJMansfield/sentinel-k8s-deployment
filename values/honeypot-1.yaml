@@ -6,25 +6,25 @@ behaviors:
 - name: dhcp
   spec:
     hostname: joes-samsung-galaxy-phone
-    vendor: android
+    vendor: Samsung
     iface: net1
     mac: 00:26:5D:3C:65:F2
 - name: dhcp
   spec:
     hostname: Pixel-4-8G97
-    vendor: GOOGLE
+    vendor: Google
     iface: net2
     mac: 70:3A:CB:EF:1C:FE
 - name: dhcp
   spec:
-    hostname: iPhone-4S
+    hostname: iPhone-6
     vendor: Apple
     iface: net3
     mac: C8:E0:EB:9D:3D:A5
 - name: dhcp
   spec:
-    hostname: kindle
-    vendor: amazon
+    hostname: amazon-kindle-ce35tgdqd33
+    vendor: Amazon
     iface: net4
     mac: A0:02:DC:6C:46:B3
 - name: packetbeat
