@@ -4,10 +4,10 @@ case $1 in
 deconfig)
   rm -f /var/lease-acquired
   echo -n > /etc/resolv.d/resolv.conf
-  ifconfig $interface 0.0.0.0
+  ifconfig $interface del $ip
   ;;
-renew|bound)
-  ifconfig $interface $ip ${broadcast:+broadcast $broadcast} ${subnet:+netmask $subnet}
+bound)
+  ifconfig $interface add $ip ${broadcast:+broadcast $broadcast} ${subnet:+netmask $subnet}
   for i in $router; do
     route add default gw $i dev $interface metric 1000
   done
@@ -18,5 +18,7 @@ renew|bound)
     done
   } > /etc/resolv.d/resolv.conf
   touch /var/lease-acquired
+  ;;
+renew)
   ;;
 esac
