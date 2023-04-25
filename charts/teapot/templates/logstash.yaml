@@ -43,6 +43,11 @@ spec:
         - name: MY_HOSTNAME
           value: {{ .Values.hostname }}
 
+        resources:
+          requests:
+            cpu: 35m
+            memory: 1280Mi
+
         volumeMounts:
         - name: data
           mountPath: /data
