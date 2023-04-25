@@ -41,6 +41,13 @@
     allowPrivilegeEscalation: true
     capabilities:
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+  resources:
+    requests:
+      memory: 0Mi
+      cpu: 0m
+    limits:
+      memory: 1Mi
+      cpu: 1m
 {{- end }}
 {{- define "dhcp.volumes" }}
 ## Source: templates/_dhcp.tpl

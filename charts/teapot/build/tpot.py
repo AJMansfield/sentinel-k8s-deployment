@@ -38,6 +38,45 @@ def get_compose_file(dir):
             return file
     else:
         return None
+    
+
+def rl(loM:int, hiM:int, loC:int, hiC:int) -> dict:
+    return {
+        'requests': {'memory': f'{loM}Mi', 'cpu': f'{loC}1m'},
+        'limits':   {'memory': f'{hiM}Mi', 'cpu': f'{hiC}1m'},
+    }
+
+def get_resource_limits(name: str) -> dict:
+    unknown = rl(1, 128, 1, 25)
+    return {
+        'adbhoney': rl(13, 16, 3, 5),
+        'ciscoasa': unknown,
+        'citrixhoneypot': unknown,
+        'conpot-default': rl(117, 192, 7, 10),
+        'conpot-iec104': rl(105, 128, 1, 3), # <- this one's just a guess based on the other conpot configs
+        'conpot-guardian-ast': rl(104, 128, 1, 3),
+        'conpot-ipmi': rl(105, 128, 1, 3),
+        'conpot-kamstrup-382': rl(105, 128, 1, 3),
+        'cowrie': unknown,
+        'ddospot': unknown,
+        'dicompot': unknown,
+        'dionaea': unknown,
+        'elasticpot': rl(27, 32, 1, 2),
+        'endlessh': rl(0, 2, 0, 1),
+        'glutton': unknown,
+        'hellpot': unknown,
+        'heralding': unknown,
+        'honeypots': unknown,
+        'honeytrap': unknown,
+        'ipphoney': rl(30, 48, 1, 2),
+        'log4pot': rl(13, 16, 1, 2),
+        'mailoney': rl(8, 12, 0, 1),
+        'medpot': rl(1, 2, 0, 1),
+        'redishoneypot': rl(1, 2, 0, 1),
+        'sentrypeer': rl(1, 2, 1, 2),
+        'tanner': unknown,
+        'wordpot': rl(20, 32, 1, 2),
+    }.get(name, unknown)
 
 def convert_service(name: str, service: dict,
                     pvc_name_template: str = "{{{{ .Release.Name }}}}-{name}",
@@ -94,7 +133,7 @@ def convert_service(name: str, service: dict,
                     'accessModes': ['ReadWriteOnce'],
                     'resources': {
                         'requests': {
-                            'storage': '100Mi'
+                            'storage': '10Mi'
                         }
                     }
                 }
@@ -125,6 +164,8 @@ def convert_service(name: str, service: dict,
             'name': vol_name,
             'emptyDir': {},
         }
+    
+    container['resources'] = get_resource_limits(name)
     
     return container, volumes, extras
  
