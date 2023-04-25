@@ -26,7 +26,7 @@
       add: ["NET_ADMIN", "NET_RAW"]
   resources:
     requests:
-      memory: 32Mi
+      memory: 39Mi
       cpu: 3m
     limits:
       memory: 48Mi
