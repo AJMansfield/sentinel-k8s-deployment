@@ -1,0 +1,36 @@
+
+hostname: office-pc
+
+behaviors:
+- name: default
+- name: dhcp
+  spec:
+    hostname: TMorris-JMQAK
+    vendor: Microsoft
+    iface: net1
+    mac: C8:1F:66:7A:93:E3 # Dell Inc.
+- name: dhcp
+  spec:
+    hostname: RKhan-3QJOK
+    vendor: Microsoft
+    iface: net2
+    mac: C8:1F:66:81:23:45 # Dell Inc.
+- name: dhcp
+  spec:
+    hostname: ERodrig-II6LL
+    vendor: Microsoft
+    iface: net3
+    mac: C8:1F:66:8A:8C:0A # Dell Inc.
+- name: dhcp
+  spec:
+    hostname: KBarnes-3X67V
+    vendor: Microsoft
+    iface: net4
+    mac: C8:1F:66:1E:A2:76 # Dell Inc
+- name: packetbeat
+- name: samba
+  spec:
+    hostname: Windows Domain
+    workgroup: QUINKAP
+- name: ipphoney
+- name: heralding

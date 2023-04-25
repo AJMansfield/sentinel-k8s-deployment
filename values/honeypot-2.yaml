@@ -1,19 +1,29 @@
 
-hostname: quincap
+hostname: domain-server
 
 behaviors:
 - name: default
 - name: dhcp
   spec:
-    hostname: quincap
-    vendor: microsoft
+    hostname: quincap-dc1
+    vendor: Microsoft
+    iface: net1
+    mac: 00:00:63:46:82:E3 # HP
+- name: dhcp
+  spec:
+    hostname: quinkap-dc2
+    vendor: Microsoft
+    iface: net2
+    mac: 00:00:63:49:EE:91 # HP
 - name: packetbeat
 - name: samba
   spec:
+    hostname: Windows Domain
     workgroup: QUINKAP
+- name: citrixhoneypot
 - name: endlessh
 - name: wordpot
 - name: mailoney
 - name: redishoneypot
 - name: elasticpot
-
+- name: ipphoney

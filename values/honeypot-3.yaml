@@ -1,18 +1,38 @@
 
-hostname: hp-jetdirect-2304
+hostname: printer
 
 behaviors:
 - name: default
 - name: dhcp
   spec:
     hostname: hp-jetdirect-2304
-    vendor: hp
+    vendor: HP
+    iface: net1
+    mac: 00:60:B0:F6:35:71 # HP
+- name: dhcp
+  spec:
+    hostname: HL-L2300D
+    vendor: Brother industries, LTD.
+    iface: net2
+    mac: 00:80:77:CD:D8:10 # Brother industries, LTD.
+- name: dhcp
+  spec:
+    hostname: CANON-MG3620
+    vendor: Canon Imaging Systems Inc.
+    iface: net2
+    mac: 00:30:C4:32:0D:FD # Canon Imaging Systems Inc.
+- name: dhcp
+  spec:
+    hostname: Epson_EcoTank_ET_2803
+    vendor: Seiko Epson Corporation
+    iface: net2
+    mac: B0:E8:92:0E:F1:26 # Seiko Epson Corporation
 - name: packetbeat
+- name: ipphoney
 - name: conpot-default
 #- name: conpot-iec104
 - name: conpot-guardian-ast
 - name: conpot-ipmi
 - name: conpot-kamstrup-382
-- name: ipphoney
 - name: medpot
 - name: sentrypeer

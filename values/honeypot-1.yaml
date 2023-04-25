@@ -6,27 +6,27 @@ behaviors:
 - name: dhcp
   spec:
     hostname: joes-samsung-galaxy-phone
-    vendor: Samsung
+    vendor: Samsung Electronics Co.,Ltd
     iface: net1
-    mac: 00:26:5D:3C:65:F2
+    mac: 00:26:5D:3C:65:F2 # Samsung Electronics Co.,Ltd
 - name: dhcp
   spec:
     hostname: Pixel-4-8G97
-    vendor: Google
+    vendor: Google, Inc.
     iface: net2
-    mac: 70:3A:CB:EF:1C:FE
+    mac: 70:3A:CB:EF:1C:FE # Google, Inc.
 - name: dhcp
   spec:
     hostname: iPhone-6
-    vendor: Apple
+    vendor: Apple, Inc.
     iface: net3
-    mac: C8:E0:EB:9D:3D:A5
+    mac: C8:E0:EB:9D:3D:A5 # Apple, Inc.
 - name: dhcp
   spec:
     hostname: amazon-kindle-ce35tgdqd33
-    vendor: Amazon
+    vendor: Amazon Technologies Inc.
     iface: net4
-    mac: A0:02:DC:6C:46:B3
+    mac: A0:02:DC:6C:46:B3 # Amazon Technologies Inc.
 - name: packetbeat
 - name: log4pot
 - name: adbhoney
