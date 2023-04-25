@@ -19,13 +19,13 @@ behaviors:
   spec:
     hostname: CANON-MG3620
     vendor: Canon Imaging Systems Inc.
-    iface: net2
+    iface: net3
     mac: 00:30:C4:32:0D:FD # Canon Imaging Systems Inc.
 - name: dhcp
   spec:
     hostname: Epson_EcoTank_ET_2803
     vendor: Seiko Epson Corporation
-    iface: net2
+    iface: net4
     mac: B0:E8:92:0E:F1:26 # Seiko Epson Corporation
 - name: packetbeat
 - name: ipphoney
