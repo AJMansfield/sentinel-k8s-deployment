@@ -65,7 +65,7 @@ def get_resource_limits(name: str) -> dict:
         'endlessh': rl(0, 1, 0, 1),
         'glutton': unknown,
         'hellpot': unknown,
-        'heralding': unknown,
+        'heralding': rl(39, 48, 20, 20),
         'honeypots': unknown,
         'honeytrap': unknown,
         'ipphoney': rl(30, 48, 1, 2),
