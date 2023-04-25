@@ -16,28 +16,37 @@ EOF
 }
 
 elastic() {
-  [ $1 == "uninstall" ] \
-  && helm $1 elastic --namespace elastic \
-  || helm $1 elastic "${script_dir}/charts/elastic" \
+  if [ $1 == "uninstall" ]
+  then
+    helm $1 elastic --namespace elastic
+  else
+    helm $1 elastic "${script_dir}/charts/elastic" \
       --namespace elastic --create-namespace \
       --values "${script_dir}/values/elastic.yaml"
+  fi
 }
 
 virusalert() {
-  [ $1 == "uninstall" ] \
-  && helm $1 virusalert --namespace virusalert \
-  || helm $1 virusalert "${script_dir}/charts/virusalert" \
+  if [ $1 == "uninstall" ]
+  then
+    helm $1 virusalert --namespace virusalert
+  else
+    helm $1 virusalert "${script_dir}/charts/virusalert" \
       --namespace virusalert --create-namespace \
       --values "${script_dir}/values/virusalert-config.yaml" \
       --values "${script_dir}/values/virusalert-secret.yaml"
+  fi
 }
 
 honeypot() {
-  [ $1 == "uninstall" ] \
-  && helm $1 "honeypot-${2}" --namespace "honeypot-${2}" \
-  || helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
+  if [ $1 == "uninstall" ]
+  then
+    helm $1 "honeypot-${2}" --namespace "honeypot-${2}"
+  else
+    helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
       --namespace "honeypot-${2}" --create-namespace \
       --values "${script_dir}/values/honeypot-${2}.yaml"
+  fi
 }
 
 module=$1
