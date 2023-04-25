@@ -42,8 +42,8 @@ def get_compose_file(dir):
 
 def rl(loM:int, hiM:int, loC:int, hiC:int) -> dict:
     return {
-        'requests': {'memory': f'{loM}Mi', 'cpu': f'{loC}1m'},
-        'limits':   {'memory': f'{hiM}Mi', 'cpu': f'{hiC}1m'},
+        'requests': {'memory': f'{max(loM,1)}Mi', 'cpu': f'{max(loC,1)}m'},
+        'limits':   {'memory': f'{max(hiM,4)}Mi', 'cpu': f'{max(hiC,1)}m'},
     }
 
 def get_resource_limits(name: str) -> dict:
@@ -62,7 +62,7 @@ def get_resource_limits(name: str) -> dict:
         'dicompot': unknown,
         'dionaea': unknown,
         'elasticpot': rl(27, 32, 1, 2),
-        'endlessh': rl(0, 2, 0, 1),
+        'endlessh': rl(0, 1, 0, 1),
         'glutton': unknown,
         'hellpot': unknown,
         'heralding': unknown,
@@ -71,7 +71,7 @@ def get_resource_limits(name: str) -> dict:
         'ipphoney': rl(30, 48, 1, 2),
         'log4pot': rl(13, 16, 1, 2),
         'mailoney': rl(8, 12, 0, 1),
-        'medpot': rl(1, 2, 0, 1),
+        'medpot': rl(0, 1, 0, 1),
         'redishoneypot': rl(1, 2, 0, 1),
         'sentrypeer': rl(1, 2, 1, 2),
         'tanner': unknown,
