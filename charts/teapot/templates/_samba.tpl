@@ -21,6 +21,13 @@
     allowPrivilegeEscalation: true
     capabilities:
       add: ["NET_BIND_SERVICE", "NET_BROADCAST", "NET_ADMIN"]
+  resources:
+    requests:
+      memory: 16Mi
+      cpu: 1m
+    limits:
+      memory: 24Mi
+      cpu: 2m
 {{- end }}
 {{- define "samba.volumes" }}
 ## Source: templates/_samba.tpl

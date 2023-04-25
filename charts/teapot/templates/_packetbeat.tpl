@@ -24,6 +24,13 @@
     allowPrivilegeEscalation: true
     capabilities:
       add: ["NET_ADMIN", "NET_RAW"]
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 3m
+    limits:
+      memory: 48Mi
+      cpu: 8m
 {{- end }}
 {{- define "packetbeat.volumes" }}
 ## Source: templates/_packetbeat.tpl
