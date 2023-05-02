@@ -49,6 +49,7 @@ class Alerter:
 
             self.log.info(f"{info.scan_len=!s}")
             self.log.info(f"{info.num_hits=}")
+            self.log.info(f"{info.score=}")
             self.log.info(f"{info.allowed_score=}")
 
             trigger = self.trigger(info)

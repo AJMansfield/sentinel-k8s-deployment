@@ -30,7 +30,7 @@ def clamp(x, lower, upper):
 
     
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     # logging.getLogger('elasticsearch').setLevel(logging.WARNING)
     # urllib3.disable_warnings()
     # logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
