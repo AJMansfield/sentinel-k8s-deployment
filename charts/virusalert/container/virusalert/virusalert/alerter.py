@@ -77,8 +77,8 @@ class Alerter:
                 }},
                 "functions": [
                     {"filter": { "term": { "network.transport": "ipv6-icmp" } }, "weight": 0.01},
-                    {"filter": { "exists": { "field": "auditd" } }, "weight": 0.1},
-                    {"filter": { "term": { "auditd.data.terminal": "cron" } }, "weight": 0.01},
+                    {"filter": { "exists": { "field": "auditd" } }, "weight": 0.001},
+                    # {"filter": { "term": { "auditd.data.terminal": "cron" } }, "weight": 0.01},
                 ]
             }},
             aggregations = {"score":{"sum":{"script":{"source":"_score"}}}}
