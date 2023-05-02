@@ -68,17 +68,25 @@ class Alerter:
         self.log.info(f"Scanning from {begin} to {end}.")
         return self.config.es.search(
             size = 10000,
-            query = {
-                "range":{
-                    "@timestamp":{
-                        "gte": begin,
-                        "lt": end,
-                    }
-                }
-            })
+            query = { "function_score": {
+                "query": { "bool": {
+                    "must": [
+                        { "range": { "@timestamp": { "gte": begin, "lt": end } } }
+                    ], 
+                    "filter": [],
+                }},
+                "functions": [
+                    {"filter": { "term": { "network.transport": "ipv6-icmp" } }, "weight": 0.01},
+                    {"filter": { "exists": { "field": "auditd" } }, "weight": 0.1},
+                    {"filter": { "term": { "auditd.data.terminal": "cron" } }, "weight": 0.01},
+                ]
+            }},
+            aggregations = {"score":{"sum":{"script":{"source":"_score"}}}}
+            )
     
     def analyze(self, info: SimpleNamespace) -> SimpleNamespace:
-        info.num_hits = info.scan['hits']['total']['value'] #type: int
+        # info.num_hits = info.scan['hits']['total']['value'] #type: int
+        info.num_hits = info.scan['hits']['aggregations']['score']['value'] #type: float
         info.scan_len = info.scan_end - info.scan_begin #type: timedelta
         info.allowed_hits = info.scan_len / self.config.allowed_threat_interval #type: float
         self.collect_sources(info)
@@ -90,6 +98,12 @@ class Alerter:
 
         field_names = [
             ('source.ip', 'ip: {}'),
+            ('client.ip', 'ip: {}'),
+            ('related.ip', 'ip: {}'),
+            ('server.ip', 'ip: {}'),
+            ('destination.ip', 'ip: {}'),
+            ('path', 'ip: {}'),
+            ('host.name', 'host: {}'),
             ('samba.src_host', 'host: {}'),
             ('samba.src_ip', 'ip: {}'),
             ('samba.src_user', 'user: {}'),
