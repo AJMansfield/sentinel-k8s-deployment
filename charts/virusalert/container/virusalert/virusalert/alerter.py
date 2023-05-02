@@ -49,7 +49,7 @@ class Alerter:
 
             self.log.info(f"{info.scan_len=!s}")
             self.log.info(f"{info.num_hits=}")
-            self.log.info(f"{info.allowed_hits=}")
+            self.log.info(f"{info.allowed_score=}")
 
             trigger = self.trigger(info)
 
@@ -85,10 +85,10 @@ class Alerter:
             )
     
     def analyze(self, info: SimpleNamespace) -> SimpleNamespace:
-        # info.num_hits = info.scan['hits']['total']['value'] #type: int
-        info.num_hits = info.scan['hits']['aggregations']['score']['value'] #type: float
+        info.num_hits = info.scan['hits']['total']['value'] #type: int
+        info.score = info.scan['aggregations']['score']['value'] #type: float
         info.scan_len = info.scan_end - info.scan_begin #type: timedelta
-        info.allowed_hits = info.scan_len / self.config.allowed_threat_interval #type: float
+        info.allowed_score = info.scan_len / self.config.allowed_threat_interval #type: float
         self.collect_sources(info)
         return info
     
@@ -141,7 +141,7 @@ class Alerter:
         return info
     
     def trigger(self, info: SimpleNamespace) -> bool:
-        if info.num_hits > info.allowed_hits:
+        if info.score > info.allowed_score:
             self.log.info(f"Triggering.")
             return True
         else:
