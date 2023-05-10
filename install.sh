@@ -90,6 +90,22 @@ copy_authentication() {
   | tee ~/.kube/config > /dev/null
 }
 
+wait_until_rancher_is_up() {
+  echo "Waiting for Rancher to come up..."
+  # could take as long a 3 minutes (=180 seconds)
+  # check in 5-second steps, so 40 steps in all
+  max_retry=40
+  counter=0
+  until curl -sfk "https://${hostname}/"
+  do
+    sleep 5
+    [[ counter -eq $max_retry ]] && echo "Failed!" && exit 1
+    echo -n "."
+    ((counter++))
+  done
+  echo "Complete!"
+}
+
 display_success_message() {
   cat - <<EOF
 
@@ -107,4 +123,5 @@ install_system_files
 install_rke2
 start_rke2
 copy_authentication
+wait_until_rancher_is_up
 display_success_message
