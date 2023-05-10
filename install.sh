@@ -84,13 +84,15 @@ start_rke2() {
 }
 
 do_netconfig() {
+  sudo systemctl daemon-reload
+
   # apply the exclusions in /etc/NetworkManager/conf.d/rke2-canal.conf
   sudo systemctl reload NetworkManager || true
 
   # enable responders for different name resolution protocols
-  sudo systemctl restart systemd-resolved || true
-  sudo resolvectl mdns eno1 yes || true
-  sudo resolvectl llmnr eno1 yes || true
+  sudo systemctl enable multicast-dns
+  sudo systemctl start multicast-dns
+  sudo systemctl restart systemd-resolved
 }
 
 copy_authentication() {

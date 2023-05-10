@@ -1,0 +1,9 @@
+[Unit]
+Description=Enable MulticastDNS on eno1 network link
+After=systemd-resolved.service
+
+[Service]
+ExecStart=resolvectl mdns eno1 yes
+
+[Install]
+WantedBy=multi-user.target
