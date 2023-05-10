@@ -60,6 +60,9 @@ for f in **/*.*; do
 done
 popd
 
+# apply the exclusions in /etc/NetworkManager/conf.d/rke2-canal.conf
+systemctl reload NetworkManager || true
+
 # enable and start the systemd units
 systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
 systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
