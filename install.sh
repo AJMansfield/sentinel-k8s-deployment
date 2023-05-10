@@ -99,16 +99,18 @@ wait_until_rancher_is_up() {
   echo "Waiting for Rancher to come up..."
   # could take as long a 3 minutes (=180 seconds)
   # check in 5-second steps, so 40 steps in all
-  max_retry=40
-  counter=0
-  until curl -sfk "https://${hostname}/"
+  for i in $(seq 40);
   do
-    [[ $counter -ge $max_retry ]] && { echo "Failed!" ; return 1 ; }
-    echo -n .
-    ((counter++))
+    curl -sfk "https://${hostname}/"
+    if [ $? -eq 0 ]; then
+      echo "Complete!"
+      return 0
+    else
+      echo -n "."
+    fi
     sleep 5
   done
-  echo "Complete!"
+  return 1
 }
 
 display_success_message() {
