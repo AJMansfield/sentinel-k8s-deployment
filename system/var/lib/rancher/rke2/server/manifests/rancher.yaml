@@ -13,5 +13,6 @@ spec:
   repo: https://releases.rancher.com/server-charts/stable
   targetNamespace: cattle-system
   set:
-    installCRDs: "true"
-    replicas: "1"
+    installCRDs: true
+    replicas: 1
+    global.cattle.psp.enabled: false
