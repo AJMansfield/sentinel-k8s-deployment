@@ -33,6 +33,7 @@ parse_opts() {
 
 install_system_packages() {
   sudo apt install -y nfs-common
+  sudo snap install helm --classic
 }
 
 create_chart_configs() {
