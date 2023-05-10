@@ -98,7 +98,7 @@ wait_until_rancher_is_up() {
   counter=0
   until curl -sfk "https://${hostname}/"
   do
-    [[ counter -eq $max_retry ]] && echo "Failed!" && exit 1
+    [[ $counter -ge $max_retry ]] && echo "Failed!" && return 1
     echo -n "."
     ((counter++))
     sleep 5
