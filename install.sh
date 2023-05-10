@@ -31,7 +31,7 @@ parse_opts() {
 }
 
 install_system_packages() {
-  sudo apt install -y nfs-common
+  sudo apt install -y nfs-common python3-slugify python3-yaml
   sudo snap install helm --classic
 }
 
