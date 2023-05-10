@@ -107,7 +107,7 @@ wait_until_rancher_is_up() {
   # check in 5-second steps, so 40 steps in all
   for i in $(seq 40);
   do
-    curl -sfk "https://${hostname}/"
+    curl -sfk "https://${hostname}/" >/dev/null
     if [ $? -eq 0 ]; then
       echo "Complete!"
       return 0
