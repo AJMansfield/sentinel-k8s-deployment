@@ -48,6 +48,10 @@ spec:
   valuesContent: |- 
     hostname: "${hostname}"
     bootstrapPassword: "${password}"
+    global:
+      cattle:
+        psp:
+          enabled: false
 EOF
 }
 

@@ -15,7 +15,7 @@ spec:
   repo: https://charts.longhorn.io
   targetNamespace: longhorn-system
   set:
-    installCRDs: true
+    installCRDs: "true"
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
