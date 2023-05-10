@@ -115,7 +115,7 @@ class Alerter:
             for element in dotted_key.split('.'):
                 try:
                     source = source[element]
-                except KeyError:
+                except KeyError | TypeError:
                     return default
             return source
         
