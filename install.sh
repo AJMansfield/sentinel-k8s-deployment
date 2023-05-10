@@ -67,8 +67,8 @@ install_system_files() {
   find * -type f \
   | while IFS=$'\n' read f
   do 
-    #echo sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
-    sudo install -v -D "${pkg_root}/${f}" "${sys_root}/${f}"
+    sudo mkdir --verbose --parents --mode=755 "$(dirname -- "${sys_root}/${f}")"
+    sudo cp --verbose --update "${pkg_root}/${f}" "${sys_root}/${f}"
   done
   popd
 }
