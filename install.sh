@@ -28,14 +28,10 @@ parse_opts() {
   done
   shift "$((OPTIND - 1))"
 
-  set -x
   pkg_root="${script_dir}/system"
-  sys_root="${sys_root}"
-  hostname="${hostname}"
 }
 
 install_system_packages() {
-  set -x
   sudo apt install -y nfs-common
 }
 
@@ -58,27 +54,28 @@ EOF
 install_rke2() {
   # install RKE2 -- if not already installed
   [ -f "${sys_root}/usr/local/bin/rke2" ] && return 0
-  set -x
+  
   curl -sfL https://get.rke2.io | \
-  INSTALL_RKE2_TAR_PREFIX="${sys_root}/usr/local" sudo sh - 
+  INSTALL_RKE2_TAR_PREFIX="${sys_root}/usr/local" sudo sh -
 }
 
 install_system_files() {
   # mostly we're installing /var/lib/rancher/rke2/server/manifests/*
   # but there's also some other misc config in /system that this also puts elsewhere
-  set -x
+
   pushd "${pkg_root}"
-  for f in find * -type f; do
-    sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
-    sudo install --mode=644 "${pkg_root}/${f}" "${sys_root}/${f}"
+  find * -type f \
+  | while IFS=$'\n' read f
+  do 
+    #echo sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
+    sudo install -v -D "${pkg_root}/${f}" "${sys_root}/${f}"
   done
   popd
 }
 
 start_rke2() {
-  set -x
   # apply the exclusions in /etc/NetworkManager/conf.d/rke2-canal.conf
-  systemctl reload NetworkManager || true
+  sudo systemctl reload NetworkManager || true
 
   # enable and start the systemd units
   systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
@@ -86,7 +83,6 @@ start_rke2() {
 }
 
 copy_authentication() {
-  set -x
   # copy authentication for installed server to user's config
   mkdir -p ~/.kube
   cp --backup --force ~/.kube/config ~/.kube/config || true
