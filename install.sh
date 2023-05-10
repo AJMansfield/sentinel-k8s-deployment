@@ -79,12 +79,18 @@ install_system_files() {
 }
 
 start_rke2() {
-  # apply the exclusions in /etc/NetworkManager/conf.d/rke2-canal.conf
-  sudo systemctl reload NetworkManager || true
-
   # enable and start the systemd units
   systemctl is-enabled --quiet rke2-server.service || sudo systemctl enable rke2-server.service
   systemctl is-active --quiet rke2-server.service || sudo systemctl start rke2-server.service
+}
+
+do_netconfig() {
+  # apply the exclusions in /etc/NetworkManager/conf.d/rke2-canal.conf
+  sudo systemctl reload NetworkManager || true
+
+  # enable responders for different name resolution protocols
+  sudo resolvectl mdns eno1 yes
+  sudo resolvectl llmnr eno1 yes
 }
 
 copy_authentication() {
@@ -127,6 +133,7 @@ parse_opts "$@"
 install_system_packages
 create_chart_configs
 install_system_files
+do_netconfig
 install_rke2
 start_rke2
 copy_authentication
