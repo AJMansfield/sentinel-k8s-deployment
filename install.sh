@@ -65,10 +65,9 @@ install_rke2() {
 install_system_files() {
   # mostly we're installing /var/lib/rancher/rke2/server/manifests/*
   # but there's also some other misc config in /system that this also puts elsewhere
-  shopt -s globstar
   set -x
   pushd "${pkg_root}"
-  for f in **/*.*; do
+  for f in find * -type f; do
     sudo mkdir -p --mode=755 "$(dirname -- "${sys_root}/${f}")"
     sudo install --mode=644 "${pkg_root}/${f}" "${sys_root}/${f}"
   done
