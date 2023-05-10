@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 script_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"
 script_name="$0"
 
@@ -130,11 +129,13 @@ EOF
 }
 
 parse_opts "$@"
+set -e
 install_system_packages
 create_chart_configs
 install_system_files
 do_netconfig
 install_rke2
+set +e
 start_rke2
 copy_authentication
 wait_until_rancher_is_up
