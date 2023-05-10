@@ -31,6 +31,7 @@ parse_opts() {
   set -x
   pkg_root="${script_dir}/system"
   sys_root="${sys_root}"
+  hostname="${hostname}"
 }
 
 install_system_packages() {
