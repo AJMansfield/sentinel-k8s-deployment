@@ -88,8 +88,9 @@ do_netconfig() {
   sudo systemctl reload NetworkManager || true
 
   # enable responders for different name resolution protocols
-  sudo resolvectl mdns eno1 yes
-  sudo resolvectl llmnr eno1 yes
+  sudo systemctl reload systemd-resolved || true
+  sudo resolvectl mdns eno1 yes || true
+  sudo resolvectl llmnr eno1 yes || true
 }
 
 copy_authentication() {
