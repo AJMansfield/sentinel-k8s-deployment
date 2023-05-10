@@ -57,7 +57,7 @@ EOF
 install_rke2() {
   # install RKE2 -- if not already installed
   [ -f "${sys_root}/usr/local/bin/rke2" ] && return 0
-   
+  set -x
   curl -sfL https://get.rke2.io | \
   INSTALL_RKE2_TAR_PREFIX="${sys_root}/usr/local" sudo sh - 
 }
