@@ -3,13 +3,20 @@
 How to install:
 
 1. Set up an instance of Ubuntu 22.04.2 LTS
-2. Set up a storage volume for longhorn:
+2. Set up storage volumes for longhorn and containerd:
 ```bash
 lvcreate --name longhorn-lv --size 100G ubuntu-vg
-mkdir -p /var/lib/longhorn
+mkdir --parents /var/lib/longhorn
 cat >>/etc/fstab <<EOF
 /dev/ubuntu-vg/longhorn-lv /var/lib/longhorn ext4 defaults 0 1
 EOF
+
+lvcreate --name containerd-lv --size 100G ubuntu-vg
+mkdir --parents /var/lib/rancher/rke2/agent/containerd
+cat >>/etc/fstab <<EOF
+/dev/ubuntu-vg/containerd-lv /var/lib/rancher/rke2/agent/containerd ext4 defaults 0 1
+EOF
+
 mount -a
 ```
 3. Run `./install.sh -h <my-hostname> -p <my-bootstrap-password>`
@@ -18,3 +25,10 @@ mount -a
 6. Run `./populate.sh elastic install`
 7. Run `./populate.sh virusalert install`
 8. Run `./populate.sh honeypot install <num>` for each honeypot config you want to run corresponding to the numbered `./values/honeypot-<num>.yaml` files.
+
+
+
+Script to change `/etc/fstab` to use LVM volume names instead of UUIDs
+```bash
+perl -0777pe 's!^# (.*) was on (/dev/.*-vg/.*-lv) during curtin installation\n^(/dev/disk/by-id/.*) \1 (.*)$!# $1 was on $3 during curtin installation\n$2 $1 $4!gm' < /etc/fstab
+```
