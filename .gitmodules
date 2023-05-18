@@ -1,3 +1,0 @@
-[submodule "charts/lad/container/log-anomaly-detector"]
-	path = charts/lad/container/log-anomaly-detector
-	url = https://github.com/AICoE/log-anomaly-detector.git
