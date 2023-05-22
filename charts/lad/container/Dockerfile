@@ -24,4 +24,4 @@ RUN apt-get update && apt-get install -y \
   python3-gunicorn \
   && rm -rf /var/lib/apt/lists/*
 
-RUN pip install git+https://github.com/AICoE/log-anomaly-detector.git
+RUN pip install git+https://github.com/AJMansfield/log-anomaly-detector.git
