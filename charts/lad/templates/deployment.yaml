@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: lad
-        image: ajmansfield/log-anomaly-detector
+        image: ajmansfield/log-anomaly-detector:latest
         imagePullPolicy: Always
         command: [ "sleep", "infinity" ]
         env:
