@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-lad-user
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "elastic.labels" . | nindent 4 }}
+type: kubernetes.io/basic-auth
+stringData:
+  username: lad
+  password: {{ randAlphaNum 32 }}
+  roles: lad_role

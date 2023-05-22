@@ -8,9 +8,11 @@ spec:
   version: 8.6.1
   auth:
     fileRealm:
+    - secretName: {{ .Release.Name }}-lad-user
     - secretName: {{ .Release.Name }}-logstash-user
     - secretName: {{ .Release.Name }}-virusalert-user
     roles:
+    - secretName: {{ .Release.Name }}-lad-role
     - secretName: {{ .Release.Name }}-logstash-role
     - secretName: {{ .Release.Name }}-virusalert-role
   nodeSets:
