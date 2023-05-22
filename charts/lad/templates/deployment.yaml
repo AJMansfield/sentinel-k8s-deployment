@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-lad
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "lad.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "lad.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "lad.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: lad
+        image: ajmansfield/log-anomaly-detector
+        command: [ "sleep", "infinity" ]
+        env:
+        - name: ES_HOSTS
+          value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
+        - name: ES_USER
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-elastic"
+              key: username
+        - name: ES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-elastic"
+              key: password
+        volumeMounts:
+        - name: elasticsearch-certs
+          mountPath: /etc/elastic/elasticsearch/certs
+          readOnly: true
+        # - mountPath: /etc/elastic/kibana/certs
+        #   name: kibana-certs
+        #   readOnly: true
+
+      volumes:
+      - name: elasticsearch-certs
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: {{ .Release.Name }}-fakebeat-beat-es-ca
