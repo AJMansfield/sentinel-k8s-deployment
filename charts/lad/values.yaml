@@ -1,0 +1,12 @@
+# ECK reference info
+eck:
+  elasticsearchRef:
+    name: elastic
+    namespace: elastic
+  kibanaRef:
+    name: elastic
+    namespace: elastic
+
+elasticUserRef:
+  name: elastic-lad-user
+  namespace: elastic

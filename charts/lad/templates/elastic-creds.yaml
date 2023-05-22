@@ -1,0 +1,12 @@
+{{- $source := lookup "v1" "Secret" .Values.ladUserRef.namespace .Values.ladUserRef.name -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-elastic
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "lad.labels" . | nindent 4 }}
+  annotations:
+    source-namespace: {{ .Values.ladUserRef.namespace }}
+    source-secret: {{ .Values.ladUserRef.name }}
+type: {{ $source.type }}
+data: {{- $source.data | toYaml | nindent 2 }}
