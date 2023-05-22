@@ -8,6 +8,7 @@ usage() {
   cat >&2 <<EOF
 Usage: $0 elastic <action>
        $0 virusalert <action>
+       $0 lad <action>
        $0 honeypot <action> <id>
   <action> is one of "install", "upgrade", or "uninstall".
   <id> can be an arbitrary ID corresponding to a honeypot value file.
@@ -38,6 +39,17 @@ virusalert() {
   fi
 }
 
+lad() {
+  if [ $1 == "uninstall" ]
+  then
+    helm $1 lad --namespace lad
+  else
+    helm $1 lad "${script_dir}/charts/lad" \
+      --namespace lad --create-namespace \
+      --values "${script_dir}/values/lad.yaml"
+  fi
+}
+
 honeypot() {
   if [ $1 == "uninstall" ]
   then
@@ -54,6 +66,7 @@ shift
 case $module in
   (elastic) elastic $@ ;;
   (virusalert) virusalert $@ ;;
+  (lad) lad $@ ;;
   (honeypot) honeypot $@ ;;
   (*) usage ;;
 esac
