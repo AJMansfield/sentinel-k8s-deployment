@@ -45,19 +45,19 @@ spec:
         - name: ES_TARGET_INDEX
           value: "odcs-anomaly-detect-"
         - name: ES_VERSION
-          value: 7
+          value: "7"
         - name: INFER_ANOMALY_THRESHOLD
-          value: 1.3
+          value: "1.3"
         - name: INFER_TIME_SPAN
-          value: 10
+          value: "10"
         - name: INFER_LOOPS
-          value: 1
+          value: "1"
         - name: PARALLELISM
-          value: 6
+          value: "6"
         - name: SOMPY_TRAIN_ROUGH_LEN
-          value: 100
+          value: "100"
         - name: SOMPY_TRAIN_FINETUNE_LEN
-          value: 5
+          value: "5"
         - name: SOMPY_INIT
           value: "random"
 
@@ -70,8 +70,8 @@ spec:
         volumeMounts:
         - mountPath: /opt/app-root/src/models
           name: model-storage
-        - mountPath: /opt/app-root/src/validation_data
-          name: volume-ehbcr
+        # - mountPath: /opt/app-root/src/validation_data
+        #   name: volume-ehbcr
         - name: elasticsearch-certs
           mountPath: /etc/elastic/elasticsearch/certs
           readOnly: true
