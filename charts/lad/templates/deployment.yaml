@@ -16,7 +16,12 @@ spec:
       - name: lad
         image: ajmansfield/log-anomaly-detector:latest
         imagePullPolicy: Always
-        command: ["sleep", "infinity"]
+        # command: ["sleep", "infinity"]
+        command:
+          - log-anomaly-detector
+          - run 
+          - --config-yaml
+          - /opt/lad-config/.env_config.yaml
         env:
         - name: LAD_ES_ENDPOINT
           value: "https://{{ .Values.eck.elasticsearchRef.name }}-es-http.{{ .Values.eck.elasticsearchRef.namespace }}.svc:9200"
@@ -32,7 +37,7 @@ spec:
               key: password
               
         resources:
-          limits:
+          requests:
             cpu: 1
             memory: 1Gi
         volumeMounts:
