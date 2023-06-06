@@ -11,3 +11,6 @@ stringData:
       - names: ["**"]
         privileges:
         - read
+      - names: ["odcs-anomaly-detect-*"]
+        privileges:
+        - all
