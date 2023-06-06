@@ -35,6 +35,19 @@ spec:
             secretKeyRef:
               name: "{{ .Release.Name }}-elastic"
               key: password
+        - name: LAD_ES_CERT_DIR
+          value: /etc/elastic/elasticsearch/certs
+        - name: LAD_ES_VERIFY_CERTS
+          value: "True"
+
+        - name: LAD_MODEL_BASE_DIR
+          value: /opt/lad-data/models
+        - name: LAD_MODEL_DIR
+          value: /opt/lad-data/models
+        - name: LAD_MODEL_STORE_PATH
+          value: /opt/lad-data/models
+        - name: LAD_LOF_MODEL_STORE_PATH
+          value: /opt/lad-data/models
               
         resources:
           requests:
