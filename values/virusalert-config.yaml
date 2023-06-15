@@ -4,6 +4,19 @@ alert:
   scan_window: 2m
   alert_interval: 10m
   allowed_threat_interval: 1s
+  score_filters: |
+    - filter:
+        term:
+          network.transport: ipv6-icmp
+      weight: 0.001
+    - filter:
+        exists:
+          field: auditd
+      weight: 0.001
+    - filter:
+        term:
+          auditd.data.terminal: cron
+      weight: 0.001
 
 mail:
   to: it@example.com

@@ -76,7 +76,7 @@ class Config:
     alert_interval: timedelta = config_value("ALERT_INTERVAL", "alert/alert_interval", cast=parse_dt)
     allowed_threat_interval: timedelta = config_value("ALLOWED_THREAT_INTERVAL", "alert/allowed_threat_interval", cast=parse_dt)
     # only alert if more threats than 1>allowed_threat_interval
-    score_filters: list[dict] = config_value("SCORE_FILTERS", "alert/score_filters.yml", default=None, cast=yaml.safe_load)
+    score_filters: list[dict] = config_value("SCORE_FILTERS", "alert/score_filters", default=None, cast=yaml.safe_load)
 
     es_hosts: str = config_value("ES_HOSTS", "elastic/hosts")
     es_user: str = config_value("ES_USER", "elastic/user")
