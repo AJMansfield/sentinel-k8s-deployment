@@ -8,7 +8,7 @@ stringData:
   roles.yml: |-
     lad_role:
       indices:
-      - names: ["**"]
+      - names: ["logstash-*","auditbeat-*","filebeat-*","packetbeat-*"]
         privileges:
         - read
       - names: ["odcs-anomaly-detect-*"]
