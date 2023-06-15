@@ -7,6 +7,7 @@ from time import sleep
 from datetime import datetime, timedelta
 import contextlib
 import os
+import traceback
 # import urllib3
 
 @contextlib.contextmanager
@@ -38,10 +39,14 @@ def main():
     alerter = Alerter(config=loadConfig())
     
     while True:
-        alerter.updateConfig(loadConfig(alerter.config))
-        sleep_until = alerter.loop()
-        sleep_len = clamp((sleep_until - datetime.now()), timedelta(seconds=0.1), timedelta(seconds=10))
-        logging.info(f"Sleeping for {sleep_len} (can sleep until {sleep_until}).")
+        try:
+            alerter.updateConfig(loadConfig(alerter.config))
+            sleep_until = alerter.loop()
+            sleep_len = clamp((sleep_until - datetime.now()), timedelta(seconds=0.1), timedelta(seconds=10))
+            logging.info(f"Sleeping for {sleep_len} (can sleep until {sleep_until}).")
+        except Exception as e:
+            logging.exception(e)
+            sleep_len = 10
         sleep(sleep_len.total_seconds())
 
 if __name__ == "__main__":
