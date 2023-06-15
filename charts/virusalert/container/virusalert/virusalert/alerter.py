@@ -7,7 +7,7 @@ from typing import Any
 from virusalert.config import Config
 from virusalert.humanize import humanize_formatter
 from natsort import natsorted
-import socket
+import dns.exception, dns.reversename, dns.name, dns.resolver
 
 import logging
 
@@ -136,9 +136,12 @@ class Alerter:
         def get_extra_data(source_class:str, value:str) -> str | None:
             if source_class in ("IPv4", "IPv6"):
                 try:
-                    hostname, aliaslist, ipaddrlist = socket.gethostbyaddr(value)
-                    return hostname
-                except socket.error:
+                    addr = dns.reversename.from_address(value)
+                    answer = dns.resolver.query(addr, "PTR")
+                    name = str(answer[0])
+                    name = name.removesuffix('.')
+                    return name
+                except (dns.exception.DNSException, IndexError):
                     pass
             return None
         

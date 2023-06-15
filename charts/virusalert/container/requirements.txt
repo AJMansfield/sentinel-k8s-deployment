@@ -5,3 +5,4 @@ humanize
 pytimeparse
 pyyaml
 natsort
+dnspython
