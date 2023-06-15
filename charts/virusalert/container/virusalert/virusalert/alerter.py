@@ -68,6 +68,7 @@ class Alerter:
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
         self.log.info(f"Scanning from {begin} to {end}.")
 
+        exclude_filters = self.config.exclude_filters or []
         score_filters = self.config.score_filters or []
         
         return self.config.es.search(
@@ -77,7 +78,7 @@ class Alerter:
                     "must": [
                         { "range": { "@timestamp": { "gte": begin, "lt": end } } }
                     ], 
-                    "filter": [],
+                    "filter": exclude_filters,
                 }},
                 "functions": score_filters
             }},
