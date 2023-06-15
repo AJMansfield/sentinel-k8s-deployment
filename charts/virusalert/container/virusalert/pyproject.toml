@@ -22,4 +22,5 @@ dependencies = [
     "humanize",
     "pytimeparse",
     "pyyaml",
+    "natsort",
 ]

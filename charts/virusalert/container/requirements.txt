@@ -4,3 +4,4 @@ python-decouple
 humanize
 pytimeparse
 pyyaml
+natsort

@@ -6,6 +6,7 @@ from typing import Any
 
 from virusalert.config import Config
 from virusalert.humanize import humanize_formatter
+from natsort import natsorted
 
 import logging
 
@@ -152,7 +153,7 @@ class Alerter:
         
         info.sources = sources
         if sources:
-            info.sources_list = '\n'.join(f"- {src}" for src in sorted(list(sources)))
+            info.sources_list = '\n'.join(f"- {src}" for src in natsorted(list(sources)))
         else:
             info.sources_list = "(no specific sources identified)"
         return info
