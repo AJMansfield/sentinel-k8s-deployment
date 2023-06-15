@@ -4,7 +4,7 @@ alert:
   scan_window: 2m
   alert_interval: 10m
   allowed_threat_interval: 1s
-  score_filters: |
+  score_funcs: |
     - filter:
         term:
           network.transport: ipv6-icmp

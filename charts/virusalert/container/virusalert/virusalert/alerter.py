@@ -69,7 +69,7 @@ class Alerter:
         self.log.info(f"Scanning from {begin} to {end}.")
 
         exclude_filters = self.config.exclude_filters or []
-        score_filters = self.config.score_filters or []
+        score_funcs = self.config.score_funcs or []
         
         return self.config.es.search(
             size = 10000,
@@ -80,7 +80,7 @@ class Alerter:
                     ], 
                     "filter": exclude_filters,
                 }},
-                "functions": score_filters
+                "functions": score_funcs
             }},
             aggregations = {"score":{"sum":{"script":{"source":"_score"}}}}
             )
