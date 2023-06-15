@@ -97,18 +97,18 @@ class Alerter:
         hits = info.scan['hits']['hits']
 
         field_names = [
-            ('source.ip', 'ip: {}'),
-            ('client.ip', 'ip: {}'),
-            ('related.ip', 'ip: {}'),
-            ('server.ip', 'ip: {}'),
-            ('destination.ip', 'ip: {}'),
-            ('path', 'ip: {}'),
-            ('host.name', 'host: {}'),
-            ('samba.src_host', 'host: {}'),
-            ('samba.src_ip', 'ip: {}'),
-            ('samba.src_user', 'user: {}'),
-            ('src_ip', 'ip: {}'),
-            ('tpot.src_ip', 'ip: {}'),
+            'source.ip',
+            'client.ip',
+            'related.ip',
+            'server.ip',
+            'destination.ip',
+            'path',
+            'host.name',
+            'samba.src_host',
+            'samba.src_ip',
+            'samba.src_user',
+            'src_ip',
+            'tpot.src_ip',
         ]
         def get_dotted(source:dict, dotted_key:str, default=None):
             for element in dotted_key.split('.'):
@@ -118,24 +118,38 @@ class Alerter:
                     return default
             return source
         
+        def classify_source(source:str) -> str:
+            if source.startswith('/'):
+                return "File"
+            elif source.count(':') >= 2:
+                return "IPv6"
+            elif source.count('.') == 3:
+                return "IPv4"
+            else:
+                return "Host"
+        
+        def format_source(field:str, value:str) -> str:
+            source_class = classify_source(value)
+            return f"{source_class}: {value}"
+        
         for hit in hits:
             hit = hit['_source']
-            for field, label in field_names:
+            for field in field_names:
                 value = get_dotted(hit, field)
                 if value is None:
                     pass
                 elif isinstance(value, str):
                     self.log.debug(f"added source {value}")
-                    sources.add(label.format(value))
+                    sources.add(format_source(field, value))
                 elif isinstance(value, list):
                     self.log.debug(f"added sources {value}")
-                    sources.update((label.format(v) for v in value))
+                    sources.update((format_source(field, v) for v in value))
                 else:
                     self.log.warning(f"unknown type for {field}")
         
         info.sources = sources
         if sources:
-            info.sources_list = '\n'.join(f"- {src}" for src in sources)
+            info.sources_list = '\n'.join(f"- {src}" for src in sorted(list(sources)))
         else:
             info.sources_list = "(no specific sources identified)"
         return info
