@@ -42,16 +42,19 @@ def main():
         try:
             alerter.updateConfig(loadConfig(alerter.config))
             sleep_until = alerter.loop()
-            sleep_len = clamp((sleep_until - datetime.now()), timedelta(seconds=0.1), timedelta(seconds=10))
-            logging.info(f"Sleeping for {sleep_len} (can sleep until {sleep_until}).")
         except Exception as e:
             logging.exception(e)
+            sleep_until = None
             sleep_len = timedelta(seconds=10)
 
-        if not isinstance(sleep_len, timedelta):
-            logging.error(f"unknown {sleep_len=}")
+        if isinstance(sleep_until, datetime):
+            logging.info(f"Can {sleep_until=}")
+            sleep_len = clamp((sleep_until - datetime.now()), timedelta(seconds=0.1), timedelta(seconds=10))
+        else:
+            logging.error(f"Unknown {sleep_until=}")
             sleep_len = timedelta(seconds=10)
 
+        logging.info(f"Sleeping for {sleep_len}")
         sleep(sleep_len.total_seconds())
 
 if __name__ == "__main__":
