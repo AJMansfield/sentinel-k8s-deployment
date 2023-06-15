@@ -67,6 +67,9 @@ class Alerter:
 
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
         self.log.info(f"Scanning from {begin} to {end}.")
+
+        score_filters = self.config.score_filters or []
+        
         return self.config.es.search(
             size = 10000,
             query = { "function_score": {
@@ -76,11 +79,7 @@ class Alerter:
                     ], 
                     "filter": [],
                 }},
-                "functions": [
-                    {"filter": { "term": { "network.transport": "ipv6-icmp" } }, "weight": 0.01},
-                    {"filter": { "exists": { "field": "auditd" } }, "weight": 0.001},
-                    # {"filter": { "term": { "auditd.data.terminal": "cron" } }, "weight": 0.01},
-                ]
+                "functions": score_filters
             }},
             aggregations = {"score":{"sum":{"script":{"source":"_score"}}}}
             )
