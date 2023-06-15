@@ -31,7 +31,7 @@ class Alerter:
         self.config = new_config
 
     def loop(self, now: datetime = None) -> datetime:
-        self.log.info(f"begin loop: {self!s}")
+        self.log.debug(f"begin loop: {self!s}")
         if now is None: now = datetime.now()
 
         alert_cooldown = now >= self.next_alert_time
@@ -64,7 +64,7 @@ class Alerter:
         
         may_sleep_until = max(self.next_alert_time, self.next_scan_time)
 
-        self.log.info(f"end loop: {self!s}")
+        self.log.debug(f"end loop: {self!s}")
         return may_sleep_until
 
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
@@ -177,10 +177,10 @@ class Alerter:
     
     def trigger(self, info: SimpleNamespace) -> bool:
         if info.score > info.allowed_score:
-            self.log.info(f"Triggering.")
+            self.log.info(f"Threshold met, triggering.")
             return True
         else:
-            self.log.info(f"Suppressing.")
+            self.log.info(f"Threshold not met, suppressing.")
 
         return False
     

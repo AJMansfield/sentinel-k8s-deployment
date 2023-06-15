@@ -48,13 +48,13 @@ def main():
             sleep_len = timedelta(seconds=10)
 
         if isinstance(sleep_until, datetime):
-            logging.info(f"Can {sleep_until=}")
+            logging.debug(f"Can {sleep_until=}")
             sleep_len = clamp((sleep_until - datetime.now()), timedelta(seconds=0.1), timedelta(seconds=10))
         else:
             logging.error(f"Unknown {sleep_until=}")
             sleep_len = timedelta(seconds=10)
 
-        logging.info(f"Sleeping for {sleep_len}")
+        logging.debug(f"Sleeping for {sleep_len}")
         sleep(sleep_len.total_seconds())
 
 if __name__ == "__main__":
