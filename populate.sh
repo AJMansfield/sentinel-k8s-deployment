@@ -16,9 +16,20 @@ fi
 
 set_values_flags() {
   values_flags=()
+  final_paths=()
+  for f in "$@"
+  do
+    if [[ "${f##*.}" =~ ^ya?ml$ ]] # does the path end in .yaml or .yml
+    then
+      final_paths+=("$f")
+    else
+      final_paths+=("$f.yaml" "$f-config.yaml" "$f-secret.yaml")
+    fi
+  done
+
   for p in "${values_basepaths[@]}"
   do
-    for f in "$@"
+    for f in "${final_paths[@]}"
     do
       if [ -f "$p/$f" ]
       then
@@ -46,7 +57,7 @@ elastic() {
     set -e -x
     helm $1 elastic --namespace elastic
   else
-    set_values_flags elastic.yaml
+    set_values_flags elastic
     set -e -x
     helm $1 elastic "${script_dir}/charts/elastic" \
       --namespace elastic --create-namespace \
@@ -60,7 +71,7 @@ virusalert() {
     set -e -x
     helm $1 virusalert --namespace virusalert
   else
-    set_values_flags virusalert-config.yaml virusalert-secret.yaml
+    set_values_flags virusalert
     set -e -x
     helm $1 virusalert "${script_dir}/charts/virusalert" \
       --namespace virusalert --create-namespace \
@@ -74,7 +85,7 @@ lad() {
     set -e -x
     helm $1 lad --namespace lad
   else
-    set_values_flags lad.yaml
+    set_values_flags lad
     set -e -x
     helm $1 lad "${script_dir}/charts/lad" \
       --namespace lad --create-namespace \
@@ -88,7 +99,7 @@ honeypot() {
     set -e -x
     helm $1 "honeypot-${2}" --namespace "honeypot-${2}"
   else
-    set_values_flags "honeypot-${2}.yaml"
+    set_values_flags "honeypot-${2}"
     set -e -x
     helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
       --namespace "honeypot-${2}" --create-namespace \
