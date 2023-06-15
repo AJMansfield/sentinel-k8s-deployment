@@ -46,7 +46,12 @@ def main():
             logging.info(f"Sleeping for {sleep_len} (can sleep until {sleep_until}).")
         except Exception as e:
             logging.exception(e)
-            sleep_len = 10
+            sleep_len = timedelta(seconds=10)
+
+        if not isinstance(sleep_len, timedelta):
+            logging.error(f"unknown {sleep_len=}")
+            sleep_len = timedelta(seconds=10)
+
         sleep(sleep_len.total_seconds())
 
 if __name__ == "__main__":
