@@ -7,6 +7,7 @@ from typing import Any
 from virusalert.config import Config
 from virusalert.humanize import humanize_formatter
 from natsort import natsorted
+import socket
 
 import logging
 
@@ -132,9 +133,22 @@ class Alerter:
             else:
                 return "Host"
         
+        def get_extra_data(source_class:str, value:str) -> str | None:
+            if source_class in ("IPv4", "IPv6"):
+                try:
+                    hostname, aliaslist, ipaddrlist = socket.gethostbyaddr(value)
+                    return hostname
+                except socket.error:
+                    pass
+            return None
+        
         def format_source(field:str, value:str) -> str:
             source_class = classify_source(value)
-            return f"{source_class}: {value}"
+            extra_data = get_extra_data(source_class, value)
+            if extra_data:
+                return f"{source_class}: {value} ({extra_data})"
+            else:
+                return f"{source_class}: {value}"
         
         for hit in hits:
             hit = hit['_source']
