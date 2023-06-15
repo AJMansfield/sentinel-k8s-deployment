@@ -3,3 +3,4 @@ elasticsearch
 python-decouple
 humanize
 pytimeparse
+pyyaml

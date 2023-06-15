@@ -21,4 +21,5 @@ dependencies = [
     "python-decouple",
     "humanize",
     "pytimeparse",
+    "pyyaml",
 ]
