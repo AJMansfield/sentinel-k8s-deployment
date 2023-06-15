@@ -7,13 +7,11 @@ if [ -z "${VALUES_DIR}" ]
 then
   values_basepaths+=("${VALUES_DIR}")
 else
-  if [ "$(readlink -f "${HOME}/values")" == "$(readlink -f "${script_dir}/../values")" ]
+  if [ "$(readlink -f "${HOME}/values")" != "$(readlink -f "${script_dir}/../values")" ]
   then
     values_basepaths+=("${HOME}/values")
-  else
-    values_basepaths+=("${HOME}/values")
-    values_basepaths+=("${script_dir}/../values")
   fi
+  values_basepaths+=("${script_dir}/../values")
 fi
 
 set_values_flags() {
@@ -30,8 +28,6 @@ set_values_flags() {
   done
 }
 
-set -e -x
-
 usage() {
   cat >&2 <<EOF
 Usage: $0 elastic <action>
@@ -47,9 +43,11 @@ EOF
 elastic() {
   if [ $1 == "uninstall" ]
   then
+    set -e -x
     helm $1 elastic --namespace elastic
   else
     set_values_flags elastic.yaml
+    set -e -x
     helm $1 elastic "${script_dir}/charts/elastic" \
       --namespace elastic --create-namespace \
       "${values_flags[@]}"
@@ -59,9 +57,11 @@ elastic() {
 virusalert() {
   if [ $1 == "uninstall" ]
   then
+    set -e -x
     helm $1 virusalert --namespace virusalert
   else
     set_values_flags virusalert-config.yaml virusalert-secret.yaml
+    set -e -x
     helm $1 virusalert "${script_dir}/charts/virusalert" \
       --namespace virusalert --create-namespace \
       "${values_flags[@]}"
@@ -71,9 +71,11 @@ virusalert() {
 lad() {
   if [ $1 == "uninstall" ]
   then
+    set -e -x
     helm $1 lad --namespace lad
   else
     set_values_flags lad.yaml
+    set -e -x
     helm $1 lad "${script_dir}/charts/lad" \
       --namespace lad --create-namespace \
       "${values_flags[@]}"
@@ -83,9 +85,11 @@ lad() {
 honeypot() {
   if [ $1 == "uninstall" ]
   then
+    set -e -x
     helm $1 "honeypot-${2}" --namespace "honeypot-${2}"
   else
     set_values_flags "honeypot-${2}.yaml"
+    set -e -x
     helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
       --namespace "honeypot-${2}" --create-namespace \
       "${values_flags[@]}"
