@@ -3,7 +3,7 @@
 script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 values_basepaths=("${script_dir}/values")
-if [ -z "${VALUES_DIR}" ]
+if [ -n "${VALUES_DIR}" ]
 then
   values_basepaths+=("${VALUES_DIR}")
 else
