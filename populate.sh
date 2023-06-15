@@ -2,6 +2,34 @@
 
 script_dir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
+values_basepaths=("${script_dir}/values")
+if [ -z "${VALUES_DIR}" ]
+then
+  values_basepaths+=("${VALUES_DIR}")
+else
+  if [ "$(readlink -f "${HOME}/values")" == "$(readlink -f "${script_dir}/../values")" ]
+  then
+    values_basepaths+=("${HOME}/values")
+  else
+    values_basepaths+=("${HOME}/values")
+    values_basepaths+=("${script_dir}/../values")
+  fi
+fi
+
+set_values_flags() {
+  values_flags=()
+  for p in "${values_basepaths[@]}"
+  do
+    for f in "$@"
+    do
+      if [ -f "$p/$f" ]
+      then
+        values_flags+=(--values "$p/$f")
+      fi
+    done
+  done
+}
+
 set -e -x
 
 usage() {
@@ -21,9 +49,10 @@ elastic() {
   then
     helm $1 elastic --namespace elastic
   else
+    set_values_flags elastic.yaml
     helm $1 elastic "${script_dir}/charts/elastic" \
       --namespace elastic --create-namespace \
-      --values "${script_dir}/values/elastic.yaml"
+      "${values_flags[@]}"
   fi
 }
 
@@ -32,10 +61,10 @@ virusalert() {
   then
     helm $1 virusalert --namespace virusalert
   else
+    set_values_flags virusalert-config.yaml virusalert-secret.yaml
     helm $1 virusalert "${script_dir}/charts/virusalert" \
       --namespace virusalert --create-namespace \
-      --values "${script_dir}/values/virusalert-config.yaml" \
-      --values "${script_dir}/values/virusalert-secret.yaml"
+      "${values_flags[@]}"
   fi
 }
 
@@ -44,9 +73,10 @@ lad() {
   then
     helm $1 lad --namespace lad
   else
+    set_values_flags lad.yaml
     helm $1 lad "${script_dir}/charts/lad" \
       --namespace lad --create-namespace \
-      --values "${script_dir}/values/lad.yaml"
+      "${values_flags[@]}"
   fi
 }
 
@@ -55,9 +85,10 @@ honeypot() {
   then
     helm $1 "honeypot-${2}" --namespace "honeypot-${2}"
   else
+    set_values_flags "honeypot-${2}.yaml"
     helm $1 "honeypot-${2}" "${script_dir}/charts/teapot" \
       --namespace "honeypot-${2}" --create-namespace \
-      --values "${script_dir}/values/honeypot-${2}.yaml"
+      "${values_flags[@]}"
   fi
 }
 
