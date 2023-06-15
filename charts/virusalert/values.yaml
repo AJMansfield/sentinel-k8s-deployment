@@ -29,6 +29,8 @@ alert:
         term:
           auditd.data.terminal: cron
       weight: 0.001
+  query_must: "[]"
+  query_must_not: "[]"
 
 smtp: {}
   # username: noreply@example.com

@@ -68,7 +68,8 @@ class Alerter:
     def scan(self, begin: datetime = None, end: datetime = None) -> dict[str,Any]:
         self.log.info(f"Scanning from {begin} to {end}.")
 
-        exclude_filters = self.config.exclude_filters or []
+        query_must = self.config.query_must or []
+        query_must_not = self.config.query_must_not or []
         score_funcs = self.config.score_funcs or []
         
         return self.config.es.search(
@@ -76,9 +77,10 @@ class Alerter:
             query = { "function_score": {
                 "query": { "bool": {
                     "must": [
-                        { "range": { "@timestamp": { "gte": begin, "lt": end } } }
+                        { "range": { "@timestamp": { "gte": begin, "lt": end } } },
+                        *query_must
                     ], 
-                    "filter": exclude_filters,
+                    "must_not": query_must_not,
                 }},
                 "functions": score_funcs
             }},
