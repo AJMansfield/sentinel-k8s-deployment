@@ -24,9 +24,12 @@ mount -a
 5. While waiting, edit the yaml files in the `./values` folder. Ensure you set the hostname in `./values/elastic.yaml` and specify the SMTP account/connection parameters in `./values/virusalert-secret.yaml`, other values to taste.
 6. Run `./populate.sh elastic install`
 7. Run `./populate.sh virusalert install`
-8. Run `./populate.sh honeypot install <num>` for each honeypot config you want to run corresponding to the numbered `./values/honeypot-<num>.yaml` files.
+8. Run `./populate.sh lad install`
+9. Run `./populate.sh honeypot install <num>` for each honeypot config you want to run corresponding to the numbered `./values/honeypot-<num>.yaml` files.
 
 
+
+### Extra Notes:
 
 Script to change `/etc/fstab` to use LVM volume names instead of UUIDs
 ```bash
