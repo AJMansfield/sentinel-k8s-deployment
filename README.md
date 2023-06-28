@@ -5,6 +5,8 @@ How to install:
 1. Set up an instance of Ubuntu 22.04.2 LTS
 2. Set up storage volumes for longhorn and containerd:
 ```bash
+lvresize --size 20G --resizefs /dev/ubuntu-vg/ubuntu-pv
+
 lvcreate --name longhorn-lv --size 100G ubuntu-vg
 mkdir --parents /var/lib/longhorn
 cat >>/etc/fstab <<EOF
