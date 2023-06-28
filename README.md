@@ -8,12 +8,14 @@ How to install:
 lvresize --size 20G --resizefs /dev/ubuntu-vg/ubuntu-lv
 
 lvcreate --name longhorn-lv --size 100G ubuntu-vg
+mkfs.ext4 /dev/ubuntu-vg/longhorn-lv
 mkdir --parents /var/lib/longhorn
 cat >>/etc/fstab <<EOF
 /dev/ubuntu-vg/longhorn-lv /var/lib/longhorn ext4 defaults 0 1
 EOF
 
 lvcreate --name containerd-lv --size 100G ubuntu-vg
+mkfs.ext4 /dev/ubuntu-vg/containerd-lv
 mkdir --parents /var/lib/rancher/rke2/agent/containerd
 cat >>/etc/fstab <<EOF
 /dev/ubuntu-vg/containerd-lv /var/lib/rancher/rke2/agent/containerd ext4 defaults 0 1
