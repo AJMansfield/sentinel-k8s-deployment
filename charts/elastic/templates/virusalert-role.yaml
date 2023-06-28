@@ -8,6 +8,6 @@ stringData:
   roles.yml: |-
     virusalert_role:
       indices:
-      - names: ["logstash-*","auditbeat-*","filebeat-*","packetbeat-*"]
+      - names: ["logstash-*","auditbeat-*","filebeat-*","packetbeat-*","odcs-anomaly-detect-*"]
         privileges:
         - read

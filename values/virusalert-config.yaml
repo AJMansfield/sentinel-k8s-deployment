@@ -1,23 +1,25 @@
 
 alert:
-  scan_interval: 10s
+  scan_interval: 2s
   scan_window: 2m
-  alert_interval: 10m
-  allowed_threat_interval: 1s
+  alert_interval: 1m
+  allowed_threat_interval: 10s
   score_funcs: |
-    - filter:
-        term:
-          network.transport: ipv6-icmp
-      weight: 0.001
     - filter:
         exists:
           field: auditd
-      weight: 0.001
-    - filter:
-        term:
-          auditd.data.terminal: cron
-      weight: 0.001
-
+      weight: 0.01
+    - field_value_factor:
+        field: anomaly_score
+        modifier: ln1p
+        missing: 1
+  query_must_not: |
+    - term:
+        network.transport: ipv6-icmp
+    - term:
+        auditd.data.terminal: cron
+    - term:
+        anomaly: 0
 mail:
   to: it@example.com
   subject: >-
