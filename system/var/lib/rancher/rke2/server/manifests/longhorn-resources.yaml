@@ -1,0 +1,10 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: longhorn
+  namespace: kube-system
+spec:
+  valuesContent: |- 
+    defaultSettings:
+      guaranteedEngineManagerCPU: 0
+      guaranteedReplicaManagerCPU: 0
