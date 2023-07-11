@@ -1,0 +1,16 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-multus
+  namespace: kube-system
+spec:
+  valuesContent: |- 
+    pod:
+      resources:
+        multus:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2000m"
