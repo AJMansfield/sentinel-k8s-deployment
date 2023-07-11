@@ -13,6 +13,7 @@ metadata:
 spec:
   chart: longhorn
   repo: https://charts.longhorn.io
+  version: 1.5.0
   targetNamespace: longhorn-system
   set:
     installCRDs: "true"
