@@ -1,3 +1,16 @@
 cni:
 - multus
 - canal
+# control-plane-resource-requests:
+# - kube-apiserver-cpu=250m
+# - kube-apiserver-memory=1Gi
+# - kube-scheduler-cpu=100m
+# - kube-scheduler-memory=128Mi
+# - kube-controller-manager-cpu=200m
+# - kube-controller-manager-memory=256Mi
+# - kube-proxy-cpu=250m
+# - kube-proxy-memory=128Mi
+# - etcd-cpu=200m
+# - etcd-memory=512Mi
+# - cloud-controller-manager-cpu=100m
+# - cloud-controller-manager-memory=128Mi
