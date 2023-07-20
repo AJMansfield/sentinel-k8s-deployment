@@ -12,6 +12,7 @@ Available Targets:
   all
   tpot
   virusalert
+  lad
 EOF
     exit 1
 }
