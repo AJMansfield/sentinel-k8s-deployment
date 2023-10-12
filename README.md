@@ -22,7 +22,7 @@ git push -uf origin main
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://172.17.3.185:8443/sentinel/sentinel/-/settings/integrations)
+- [ ] [Set up project integrations](https://172.17.0.181:8443/sentinel/sentinel/-/settings/integrations)
 
 ## Collaborate with your team
 
