@@ -2,8 +2,8 @@
 
 How to install:
 
-1. Set up an instance of Ubuntu 22.04.2 LTS
-2. Set up storage volumes for longhorn and containerd:
+1. Set up Ubuntu 22.04.2 LTS on all of the nodes you intend to use. Setting up SSH access is recommended.
+2. Set up each node with storage volumes for longhorn and containerd (this can also be done during the initial installation of ubuntu).
 ```bash
 lvresize --size 20G --resizefs /dev/ubuntu-vg/ubuntu-lv
 
@@ -23,13 +23,20 @@ EOF
 
 mount -a
 ```
-3. Run `./install.sh -h <my-hostname> -p <my-bootstrap-password>`
-4. Wait for the system to come up and show a webpage at `https://<my-hostname>/dashboard/`
-5. While waiting, edit the yaml files in the `./values` folder. Ensure you set the hostname in `./values/elastic.yaml` and specify the SMTP account/connection parameters in `./values/virusalert-secret.yaml`, other values to taste.
-6. Run `./populate.sh elastic install`
-7. Run `./populate.sh virusalert install`
-8. Run `./populate.sh lad install`
-9. Run `./populate.sh honeypot install <num>` for each honeypot config you want to run corresponding to the numbered `./values/honeypot-<num>.yaml` files.
+3. Acquire this repository, by cloning from git or downloading, onto each of the nodes.
+4. On the first node only: Run `sentinel/install.sh`. Most installs won't need to set any options, but a list of options and usage info is available with `--help` if desired.
+5. For other nodes, run `sentinel/install-agent.sh`. Most installs won't need to set any options, but a list of options and usage info is available with `--help` if desired.
+6. When prompted by the agent install script, copy the section labeled `Agent Config` from the output of the first node's install script and paste it into the prompt. (Alternatively, both scripts have a `-a` option that can be used to specify a file.)
+7. While waiting for the install scripts to complete on all of the machines, create a copy of the `sentinel/values` folder from just your main machine, to be modified with the specifics of your own configuration.
+    Ensure that you set the correct hostname in `values/elastic.yaml`, and that you specify the SMTP account/connection parameters in `values/virusalert-secret.yaml`. Other values to taste.
+8. Once the main sentinel install script completes, navigate to the provided URL and use the bootstrap password to log in. Verify that all of the nodes of your cluster are visible in the rancher control panel.
+9. After all previous steps are complete, run the populate scripts to install the core sentinel services:
+    ```bash
+    sentinel/populate.sh elastic install
+    sentinel/populate.sh virusalert install
+    sentinel/populate.sh lad install
+    ```
+10. For each honeypot configuration you wish to install (corresponding to the numbered `values/honeypot-<num>.yaml` config files), run `sentinel/populate.sh honeypot install <num>`.
 
 
 

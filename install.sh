@@ -116,12 +116,12 @@ EOF
     # tricky pipe operations to write the header separator parts to stderr, and only the actual config contents to stdout (so it could theoretically be piped out).
     cat >&2 <<EOF
 
-Agent Config (copy to agent node's /etc/rancher/rke2/config.yaml):
-------------------------------------------------------------------
+Agent Config (paste into the agent install script's prompt, if applicable)
+--------------------------------------------------------------------------
 EOF
     cat <<<"${agent_config_content}"
     cat >&2 <<EOF
-------------------------------------------------------------------
+--------------------------------------------------------------------------
 EOF
   else
     echo "Writing agent config to ${agent_config_path}" >&2
