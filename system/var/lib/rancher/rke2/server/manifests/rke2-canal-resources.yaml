@@ -9,3 +9,15 @@ spec:
       resources:
         requests:
           cpu: 25m
+          memory: 128Mi
+        # limits:
+        #   cpu: 250m
+        #   memory: 256Mi
+    flannel:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 32Mi
+        # limits:
+        #   memory: 128Mi
+        #   cpu: 500m

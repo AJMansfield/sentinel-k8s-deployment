@@ -5,10 +5,11 @@ script_name="$0"
 
 usage() {
   cat >&2 <<EOF
-Usage: $script_name [-h <hostname>] [-p <password>] [-d <sys_root>] 
+Usage: $script_name [-h <hostname>] [-p <password>] [-d <sys_root>] [-a <agent_config_path>]
   -h <hostname>: FQDN hostname for Rancher (default: "$(hostname -f)").
   -p <password>: Bootstrap password for Rancher (default: random).
   -d <sys_root>: System root to install into (default: "/").
+  -a <agent_config_path>: Path to write the agent config to (default: stdout).
 EOF
   exit 1
 }
@@ -17,11 +18,13 @@ parse_opts() {
   hostname=$(hostname -f)
   password=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 12)
   sys_root=''
-  while getopts h:p:d: o; do
+  agent_config_path='-'
+  while getopts h:p:d:a: o; do
     case $o in
       (h) hostname="$OPTARG";;
       (p) password="$OPTARG";;
       (d) sys_root="$OPTARG";;
+      (a) agent_config_path="$OPTARG";;
       (*) usage "$@"
     esac
   done
@@ -103,18 +106,40 @@ copy_authentication() {
   | tee ~/.kube/config > /dev/null
 }
 
+output_agent_config() {
+  token=$(sudo cat "${pkg_root}/var/lib/rancher/rke2/server/node-token")
+  read -d '' agent_config_content <<EOF
+server: https://${hostname}:9345
+token: ${token}
+EOF
+  if [ "${agent_config_path}" = '-' ]; then
+    # tricky pipe operations to write the header separator parts to stderr, and only the actual config contents to stdout (so it could theoretically be piped out).
+    cat >&2 <<EOF
+
+Agent Config (paste into the agent install script's prompt, if applicable)
+--------------------------------------------------------------------------
+EOF
+    cat <<<"${agent_config_content}"
+    cat >&2 <<EOF
+--------------------------------------------------------------------------
+EOF
+  else
+    echo "Writing agent config to ${agent_config_path}" >&2
+    cat > "${agent_config_path}" <<<"${agent_config_content}"
+}
+
 wait_until_rancher_is_up() {
-  echo "Waiting for Rancher to come up..."
+  echo "Waiting for Rancher to come up..." >&2
   # could take as long a 3 minutes (=180 seconds)
   # check in 5-second steps, so 40 steps in all
   for i in $(seq 40);
   do
     curl -sfk "https://${hostname}/" >/dev/null
     if [ $? -eq 0 ]; then
-      echo "Complete!"
+      echo "Complete!" >&2
       return 0
     else
-      echo -n "."
+      echo -n "." >&2
     fi
     sleep 5
   done
@@ -122,7 +147,7 @@ wait_until_rancher_is_up() {
 }
 
 display_success_message() {
-  cat - <<EOF
+  cat >&2 <<EOF
 
 Install Complete!
 =================
@@ -141,5 +166,6 @@ install_rke2
 set +e
 start_rke2
 copy_authentication
+output_agent_config
 wait_until_rancher_is_up
 display_success_message
