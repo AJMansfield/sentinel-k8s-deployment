@@ -104,17 +104,17 @@ copy_authentication() {
 }
 
 wait_until_rancher_is_up() {
-  echo "Waiting for Rancher to come up..."
+  echo "Waiting for Rancher to come up..." >&2
   # could take as long a 3 minutes (=180 seconds)
   # check in 5-second steps, so 40 steps in all
   for i in $(seq 40);
   do
     curl -sfk "https://${hostname}/" >/dev/null
     if [ $? -eq 0 ]; then
-      echo "Complete!"
+      echo "Complete!" >&2
       return 0
     else
-      echo -n "."
+      echo -n "." >&2
     fi
     sleep 5
   done
@@ -122,7 +122,7 @@ wait_until_rancher_is_up() {
 }
 
 display_success_message() {
-  cat - <<EOF
+  cat >&2 <<EOF
 
 Install Complete!
 =================
