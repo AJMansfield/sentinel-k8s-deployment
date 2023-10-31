@@ -126,6 +126,7 @@ EOF
   else
     echo "Writing agent config to ${agent_config_path}" >&2
     cat > "${agent_config_path}" <<<"${agent_config_content}"
+  fi
 }
 
 wait_until_rancher_is_up() {
