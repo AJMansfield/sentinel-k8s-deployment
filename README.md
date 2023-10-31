@@ -24,8 +24,10 @@ EOF
 mount -a
 ```
 3. Acquire this repository, by cloning from git or downloading, onto each of the nodes.
-4. On the first node only: Run `sentinel/install.sh`. Most installs won't need to set any options, but a list of options and usage info is available with `--help` if desired.
-5. For other nodes, run `sentinel/install-agent.sh`. Most installs won't need to set any options, but a list of options and usage info is available with `--help` if desired.
+    - From github: `git clone --depth 1 https://github.com/AJMansfield/sentinel-k8s-deployment.git sentinel/`
+    - From private repo: (TODO: how to handle the authentication requirements?)
+4. On the first node only: Run `sentinel/install.sh`. Most installs won't need to set any script options, but a list of options and usage info is available with `--help` if desired.
+5. For other nodes, run `sentinel/install-agent.sh`. Most installs won't need to set any script options, but a list of options and usage info is available with `--help` if desired.
 6. When prompted by the agent install script, copy the section labeled `Agent Config` from the output of the first node's install script and paste it into the prompt. (Alternatively, both scripts have a `-a` option that can be used to specify a file.)
 7. While waiting for the install scripts to complete on all of the machines, create a copy of the `sentinel/values` folder from just your main machine, to be modified with the specifics of your own configuration.
     Ensure that you set the correct hostname in `values/elastic.yaml`, and that you specify the SMTP account/connection parameters in `values/virusalert-secret.yaml`. Other values to taste.
