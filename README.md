@@ -26,19 +26,20 @@ mount -a
 3. Acquire this repository, by cloning from git or downloading, onto each of the nodes.
     - From github: `git clone --depth 1 https://github.com/AJMansfield/sentinel-k8s-deployment.git sentinel/`
     - From private repo: (TODO: how to handle the authentication requirements?)
-4. On the first node only: Run `sentinel/install.sh`. Most installs won't need to set any script options, but a list of options and usage info is available with `--help` if desired.
+4. On the control node, run `sentinel/install.sh`. Most installs won't need to set any script options, but a list of options and usage info is available with `--help` if desired.
 5. For other nodes, run `sentinel/install-agent.sh`. Most installs won't need to set any script options, but a list of options and usage info is available with `--help` if desired.
 6. When prompted by the agent install script, copy the section labeled `Agent Config` from the output of the first node's install script and paste it into the prompt. (Alternatively, both scripts have a `-a` option that can be used to specify a file.)
-7. While waiting for the install scripts to complete on all of the machines, create a copy of the `sentinel/values` folder from just your main machine, to be modified with the specifics of your own configuration.
-    Ensure that you set the correct hostname in `values/elastic.yaml`, and that you specify the SMTP account/connection parameters in `values/virusalert-secret.yaml`. Other values to taste.
+7. Run `sentinel/build.sh` on the control node
+8. Make a copy of the `sentinel/values` folder on the control node (e.g. `cp -r sentinel/values values`) so you can edit the configuration.
+9. Edit the values configuration files. In particular, you MUST set the system hostname in `values/elastic.yaml`, and if you want email alert functionality you must set the SMTP account parameters in `values/virusalert-secret.yaml`. Other configuration values to taste.
 8. Once the main sentinel install script completes, navigate to the provided URL and use the bootstrap password to log in. Verify that all of the nodes of your cluster are visible in the rancher control panel.
-9. After all previous steps are complete, run the populate scripts to install the core sentinel services:
+9. Run the populate scripts on the contron node to deploy the core sentinel services to the cluster.
     ```bash
     sentinel/populate.sh elastic install
     sentinel/populate.sh virusalert install
     sentinel/populate.sh lad install
     ```
-10. For each honeypot configuration you wish to install (corresponding to the numbered `values/honeypot-<num>.yaml` config files), run `sentinel/populate.sh honeypot install <num>`.
+10. For each honeypot configuration you wish to install (corresponding to the numbered `values/honeypot-<num>.yaml` config files), run `sentinel/populate.sh honeypot install <num>` to deploy it to the cluster.
 
 
 

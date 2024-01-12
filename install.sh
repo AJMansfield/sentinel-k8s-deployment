@@ -107,7 +107,7 @@ copy_authentication() {
 }
 
 output_agent_config() {
-  token=$(sudo cat "${pkg_root}/var/lib/rancher/rke2/server/node-token")
+  token=$(sudo cat "${sys_root}/var/lib/rancher/rke2/server/node-token")
   read -d '' agent_config_content <<EOF
 server: https://${hostname}:9345
 token: ${token}
